@@ -15,23 +15,23 @@ type QuoteRepository interface {
 	FindAll(ctx context.Context) ([]model.Quote, error)
 }
 
-type QuoteService struct {
+type Quote struct {
 	repo QuoteRepository
 }
 
-func NewQuoteService(repo QuoteRepository) QuoteService {
-	return QuoteService{
+func NewQuoteService(repo QuoteRepository) Quote {
+	return Quote{
 		repo,
 	}
 }
 
-func (s QuoteService) CreateQuote(ctx context.Context, q *model.Quote) error {
+func (s Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
 	q.ID = xid.New().String()
 	q.Created = time.Now()
 	return s.repo.Create(ctx, *q)
 }
 
-func (s QuoteService) GetAllQuotes(ctx context.Context) ([]model.Quote, error) {
+func (s Quote) GetAllQuotes(ctx context.Context) ([]model.Quote, error) {
 	quotes, err := s.repo.FindAll(ctx)
 	return quotes, err
 }
