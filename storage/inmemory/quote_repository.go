@@ -2,6 +2,7 @@ package inmemory
 
 import (
 	"context"
+	"sync"
 
 	"github.com/willbicks/charisms/model"
 	"github.com/willbicks/charisms/service"
@@ -9,6 +10,7 @@ import (
 )
 
 type QuoteRepository struct {
+	sync.Mutex
 	m map[string]model.Quote
 }
 
@@ -19,6 +21,8 @@ func NewQuoteRepository() service.QuoteRepository {
 }
 
 func (r *QuoteRepository) Create(ctx context.Context, q model.Quote) error {
+	r.Lock()
+	defer r.Unlock()
 	r.m[q.ID] = q
 	return nil
 }
@@ -30,11 +34,15 @@ func (r *QuoteRepository) Update(ctx context.Context, q model.Quote) error {
 		return storagecommon.ErrNotFound
 	}
 
+	r.Lock()
+	defer r.Unlock()
 	r.m[q.ID] = q
 	return nil
 }
 
 func (r *QuoteRepository) FindByID(ctx context.Context, id string) (model.Quote, error) {
+	r.Lock()
+	defer r.Unlock()
 	q, ok := r.m[id]
 	if !ok {
 		return model.Quote{}, storagecommon.ErrNotFound
@@ -46,6 +54,8 @@ func (r *QuoteRepository) FindByID(ctx context.Context, id string) (model.Quote,
 func (r *QuoteRepository) FindAll(ctx context.Context) ([]model.Quote, error) {
 	v := make([]model.Quote, len(r.m))
 
+	r.Lock()
+	defer r.Unlock()
 	for _, value := range r.m {
 		v = append(v, value)
 	}
