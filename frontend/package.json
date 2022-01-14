@@ -1,6 +1,5 @@
 {
   "name": "charisms-frontend",
-  
   "scripts": {
     "build": "npx postcss build style/main.css -o public/styles/app.css",
     "watch": "npx postcss build style/main.css -o public/styles/app.css -w"
@@ -10,6 +9,9 @@
   "devDependencies": {
     "autoprefixer": "^10.4.2",
     "postcss": "^8.4.5",
-    "tailwindcss": "^3.0.13"
-  }
+    "tailwindcss": "^3.0.13",
+    "@tailwindcss/forms": "^0.4.0",
+    "postcss-cli": "^9.1.0"
+  },
+  "dependencies": {}
 }
