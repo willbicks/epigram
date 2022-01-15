@@ -52,7 +52,7 @@ func (r *QuoteRepository) FindByID(ctx context.Context, id string) (model.Quote,
 }
 
 func (r *QuoteRepository) FindAll(ctx context.Context) ([]model.Quote, error) {
-	v := make([]model.Quote, len(r.m))
+	v := make([]model.Quote, 0, len(r.m))
 
 	r.Lock()
 	defer r.Unlock()
