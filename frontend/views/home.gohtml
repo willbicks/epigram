@@ -27,5 +27,11 @@
 				</div>
 			</div>
 		</form>
+		<div class="md:masonry-cols-2 before:box-inherit after:box-inherit">
+			{{range .Page.Quotes}}
+				{{ template "quote-card" .}}
+			{{end}}
+		</div>
+		
 	</div>
 {{end}}
