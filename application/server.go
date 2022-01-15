@@ -1,10 +1,12 @@
 package application
 
 import (
+	"context"
 	"fmt"
 	"html/template"
 	"net/http"
 
+	"github.com/willbicks/charisms/model"
 	"github.com/willbicks/charisms/service"
 )
 
@@ -20,6 +22,32 @@ type CharismsServer struct {
 func (s *CharismsServer) Init() {
 	s.templates()
 	s.routes()
+}
+
+func (s *CharismsServer) StuffFakeData() {
+	s.QuoteService.CreateQuote(context.Background(), &model.Quote{
+		Quote:   "Who can I fire over that?",
+		Quotee:  "Rob Lewis",
+		Context: "There's a fish on my door",
+	})
+
+	s.QuoteService.CreateQuote(context.Background(), &model.Quote{
+		Quote:   "Austin you have to be gay, it's for your family",
+		Quotee:  "Megin",
+		Context: "The matrix is a trans allegory",
+	})
+
+	s.QuoteService.CreateQuote(context.Background(), &model.Quote{
+		Quote:   "Evan Craska was born and people were like \"We need a genre for this\"",
+		Quotee:  "Jamieson",
+		Context: "Watching pop punk music videos",
+	})
+
+	qs, err := s.QuoteService.GetAllQuotes(context.Background())
+	if err != nil {
+		panic(fmt.Sprintf("unable to get stuffed quotes %v", err))
+	}
+	fmt.Printf("created %v dummy records \n", len(qs))
 }
 
 func (s CharismsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {

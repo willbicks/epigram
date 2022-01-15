@@ -12,13 +12,10 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	applicaiton "github.com/willbicks/charisms/application"
+	"github.com/willbicks/charisms/service"
+	"github.com/willbicks/charisms/storage/inmemory"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
-)
-
-var (
-	clientID     = "232795918225-mq7lgql2a4p5pvr0n4sf8e5cmf60o1au.apps.googleusercontent.com"
-	clientSecret = "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"
 )
 
 func randString(nByte int) (string, error) {
@@ -42,13 +39,15 @@ func setCallbackCookie(w http.ResponseWriter, r *http.Request, name, value strin
 
 func main() {
 	cs := applicaiton.CharismsServer{
-		ViewsPath:  "frontend/views/",
-		PublicPath: "frontend/public/",
+		ViewsPath:    "frontend/views/",
+		PublicPath:   "frontend/public/",
+		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
 		TDat: applicaiton.TemplateData{
 			Title: "Charisms",
 		},
 	}
 	cs.Init()
+	cs.StuffFakeData()
 
 	fmt.Println("Running server at http://localhost:8080 ...")
 	s := http.Server{

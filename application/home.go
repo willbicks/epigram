@@ -11,17 +11,21 @@ import (
 type homeTD struct {
 	Errors []string
 	Quote  model.Quote
+	Quotes []model.Quote
 }
 
 // homeHandler handles requests to the homepage (/)
 func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
+	qs, err := s.QuoteService.GetAllQuotes(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println(err)
+		return
+	}
+
 	switch r.Method {
 	case "GET":
-		err := s.tmpl.ExecuteTemplate(w, "home.gohtml", s.TDat.joinPage(homeTD{}))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			fmt.Println(err)
-		}
+
 	case "POST":
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, "Unable to parse form", http.StatusBadRequest)
@@ -46,6 +50,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 				homeTD{
 					Errors: issues,
 					Quote:  q,
+					Quotes: qs,
 				},
 			))
 			if err != nil {
@@ -55,8 +60,22 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if err := s.QuoteService.CreateQuote(r.Context(), &q); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			fmt.Println(err)
+			return
+		}
+
 	default:
 		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+		return
 	}
 
+	err = s.tmpl.ExecuteTemplate(w, "home.gohtml", s.TDat.joinPage(homeTD{
+		Quotes: qs,
+	}))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println(err)
+	}
 }
