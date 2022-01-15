@@ -4,12 +4,12 @@ package application
 // used for page specific data.
 type TemplateData struct {
 	Title string
-	page  interface{}
+	Page  interface{}
 }
 
 // joinPage returns a new TemplateData struct with the default site variables,
 // and the specified page data object.
 func (td TemplateData) joinPage(pd interface{}) TemplateData {
-	td.page = pd
+	td.Page = pd
 	return td
 }
