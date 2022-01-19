@@ -26,6 +26,18 @@ func NewQuoteService(repo QuoteRepository) Quote {
 }
 
 func (s Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
+	var err ServiceError
+	if q.Quote == "" {
+		err.addIssue("Quote must not be blank.")
+	}
+	if q.Quotee == "" {
+		err.addIssue("This quote must be attributed to someone.")
+	}
+
+	if err.HasIssues() {
+		return err
+	}
+
 	q.ID = xid.New().String()
 	q.Created = time.Now()
 	return s.repo.Create(ctx, *q)
