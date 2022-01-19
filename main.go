@@ -1,20 +1,21 @@
 package main
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/spf13/viper"
 	applicaiton "github.com/willbicks/charisms/application"
 	"github.com/willbicks/charisms/service"
 	"github.com/willbicks/charisms/storage/inmemory"
-	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 )
 
@@ -38,6 +39,20 @@ func setCallbackCookie(w http.ResponseWriter, r *http.Request, name, value strin
 }
 
 func main() {
+	// Viper Configuration Management
+	viper.SetDefault("Port", 8080)
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".") // TODO: establish other configuration paths
+
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			log.Panic("required configuation file not found: config")
+		} else {
+			log.Panicf("unable to read configuration file: %w", err)
+		}
+	}
+
+	// Charisms Server Initialization
 	cs := applicaiton.CharismsServer{
 		ViewsPath:    "frontend/views/",
 		PublicPath:   "frontend/public/",
@@ -49,9 +64,10 @@ func main() {
 	cs.Init()
 	cs.StuffFakeData()
 
-	fmt.Println("Running server at http://localhost:8080 ...")
+	port := viper.GetInt("Port")
+	log.Printf("Running server at http://localhost:%v ...", port)
 	s := http.Server{
-		Addr:         "localhost:8080",
+		Addr:         "localhost:" + strconv.Itoa(port),
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 90 * time.Second,
 		IdleTimeout:  120 * time.Second,
@@ -68,13 +84,13 @@ func idtoken() {
 		log.Fatal(err)
 	}
 	oidcConfig := &oidc.Config{
-		ClientID: clientID,
+		ClientID: viper.GetString("googleOIDC.clientID"),
 	}
 	verifier := provider.Verifier(oidcConfig)
 
 	config := oauth2.Config{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
+		ClientID:     viper.GetString("googleOIDC.clientID"),
+		ClientSecret: viper.GetString("googleOIDC.clientSecret"),
 		Endpoint:     provider.Endpoint(),
 		RedirectURL:  "http://localhost:8500/auth/google/callback",
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},

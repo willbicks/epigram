@@ -16,13 +16,6 @@ type homeTD struct {
 
 // homeHandler handles requests to the homepage (/)
 func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
-	qs, err := s.QuoteService.GetAllQuotes(r.Context())
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		fmt.Println(err)
-		return
-	}
-
 	switch r.Method {
 	case "GET":
 
@@ -46,7 +39,14 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if len(issues) > 0 {
-			err := s.tmpl.ExecuteTemplate(w, "home.gohtml", s.TDat.joinPage(
+			qs, err := s.QuoteService.GetAllQuotes(r.Context())
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				fmt.Println(err)
+				return
+			}
+
+			err = s.tmpl.ExecuteTemplate(w, "home.gohtml", s.TDat.joinPage(
 				homeTD{
 					Errors: issues,
 					Quote:  q,
@@ -68,6 +68,13 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 
 	default:
 		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	qs, err := s.QuoteService.GetAllQuotes(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	}
 
