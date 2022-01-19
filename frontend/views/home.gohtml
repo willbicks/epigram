@@ -4,10 +4,9 @@
 	<div class="section">
 		<h1 class="h1">Welcome to {{.Title}}!</h1>
 	</div>
-	<div class="section py-12">
+	<div class="section my-12">
 		<form action="/" method="post">
 			<h2 class="text-2xl font-bold">Submit a new Charism:</h2>
-			<p class="mt-2 text-lg text-gray-700">This is how form elements look out of the box.</p>
 			{{ template "error" .Page.Errors }}
 			<div class="mt-8 max-w-md">
 				<div class="grid grid-cols-1 gap-6">
@@ -16,7 +15,7 @@
 						<textarea name="quote" class="mt-1 block w-full" rows="3">{{.Page.Quote.Quote}}</textarea>
 					</label>
 					<label class="block">
-						<span class="text-gray-700">Subtitle / context</span>
+						<span class="text-gray-700">Subtitle / context (optional)</span>
 						<input name="context" type="text" class="mt-1 block w-full" placeholder="bullying Josh" value="{{.Page.Quote.Context}}" />
 					</label>
 					<label class="block">
@@ -27,11 +26,12 @@
 				</div>
 			</div>
 		</form>
+	</div>
+	<div class="section my-12">
 		<div class="md:masonry-cols-2 before:box-inherit after:box-inherit">
 			{{range .Page.Quotes}}
 				{{ template "quote-card" .}}
 			{{end}}
 		</div>
-		
 	</div>
 {{end}}
