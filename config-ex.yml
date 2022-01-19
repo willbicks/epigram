@@ -1,4 +1,8 @@
 port: 8080
+baseURL: http://localhost:8080
+title: Charisms
 googleOIDC:
   clientId: ""
   clientSecret: ""
+viewsPath: frontend/views/
+publicPath: frontend/public/

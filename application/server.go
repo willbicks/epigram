@@ -14,12 +14,13 @@ type Config struct {
 	RootTD     TemplateData
 	ViewsPath  string
 	PublicPath string
+	BaseURL    string
 }
 type CharismsServer struct {
 	mux          http.ServeMux
 	tmpl         *template.Template
 	QuoteService service.Quote
-	Config       Config
+	Cfg          Config
 }
 
 func (s *CharismsServer) Init() {
@@ -75,5 +76,5 @@ func (s *CharismsServer) routes() {
 func (s *CharismsServer) staticHandler() http.Handler {
 	// also requires refactor for embed
 	// TODO: modify to disable directory listing
-	return http.StripPrefix("/static/", http.FileServer(http.Dir(s.Config.PublicPath)))
+	return http.StripPrefix("/static/", http.FileServer(http.Dir(s.Cfg.PublicPath)))
 }

@@ -56,7 +56,8 @@ func main() {
 	cs := applicaiton.CharismsServer{
 		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
 		// TODO: Can viper.Unmarshall be used here?
-		Config: applicaiton.Config{
+		Cfg: applicaiton.Config{
+			BaseURL:    viper.GetString("baseURL"),
 			ViewsPath:  viper.GetString("viewsPath"),
 			PublicPath: viper.GetString("publicPath"),
 			RootTD: applicaiton.TemplateData{
@@ -84,7 +85,7 @@ func idtoken() {
 
 	provider, err := oidc.NewProvider(ctx, "https://accounts.google.com")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("error creating oidc provider: %v", err)
 	}
 	oidcConfig := &oidc.Config{
 		ClientID: viper.GetString("googleOIDC.clientID"),
@@ -95,7 +96,7 @@ func idtoken() {
 		ClientID:     viper.GetString("googleOIDC.clientID"),
 		ClientSecret: viper.GetString("googleOIDC.clientSecret"),
 		Endpoint:     provider.Endpoint(),
-		RedirectURL:  "http://localhost:8500/auth/google/callback",
+		RedirectURL:  "/auth/google/callback",
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 	}
 
