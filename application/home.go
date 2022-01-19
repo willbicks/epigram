@@ -46,7 +46,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			err = s.tmpl.ExecuteTemplate(w, "home.gohtml", s.TDat.joinPage(
+			err = s.tmpl.ExecuteTemplate(w, "home.gohtml", s.Config.RootTD.joinPage(
 				homeTD{
 					Errors: issues,
 					Quote:  q,
@@ -78,7 +78,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.tmpl.ExecuteTemplate(w, "home.gohtml", s.TDat.joinPage(homeTD{
+	err = s.tmpl.ExecuteTemplate(w, "home.gohtml", s.Config.RootTD.joinPage(homeTD{
 		Quotes: qs,
 	}))
 	if err != nil {

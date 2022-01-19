@@ -48,17 +48,20 @@ func main() {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			log.Panic("required configuation file not found: config")
 		} else {
-			log.Panicf("unable to read configuration file: %w", err)
+			log.Panicf("unable to read configuration file: %v", err)
 		}
 	}
 
 	// Charisms Server Initialization
 	cs := applicaiton.CharismsServer{
-		ViewsPath:    "frontend/views/",
-		PublicPath:   "frontend/public/",
 		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
-		TDat: applicaiton.TemplateData{
-			Title: "Charisms",
+		// TODO: Can viper.Unmarshall be used here?
+		Config: applicaiton.Config{
+			ViewsPath:  viper.GetString("viewsPath"),
+			PublicPath: viper.GetString("publicPath"),
+			RootTD: applicaiton.TemplateData{
+				Title: viper.GetString("title"),
+			},
 		},
 	}
 	cs.Init()

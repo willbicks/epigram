@@ -10,13 +10,16 @@ import (
 	"github.com/willbicks/charisms/service"
 )
 
+type Config struct {
+	RootTD     TemplateData
+	ViewsPath  string
+	PublicPath string
+}
 type CharismsServer struct {
 	mux          http.ServeMux
 	tmpl         *template.Template
-	TDat         TemplateData
-	ViewsPath    string
-	PublicPath   string
 	QuoteService service.Quote
+	Config       Config
 }
 
 func (s *CharismsServer) Init() {
@@ -57,7 +60,8 @@ func (s CharismsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *CharismsServer) templates() {
 	args := func(vs ...interface{}) []interface{} { return vs }
 	s.tmpl = template.New("t").Funcs(template.FuncMap{"args": args})
-	// use embed and template.ParseFS to embed html in go binary
+	// TODO: use embed and template.ParseFS to embed html in go binary
+	// TODO: use config value for template directory
 	s.tmpl = template.Must(s.tmpl.ParseGlob("frontend/views/components/*.gohtml"))
 	s.tmpl = template.Must(s.tmpl.ParseGlob("frontend/views/*.gohtml"))
 	fmt.Println(s.tmpl.DefinedTemplates())
@@ -71,5 +75,5 @@ func (s *CharismsServer) routes() {
 func (s *CharismsServer) staticHandler() http.Handler {
 	// also requires refactor for embed
 	// TODO: modify to disable directory listing
-	return http.StripPrefix("/static/", http.FileServer(http.Dir(s.PublicPath)))
+	return http.StripPrefix("/static/", http.FileServer(http.Dir(s.Config.PublicPath)))
 }
