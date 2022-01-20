@@ -5,11 +5,12 @@ import (
 	"net/http"
 
 	"github.com/willbicks/charisms/model"
+	"github.com/willbicks/charisms/service"
 )
 
 // homeTD represents the template data (TD) needed to render the home page
 type homeTD struct {
-	Errors []string
+	Issues []string
 	Quote  model.Quote
 	Quotes []model.Quote
 }
@@ -18,7 +19,7 @@ type homeTD struct {
 func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-
+		// continue to render page after switch
 	case "POST":
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, "Unable to parse form", http.StatusBadRequest)
@@ -30,15 +31,18 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 			Context: r.FormValue("context"),
 		}
 
-		var issues []string
-		if q.Quote == "" {
-			issues = append(issues, "Please enter a quote.")
-		}
-		if q.Quotee == "" {
-			issues = append(issues, "Please attribute this quote to someone.")
-		}
+		err := s.QuoteService.CreateQuote(r.Context(), &q)
 
-		if len(issues) > 0 {
+		if err != nil {
+			var issues []string
+
+			serr, ok := err.(*service.ServiceError)
+			if ok {
+				issues = serr.Issues
+			} else {
+				issues = []string{err.Error()}
+			}
+
 			qs, err := s.QuoteService.GetAllQuotes(r.Context())
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -48,7 +52,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 
 			err = s.tmpl.ExecuteTemplate(w, "home.gohtml", s.Cfg.RootTD.joinPage(
 				homeTD{
-					Errors: issues,
+					Issues: issues,
 					Quote:  q,
 					Quotes: qs,
 				},

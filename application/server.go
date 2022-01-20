@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/willbicks/charisms/model"
@@ -21,9 +22,15 @@ type CharismsServer struct {
 	tmpl         *template.Template
 	QuoteService service.Quote
 	Cfg          Config
+	gOIDC        googleOIDC
 }
 
 func (s *CharismsServer) Init() {
+	if gOIDC, err := newGoogleOIDC(); err != nil {
+		log.Panic(err)
+	} else {
+		s.gOIDC = gOIDC
+	}
 	s.templates()
 	s.routes()
 }
@@ -71,6 +78,8 @@ func (s *CharismsServer) templates() {
 func (s *CharismsServer) routes() {
 	s.mux.HandleFunc("/", s.homeHandler)
 	s.mux.Handle("/static/", s.staticHandler())
+	s.mux.HandleFunc("/login", s.googleLoginHandler)
+	s.mux.HandleFunc("/login/google/callback", s.googleCallbackHandler)
 }
 
 func (s *CharismsServer) staticHandler() http.Handler {
