@@ -19,7 +19,11 @@ type ServiceError struct {
 // Error returns the status code followed by a concatenation of all the issues in this
 // ServiceError.
 func (e ServiceError) Error() string {
-	return strconv.Itoa(e.StatusCode) + ": " + strings.Join(e.Issues, " ")
+	var codePrefix string
+	if e.StatusCode != 0 {
+		codePrefix = strconv.Itoa(e.StatusCode) + ": "
+	}
+	return codePrefix + strings.Join(e.Issues, " ")
 }
 
 // HasIssues returns true if there is more than one issue in this ServiceError. If
