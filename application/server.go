@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/spf13/viper"
 	"github.com/willbicks/charisms/model"
 	"github.com/willbicks/charisms/service"
 )
@@ -22,14 +23,19 @@ type CharismsServer struct {
 	tmpl         *template.Template
 	QuoteService service.Quote
 	Cfg          Config
-	gOIDC        googleOIDC
+	gOIDC        service.OIDC
 }
 
 func (s *CharismsServer) Init() {
-	if gOIDC, err := newGoogleOIDC(); err != nil {
+	s.gOIDC = service.OIDC{
+		Name:         "google",
+		IssuerURL:    "https://accounts.google.com",
+		ClientID:     viper.GetString("googleOIDC.clientID"),
+		ClientSecret: viper.GetString("googleOIDC.clientSecret"),
+	}
+
+	if err := s.gOIDC.Init(viper.GetString("baseURL")); err != nil {
 		log.Panic(err)
-	} else {
-		s.gOIDC = gOIDC
 	}
 	s.templates()
 	s.routes()
