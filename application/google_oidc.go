@@ -55,15 +55,13 @@ func (s CharismsServer) googleCallbackHandler(w http.ResponseWriter, r *http.Req
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	resp := struct {
-		IDTokenClaims *json.RawMessage // ID Token payload is just JSON.
-	}{new(json.RawMessage)}
-
-	if err := token.Claims(&resp.IDTokenClaims); err != nil {
+	user, err := s.UserService.GetUserFromIDToken(r.Context(), token)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	data, err := json.MarshalIndent(resp, "", "    ")
+
+	data, err := json.MarshalIndent(user, "", "    ")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

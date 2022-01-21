@@ -22,6 +22,7 @@ type CharismsServer struct {
 	mux          http.ServeMux
 	tmpl         *template.Template
 	QuoteService service.Quote
+	UserService  service.User
 	Cfg          Config
 	gOIDC        service.OIDC
 }

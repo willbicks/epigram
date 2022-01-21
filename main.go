@@ -29,6 +29,7 @@ func main() {
 	// Charisms Server Initialization
 	cs := application.CharismsServer{
 		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
+		UserService:  service.NewUserService(inmemory.NewUserRepository()),
 		// TODO: Can viper.Unmarshall be used here?
 		Cfg: application.Config{
 			BaseURL:    viper.GetString("baseURL"),
