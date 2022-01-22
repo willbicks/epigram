@@ -6,3 +6,12 @@ googleOIDC:
   clientSecret: ""
 viewsPath: frontend/views/
 publicPath: frontend/public/
+entryQuestions:
+  - question: ***REMOVED***
+    answer: ***REMOVED***
+  - question: ***REMOVED***
+    answer: ***REMOVED***
+  - question: ***REMOVED***
+    answer: ***REMOVED***
+  - question: ***REMOVED***
+    answer: ***REMOVED***
