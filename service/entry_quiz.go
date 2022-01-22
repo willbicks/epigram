@@ -15,17 +15,17 @@ type QuizQuestion struct {
 // EntryQuiz contains a series of entryQuestions new users must correctly answer before
 // gaining access to the applicaiton.
 type EntryQuiz struct {
-	entryQuestions []QuizQuestion
+	EntryQuestions []QuizQuestion
 }
 
 // NewEntryQuizService creates and initialzies an EntryQuizService.
 func NewEntryQuizService(entryQuestions []QuizQuestion) EntryQuiz {
 	quiz := EntryQuiz{
-		entryQuestions: entryQuestions,
+		EntryQuestions: entryQuestions,
 	}
 
-	for i := range quiz.entryQuestions {
-		q := &quiz.entryQuestions[i]
+	for i := range quiz.EntryQuestions {
+		q := &quiz.EntryQuestions[i]
 		q.Id = i
 		q.Length = len(q.Answer)
 	}
@@ -36,7 +36,7 @@ func NewEntryQuizService(entryQuestions []QuizQuestion) EntryQuiz {
 // VerifyAnswers accepts a map of question IDs and string responses, and checks them
 // against the correct answers, returning true if all correct, and false otherwise.
 func (eq EntryQuiz) VerifyAnswers(answers map[int]string) bool {
-	for _, q := range eq.entryQuestions {
+	for _, q := range eq.EntryQuestions {
 		if strings.ToLower(q.Answer) != strings.ToLower(answers[q.Id]) {
 			return false
 		}
