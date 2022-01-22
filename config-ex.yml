@@ -6,3 +6,12 @@ googleOIDC:
   clientSecret: ""
 viewsPath: frontend/views/
 publicPath: frontend/public/
+entryQuestions:
+  - question: Needed to get into A CAB.
+    answer: ADF4
+  - question: Where meetings happen.
+    answer: Ingle
+  - question: Between PA and JT.
+    answer: Trainee
+  - question: Connector converter.
+    answer: Toid
