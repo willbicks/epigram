@@ -26,10 +26,14 @@ func main() {
 		}
 	}
 
+	var entryQuestions []service.QuizQuestion
+	viper.UnmarshalKey("entryQuestions", &entryQuestions)
+
 	// Charisms Server Initialization
 	cs := application.CharismsServer{
 		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
 		UserService:  service.NewUserService(inmemory.NewUserRepository()),
+		QuizService:  service.NewEntryQuizService(entryQuestions),
 		// TODO: Can viper.Unmarshall be used here?
 		Cfg: application.Config{
 			BaseURL:    viper.GetString("baseURL"),
