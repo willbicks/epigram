@@ -23,6 +23,7 @@ type CharismsServer struct {
 	tmpl         *template.Template
 	QuoteService service.Quote
 	UserService  service.User
+	QuizService  service.EntryQuiz
 	Cfg          Config
 	gOIDC        service.OIDC
 }
