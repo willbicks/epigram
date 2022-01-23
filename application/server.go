@@ -19,7 +19,7 @@ type Config struct {
 	BaseURL string
 }
 type CharismsServer struct {
-	mux          http.ServeMux
+	mux          *http.ServeMux
 	tmpl         *template.Template
 	QuoteService service.Quote
 	UserService  service.User
@@ -37,10 +37,10 @@ func (s *CharismsServer) Init() {
 		ClientID:     viper.GetString("googleOIDC.clientID"),
 		ClientSecret: viper.GetString("googleOIDC.clientSecret"),
 	}
-
 	if err := s.gOIDC.Init(viper.GetString("baseURL")); err != nil {
 		log.Panic(err)
 	}
+	s.mux = http.NewServeMux()
 	s.templates()
 	s.routes()
 }
@@ -72,7 +72,7 @@ func (s *CharismsServer) StuffFakeData() {
 }
 
 func (s CharismsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s.mux.ServeHTTP(w, r)
+	s.interpretSession(s.mux).ServeHTTP(w, r)
 }
 
 func (s *CharismsServer) templates() {
@@ -96,7 +96,7 @@ func (s *CharismsServer) renderPage(w io.Writer, name string, data interface{}) 
 }
 
 func (s *CharismsServer) routes() {
-	s.mux.HandleFunc("/", s.homeHandler)
+	s.mux.Handle("/", requireQuizPassed(http.HandlerFunc(s.homeHandler)))
 	s.mux.Handle("/static/", s.staticHandler())
 	s.mux.HandleFunc("/login", s.googleLoginHandler)
 	s.mux.HandleFunc("/quiz", s.quizHandler)
