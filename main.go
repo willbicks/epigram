@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"io/fs"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,11 +14,11 @@ import (
 	"github.com/willbicks/charisms/storage/inmemory"
 )
 
-//go:embed frontend/templates
-var tmplFS embed.FS
-
 //go:embed frontend/public
-var publicFS embed.FS
+var publicEmbedFS embed.FS
+
+//go:embed frontend/templates
+var templateEmbedFS embed.FS
 
 func main() {
 	// Viper Configuration Management
@@ -36,12 +37,24 @@ func main() {
 	var entryQuestions []service.QuizQuestion
 	viper.UnmarshalKey("entryQuestions", &entryQuestions)
 
+	// embedded fs initialization
+
+	templateFS, err := fs.Sub(templateEmbedFS, "frontend/templates")
+	if err != nil {
+		log.Panicf("creating templateFS: %v", err)
+	}
+
+	publicFS, err := fs.Sub(publicEmbedFS, "frontend/public")
+	if err != nil {
+		log.Panicf("creating publicFS: %v", err)
+	}
+
 	// Charisms Server Initialization
 	cs := application.CharismsServer{
 		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
-		UserService:  service.NewUserService(inmemory.NewUserRepository()),
+		UserService:  service.NewUserService(inmemory.NewUserRepository(), inmemory.NewUserSessionRepository()),
 		QuizService:  service.NewEntryQuizService(entryQuestions),
-		TmplFS:       tmplFS,
+		TmplFS:       templateFS,
 		PubFS:        publicFS,
 		// TODO: Can viper.Unmarshall be used here?
 		Cfg: application.Config{

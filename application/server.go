@@ -2,10 +2,10 @@ package application
 
 import (
 	"context"
-	"embed"
 	"fmt"
 	"html/template"
 	"io"
+	"io/fs"
 	"log"
 	"net/http"
 
@@ -26,8 +26,8 @@ type CharismsServer struct {
 	QuizService  service.EntryQuiz
 	Cfg          Config
 	gOIDC        service.OIDC
-	TmplFS       embed.FS
-	PubFS        embed.FS
+	TmplFS       fs.FS
+	PubFS        fs.FS
 }
 
 func (s *CharismsServer) Init() {
@@ -77,7 +77,7 @@ func (s CharismsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *CharismsServer) templates() {
 	t := template.New("t")
-	t, err := s.tmpl.ParseFS(s.TmplFS, "frontend/templates/components/*.gohtml", "frontend/templates/base.gohtml")
+	t, err := s.tmpl.ParseFS(s.TmplFS, "components/*.gohtml", "base.gohtml")
 	if err != nil {
 		log.Panicf("parsing TmplFS: %v", err)
 	}
@@ -91,7 +91,7 @@ func (s *CharismsServer) templates() {
 // joins the page data to the global site data.
 func (s *CharismsServer) renderPage(w io.Writer, name string, data interface{}) error {
 	t := template.Must(s.tmpl.Clone())
-	t = template.Must(t.ParseFS(s.TmplFS, "frontend/templates/views/"+name))
+	t = template.Must(t.ParseFS(s.TmplFS, "views/"+name))
 	return t.ExecuteTemplate(w, name, s.Cfg.RootTD.joinPage(data))
 }
 
