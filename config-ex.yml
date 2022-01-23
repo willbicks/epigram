@@ -4,8 +4,6 @@ title: Charisms
 googleOIDC:
   clientId: ""
   clientSecret: ""
-viewsPath: frontend/views/
-publicPath: frontend/public/
 entryQuestions:
   - question: The best color
     answer: purple
