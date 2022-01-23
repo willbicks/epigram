@@ -10,17 +10,19 @@ import (
 
 // quizTD represents the template data (TD) needed to render the quiz page
 type quizTD struct {
-	Issues    []string
-	Questions []service.QuizQuestion
+	Issues       []string
+	NumQuestions int
+	Questions    []service.QuizQuestion
 }
 
 // quizHandler handles requests to the quizpage (/)
 func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		err := s.tmpl.ExecuteTemplate(w, "quiz.gohtml", s.Cfg.RootTD.joinPage(quizTD{
-			Questions: s.QuizService.EntryQuestions,
-		}))
+		err := s.renderPage(w, "quiz.gohtml", quizTD{
+			NumQuestions: len(s.QuizService.EntryQuestions),
+			Questions:    s.QuizService.EntryQuestions,
+		})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			fmt.Println(err)
@@ -54,5 +56,4 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		return
 	}
-
 }

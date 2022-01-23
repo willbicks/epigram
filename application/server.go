@@ -2,8 +2,10 @@ package application
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 
@@ -13,10 +15,8 @@ import (
 )
 
 type Config struct {
-	RootTD     TemplateData
-	ViewsPath  string
-	PublicPath string
-	BaseURL    string
+	RootTD  TemplateData
+	BaseURL string
 }
 type CharismsServer struct {
 	mux          http.ServeMux
@@ -26,6 +26,8 @@ type CharismsServer struct {
 	QuizService  service.EntryQuiz
 	Cfg          Config
 	gOIDC        service.OIDC
+	TmplFS       embed.FS
+	PubFS        embed.FS
 }
 
 func (s *CharismsServer) Init() {
@@ -74,24 +76,34 @@ func (s CharismsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *CharismsServer) templates() {
-	args := func(vs ...interface{}) []interface{} { return vs }
-	s.tmpl = template.New("t").Funcs(template.FuncMap{"args": args})
-	// TODO: use embed and template.ParseFS to embed html in go binary
-	// TODO: use config value for template directory
-	s.tmpl = template.Must(s.tmpl.ParseGlob("frontend/views/components/*.gohtml"))
-	s.tmpl = template.Must(s.tmpl.ParseGlob("frontend/views/*.gohtml"))
+	t := template.New("t")
+	t, err := s.tmpl.ParseFS(s.TmplFS, "frontend/templates/components/*.gohtml", "frontend/templates/base.gohtml")
+	if err != nil {
+		log.Panicf("parsing TmplFS: %v", err)
+	}
+	s.tmpl = t
+
+	// FOR DEBUG
 	fmt.Println(s.tmpl.DefinedTemplates())
+}
+
+// renderPage renders the speciifed template, incorporating the base template and component templates, and
+// joins the page data to the global site data.
+func (s *CharismsServer) renderPage(w io.Writer, name string, data interface{}) error {
+	t := template.Must(s.tmpl.Clone())
+	t = template.Must(t.ParseFS(s.TmplFS, "frontend/templates/views/"+name))
+	return t.ExecuteTemplate(w, name, s.Cfg.RootTD.joinPage(data))
 }
 
 func (s *CharismsServer) routes() {
 	s.mux.HandleFunc("/", s.homeHandler)
 	s.mux.Handle("/static/", s.staticHandler())
 	s.mux.HandleFunc("/login", s.googleLoginHandler)
+	s.mux.HandleFunc("/quiz", s.quizHandler)
 	s.mux.HandleFunc("/login/google/callback", s.googleCallbackHandler)
 }
 
 func (s *CharismsServer) staticHandler() http.Handler {
-	// also requires refactor for embed
 	// TODO: modify to disable directory listing
-	return http.StripPrefix("/static/", http.FileServer(http.Dir(s.Cfg.PublicPath)))
+	return http.StripPrefix("/static/", http.FileServer(http.FS(s.PubFS)))
 }

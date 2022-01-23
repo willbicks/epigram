@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,6 +12,12 @@ import (
 	"github.com/willbicks/charisms/service"
 	"github.com/willbicks/charisms/storage/inmemory"
 )
+
+//go:embed frontend/templates
+var tmplFS embed.FS
+
+//go:embed frontend/public
+var publicFS embed.FS
 
 func main() {
 	// Viper Configuration Management
@@ -34,11 +41,11 @@ func main() {
 		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
 		UserService:  service.NewUserService(inmemory.NewUserRepository()),
 		QuizService:  service.NewEntryQuizService(entryQuestions),
+		TmplFS:       tmplFS,
+		PubFS:        publicFS,
 		// TODO: Can viper.Unmarshall be used here?
 		Cfg: application.Config{
-			BaseURL:    viper.GetString("baseURL"),
-			ViewsPath:  viper.GetString("viewsPath"),
-			PublicPath: viper.GetString("publicPath"),
+			BaseURL: viper.GetString("baseURL"),
 			RootTD: application.TemplateData{
 				Title: viper.GetString("title"),
 			},
