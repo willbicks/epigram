@@ -18,12 +18,14 @@ type UserRepository interface {
 }
 
 type User struct {
-	repo UserRepository
+	ur   UserRepository
+	sess UserSessionService
 }
 
-func NewUserService(r UserRepository) User {
+func NewUserService(ur UserRepository, sr UserSessionRepository) User {
 	return User{
-		repo: r,
+		ur:   ur,
+		sess: NewUserSessionService(sr),
 	}
 }
 
@@ -53,7 +55,7 @@ func (s User) GetUserFromIDToken(ctx context.Context, token oidc.IDToken) (model
 	id := domain + "/" + claims.Subject
 
 	// Check if the user exists, and if so, return them
-	if u, err := s.repo.FindByID(ctx, id); err == nil {
+	if u, err := s.ur.FindByID(ctx, id); err == nil {
 		return u, nil
 	}
 
@@ -93,13 +95,25 @@ func (s User) CreateUser(ctx context.Context, u *model.User) error {
 
 	u.Created = time.Now()
 
-	return s.repo.Create(ctx, *u)
+	return s.ur.Create(ctx, *u)
 }
 
 func (s User) FindUserById(ctx context.Context, id string) (model.User, error) {
-	return s.repo.FindByID(ctx, id)
+	return s.ur.FindByID(ctx, id)
 }
 
 func (s User) UpdateUser(ctx context.Context, u model.User) error {
-	return s.repo.Update(ctx, u)
+	return s.ur.Update(ctx, u)
+}
+
+func (s User) CreateUserSession(ctx context.Context, u model.User) (model.UserSession, error) {
+	return s.sess.CreateUserSession(ctx, u)
+}
+
+func (s User) GetUserFromSessionID(ctx context.Context, sessID string) (model.User, error) {
+	sess, err := s.sess.FindSessionByID(ctx, sessID)
+	if err != nil {
+		return model.User{}, err
+	}
+	return s.ur.FindByID(ctx, sess.UserID)
 }
