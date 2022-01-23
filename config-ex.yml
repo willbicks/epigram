@@ -7,11 +7,5 @@ googleOIDC:
 viewsPath: frontend/views/
 publicPath: frontend/public/
 entryQuestions:
-  - question: ***REMOVED***
-    answer: ***REMOVED***
-  - question: ***REMOVED***
-    answer: ***REMOVED***
-  - question: ***REMOVED***
-    answer: ***REMOVED***
-  - question: ***REMOVED***
-    answer: ***REMOVED***
+  - question: The best color
+    answer: purple
