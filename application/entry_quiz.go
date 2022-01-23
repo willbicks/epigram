@@ -33,7 +33,7 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var answers map[int]string
+		answers := make(map[int]string)
 		for id, value := range r.PostForm {
 			id, err := strconv.Atoi(id)
 			if err != nil {
