@@ -42,7 +42,11 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 			answers[id] = value[0]
 		}
 
-		if s.QuizService.VerifyAnswers(answers) {
+		u := UserFromContext(r.Context())
+		s.QuizService.VerifyAnswers(answers, &u)
+		s.UserService.UpdateUser(r.Context(), u)
+
+		if u.QuizPassed {
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("answers correct"))
 			return

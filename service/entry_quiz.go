@@ -1,6 +1,10 @@
 package service
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/willbicks/charisms/model"
+)
 
 // QuizQuestion is a crossword style question presented to the user to verify them before
 // gaining access to the application.
@@ -34,12 +38,14 @@ func NewEntryQuizService(entryQuestions []QuizQuestion) EntryQuiz {
 }
 
 // VerifyAnswers accepts a map of question IDs and string responses, and checks them
-// against the correct answers, returning true if all correct, and false otherwise.
-func (eq EntryQuiz) VerifyAnswers(answers map[int]string) bool {
+// against the correct answers It increments the user's attempt counter, and records
+// whether or not the user passed in u.QuizPassed.
+func (eq EntryQuiz) VerifyAnswers(answers map[int]string, u *model.User) {
+	u.QuizAttempts++
 	for _, q := range eq.EntryQuestions {
 		if strings.ToLower(q.Answer) != strings.ToLower(answers[q.Id]) {
-			return false
+			u.QuizPassed = false
 		}
 	}
-	return true
+	u.QuizPassed = true
 }
