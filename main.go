@@ -38,7 +38,6 @@ func main() {
 	viper.UnmarshalKey("entryQuestions", &entryQuestions)
 
 	// embedded fs initialization
-
 	templateFS, err := fs.Sub(templateEmbedFS, "frontend/templates")
 	if err != nil {
 		log.Panicf("creating templateFS: %v", err)
@@ -70,11 +69,12 @@ func main() {
 	port := viper.GetInt("Port")
 	log.Printf("Running server at http://localhost:%v ...", port)
 	s := http.Server{
-		Addr:         "localhost:" + strconv.Itoa(port),
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 90 * time.Second,
-		IdleTimeout:  120 * time.Second,
-		Handler:      cs,
+		Addr:              "localhost:" + strconv.Itoa(port),
+		ReadTimeout:       1 * time.Second,
+		WriteTimeout:      1 * time.Second,
+		IdleTimeout:       30 * time.Second,
+		ReadHeaderTimeout: 2 * time.Second,
+		Handler:           cs,
 	}
 	s.ListenAndServe()
 }
