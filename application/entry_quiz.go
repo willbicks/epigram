@@ -10,17 +10,19 @@ import (
 
 // quizTD represents the template data (TD) needed to render the quiz page
 type quizTD struct {
-	Issues    []string
-	Questions []service.QuizQuestion
+	Issues       []string
+	NumQuestions int
+	Questions    []service.QuizQuestion
 }
 
 // quizHandler handles requests to the quizpage (/)
 func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		err := s.tmpl.ExecuteTemplate(w, "quiz.gohtml", s.Cfg.RootTD.joinPage(quizTD{
-			Questions: s.QuizService.EntryQuestions,
-		}))
+		err := s.renderPage(w, "quiz.gohtml", quizTD{
+			NumQuestions: len(s.QuizService.EntryQuestions),
+			Questions:    s.QuizService.EntryQuestions,
+		})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			fmt.Println(err)
@@ -31,7 +33,7 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var answers map[int]string
+		answers := make(map[int]string)
 		for id, value := range r.PostForm {
 			id, err := strconv.Atoi(id)
 			if err != nil {
@@ -40,7 +42,11 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 			answers[id] = value[0]
 		}
 
-		if s.QuizService.VerifyAnswers(answers) {
+		u := UserFromContext(r.Context())
+		s.QuizService.VerifyAnswers(answers, &u)
+		s.UserService.UpdateUser(r.Context(), u)
+
+		if u.QuizPassed {
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("answers correct"))
 			return
@@ -54,5 +60,4 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		return
 	}
-
 }

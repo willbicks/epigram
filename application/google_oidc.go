@@ -3,11 +3,12 @@ package application
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"encoding/json"
 	"io"
 	"net/http"
 	"time"
 )
+
+const sessionCookieName = "sess"
 
 // randString is a helper function used by OIDC to generate random strings for state and nonce.
 func randString(nByte int) (string, error) {
@@ -61,10 +62,20 @@ func (s CharismsServer) googleCallbackHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	data, err := json.MarshalIndent(user, "", "    ")
+	sess, err := s.UserService.CreateUserSession(r.Context(), user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Write(data)
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     sessionCookieName,
+		Value:    sess.ID,
+		Path:     "/",
+		Secure:   r.TLS != nil,
+		HttpOnly: true,
+		// Session expires on client one hour before server to account for sync differences.
+		Expires: sess.Expires.Add(-time.Hour),
+	})
+	http.Redirect(w, r, "/", http.StatusFound)
 }

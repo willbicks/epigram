@@ -4,14 +4,6 @@ title: Charisms
 googleOIDC:
   clientId: ""
   clientSecret: ""
-viewsPath: frontend/views/
-publicPath: frontend/public/
 entryQuestions:
-  - question: Needed to get into A CAB.
-    answer: ADF4
-  - question: Where meetings happen.
-    answer: Ingle
-  - question: Between PA and JT.
-    answer: Trainee
-  - question: Connector converter.
-    answer: Toid
+  - question: The best color
+    answer: purple

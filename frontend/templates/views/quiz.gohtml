@@ -1,0 +1,25 @@
+{{template "base.gohtml" .}}
+
+{{define "body"}}
+	<div class="section">
+		<h1 class="h1">Welcome to {{.Title}}!</h1>
+	</div>
+	<div class="section my-12">
+		<form action="" method="post">
+			<h2 class="text-3xl font-bold">Entrance Examination</h2>
+            <p class="text-xl">In order to verify your access, please answer the folloiwng {{ .Page.NumQuestions }} crossword style questions.</p>
+			{{ template "error" .Page.Issues }}
+			<div class="mt-8 max-w-md">
+				<div class="grid grid-cols-1 gap-6">
+                    {{range .Page.Questions}}
+                        <label class="block">
+                            <span class="text-xl text-gray-800"><span class="font-medium">{{ .Question }}</span> ({{ .Length }} characters)</span>
+                            <input name="{{ .Id }}" type="text" class="mt-1 block w-full" maxlength="{{ .Length }}"/>
+                        </label>
+                    {{end}}
+					<input class="button" type="submit" value="Submit"/> 
+				</div>
+			</div>
+		</form>
+	</div>
+{{end}}

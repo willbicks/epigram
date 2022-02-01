@@ -50,13 +50,12 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			err = s.tmpl.ExecuteTemplate(w, "home.gohtml", s.Cfg.RootTD.joinPage(
-				homeTD{
-					Issues: issues,
-					Quote:  q,
-					Quotes: qs,
-				},
-			))
+			err = s.renderPage(w, "home.gohtml", homeTD{
+				Issues: issues,
+				Quote:  q,
+				Quotes: qs,
+			},
+			)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				fmt.Println(err)
@@ -82,9 +81,9 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.tmpl.ExecuteTemplate(w, "home.gohtml", s.Cfg.RootTD.joinPage(homeTD{
+	err = s.renderPage(w, "home.gohtml", homeTD{
 		Quotes: qs,
-	}))
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		fmt.Println(err)
