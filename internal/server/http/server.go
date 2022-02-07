@@ -1,8 +1,10 @@
-package application
+package http
 
 import (
 	"context"
 	"fmt"
+	"github.com/willbicks/charisms/internal/model"
+	service2 "github.com/willbicks/charisms/internal/service"
 	"html/template"
 	"io"
 	"io/fs"
@@ -10,8 +12,6 @@ import (
 	"net/http"
 
 	"github.com/spf13/viper"
-	"github.com/willbicks/charisms/model"
-	"github.com/willbicks/charisms/service"
 )
 
 type Config struct {
@@ -21,17 +21,17 @@ type Config struct {
 type CharismsServer struct {
 	mux          *http.ServeMux
 	tmpl         *template.Template
-	QuoteService service.Quote
-	UserService  service.User
-	QuizService  service.EntryQuiz
+	QuoteService service2.Quote
+	UserService  service2.User
+	QuizService  service2.EntryQuiz
 	Cfg          Config
-	gOIDC        service.OIDC
+	gOIDC        service2.OIDC
 	TmplFS       fs.FS
 	PubFS        fs.FS
 }
 
 func (s *CharismsServer) Init() {
-	s.gOIDC = service.OIDC{
+	s.gOIDC = service2.OIDC{
 		Name:         "google",
 		IssuerURL:    "https://accounts.google.com",
 		ClientID:     viper.GetString("googleOIDC.clientID"),

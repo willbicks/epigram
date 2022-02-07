@@ -2,11 +2,10 @@ package inmemory
 
 import (
 	"context"
+	"github.com/willbicks/charisms/internal/model"
+	"github.com/willbicks/charisms/internal/service"
+	storage "github.com/willbicks/charisms/internal/storage/common"
 	"sync"
-
-	"github.com/willbicks/charisms/model"
-	"github.com/willbicks/charisms/service"
-	storagecommon "github.com/willbicks/charisms/storage/storage_common"
 )
 
 type QuoteRepository struct {
@@ -31,7 +30,7 @@ func (r *QuoteRepository) Update(ctx context.Context, q model.Quote) error {
 	_, ok := r.m[q.ID]
 
 	if !ok {
-		return storagecommon.ErrNotFound
+		return storage.ErrNotFound
 	}
 
 	r.Lock()
@@ -45,7 +44,7 @@ func (r *QuoteRepository) FindByID(ctx context.Context, id string) (model.Quote,
 	defer r.Unlock()
 	q, ok := r.m[id]
 	if !ok {
-		return model.Quote{}, storagecommon.ErrNotFound
+		return model.Quote{}, storage.ErrNotFound
 	}
 
 	return q, nil

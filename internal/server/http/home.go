@@ -1,11 +1,10 @@
-package application
+package http
 
 import (
 	"fmt"
+	"github.com/willbicks/charisms/internal/model"
+	"github.com/willbicks/charisms/internal/service"
 	"net/http"
-
-	"github.com/willbicks/charisms/model"
-	"github.com/willbicks/charisms/service"
 )
 
 // homeTD represents the template data (TD) needed to render the home page

@@ -1,9 +1,8 @@
-package application
+package http
 
 import (
 	"context"
-
-	"github.com/willbicks/charisms/model"
+	"github.com/willbicks/charisms/internal/model"
 )
 
 // TODO: Consider moving this to another package

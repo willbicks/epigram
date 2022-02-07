@@ -2,6 +2,9 @@ package main
 
 import (
 	"embed"
+	http2 "github.com/willbicks/charisms/internal/server/http"
+	service2 "github.com/willbicks/charisms/internal/service"
+	inmemory2 "github.com/willbicks/charisms/internal/storage/inmemory"
 	"io/fs"
 	"log"
 	"net/http"
@@ -9,9 +12,6 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"github.com/willbicks/charisms/application"
-	"github.com/willbicks/charisms/service"
-	"github.com/willbicks/charisms/storage/inmemory"
 )
 
 //go:embed frontend/public
@@ -34,7 +34,7 @@ func main() {
 		}
 	}
 
-	var entryQuestions []service.QuizQuestion
+	var entryQuestions []service2.QuizQuestion
 	viper.UnmarshalKey("entryQuestions", &entryQuestions)
 
 	// embedded fs initialization
@@ -49,16 +49,16 @@ func main() {
 	}
 
 	// Charisms Server Initialization
-	cs := application.CharismsServer{
-		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
-		UserService:  service.NewUserService(inmemory.NewUserRepository(), inmemory.NewUserSessionRepository()),
-		QuizService:  service.NewEntryQuizService(entryQuestions),
+	cs := http2.CharismsServer{
+		QuoteService: service2.NewQuoteService(inmemory2.NewQuoteRepository()),
+		UserService:  service2.NewUserService(inmemory2.NewUserRepository(), inmemory2.NewUserSessionRepository()),
+		QuizService:  service2.NewEntryQuizService(entryQuestions),
 		TmplFS:       templateFS,
 		PubFS:        publicFS,
 		// TODO: Can viper.Unmarshall be used here?
-		Cfg: application.Config{
+		Cfg: http2.Config{
 			BaseURL: viper.GetString("baseURL"),
-			RootTD: application.TemplateData{
+			RootTD: http2.TemplateData{
 				Title: viper.GetString("title"),
 			},
 		},

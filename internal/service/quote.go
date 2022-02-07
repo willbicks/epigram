@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
+	"github.com/willbicks/charisms/internal/model"
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/willbicks/charisms/model"
 )
 
 type QuoteRepository interface {

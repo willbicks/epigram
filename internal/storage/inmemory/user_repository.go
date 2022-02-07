@@ -2,11 +2,10 @@ package inmemory
 
 import (
 	"context"
+	"github.com/willbicks/charisms/internal/model"
+	"github.com/willbicks/charisms/internal/service"
+	storage "github.com/willbicks/charisms/internal/storage/common"
 	"sync"
-
-	"github.com/willbicks/charisms/model"
-	"github.com/willbicks/charisms/service"
-	storagecommon "github.com/willbicks/charisms/storage/storage_common"
 )
 
 type UserRepository struct {
@@ -25,7 +24,7 @@ func (r *UserRepository) Create(ctx context.Context, q model.User) error {
 	defer r.Unlock()
 
 	if _, ok := r.m[q.ID]; ok {
-		return storagecommon.ErrAllreadyExists
+		return storage.ErrAlreadyExists
 	}
 
 	r.m[q.ID] = q
@@ -39,7 +38,7 @@ func (r *UserRepository) Update(ctx context.Context, q model.User) error {
 	_, ok := r.m[q.ID]
 
 	if !ok {
-		return storagecommon.ErrNotFound
+		return storage.ErrNotFound
 	}
 
 	r.m[q.ID] = q
@@ -52,7 +51,7 @@ func (r *UserRepository) FindByID(ctx context.Context, id string) (model.User, e
 
 	q, ok := r.m[id]
 	if !ok {
-		return model.User{}, storagecommon.ErrNotFound
+		return model.User{}, storage.ErrNotFound
 	}
 
 	return q, nil

@@ -1,13 +1,12 @@
 package service
 
 import (
+	"github.com/willbicks/charisms/internal/model"
 	"strings"
-
-	"github.com/willbicks/charisms/model"
 )
 
 // QuizQuestion is a crossword style question presented to the user to verify them before
-// gaining access to the application.
+// gaining access to the http.
 type QuizQuestion struct {
 	Id int
 	// Length contains the number of characters in the Answer

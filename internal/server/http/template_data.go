@@ -1,4 +1,4 @@
-package application
+package http
 
 // TemplateData is a struct which contains global site variables, as well as a page member,
 // used for page specific data.

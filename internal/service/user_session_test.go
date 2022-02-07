@@ -2,26 +2,25 @@ package service_test
 
 import (
 	"context"
+	model2 "github.com/willbicks/charisms/internal/model"
+	"github.com/willbicks/charisms/internal/service"
+	inmemory2 "github.com/willbicks/charisms/internal/storage/inmemory"
 	"testing"
 	"time"
 
 	"github.com/matryer/is"
 	"github.com/rs/xid"
-
-	"github.com/willbicks/charisms/model"
-	"github.com/willbicks/charisms/service"
-	"github.com/willbicks/charisms/storage/inmemory"
 )
 
 func TestUserSessionService_CreateUserSession(t *testing.T) {
 	is := is.New(t)
 
-	userRepo := inmemory.NewUserRepository()
-	sessionRepo := inmemory.NewUserSessionRepository()
+	userRepo := inmemory2.NewUserRepository()
+	sessionRepo := inmemory2.NewUserSessionRepository()
 
 	service := service.NewUserSessionService(sessionRepo)
 
-	user := model.User{
+	user := model2.User{
 		ID:   xid.New().String(),
 		Name: "Test user",
 	}
@@ -38,11 +37,11 @@ func TestUserSessionService_CreateUserSession(t *testing.T) {
 func TestUserSessionService_FindSessionByID_Valid(t *testing.T) {
 	is := is.New(t)
 
-	sessionRepo := inmemory.NewUserSessionRepository()
+	sessionRepo := inmemory2.NewUserSessionRepository()
 
 	service := service.NewUserSessionService(sessionRepo)
 
-	user := model.User{
+	user := model2.User{
 		ID:   xid.New().String(),
 		Name: "Test user",
 	}
@@ -57,16 +56,16 @@ func TestUserSessionService_FindSessionByID_Valid(t *testing.T) {
 func TestUserSessionService_FindSessionByID_Invalid(t *testing.T) {
 	is := is.New(t)
 
-	sessionRepo := inmemory.NewUserSessionRepository()
+	sessionRepo := inmemory2.NewUserSessionRepository()
 
 	service := service.NewUserSessionService(sessionRepo)
 
-	user := model.User{
+	user := model2.User{
 		ID:   xid.New().String(),
 		Name: "Test user",
 	}
 
-	sessionRepo.Create(context.Background(), model.UserSession{
+	sessionRepo.Create(context.Background(), model2.UserSession{
 		ID:      "ExPiReD000",
 		UserID:  user.ID,
 		Created: time.Now().Add(-25 * time.Hour),
