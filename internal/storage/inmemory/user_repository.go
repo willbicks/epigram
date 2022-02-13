@@ -2,15 +2,16 @@ package inmemory
 
 import (
 	"context"
+	"sync"
+
 	"github.com/willbicks/charisms/internal/model"
 	"github.com/willbicks/charisms/internal/service"
 	storage "github.com/willbicks/charisms/internal/storage/common"
-	"sync"
 )
 
 type UserRepository struct {
-	sync.Mutex
-	m map[string]model.User
+	mu sync.RWMutex
+	m  map[string]model.User
 }
 
 func NewUserRepository() service.UserRepository {
@@ -20,8 +21,8 @@ func NewUserRepository() service.UserRepository {
 }
 
 func (r *UserRepository) Create(ctx context.Context, q model.User) error {
-	r.Lock()
-	defer r.Unlock()
+	r.mu.Lock()
+	defer r.mu.Unlock()
 
 	if _, ok := r.m[q.ID]; ok {
 		return storage.ErrAlreadyExists
@@ -32,8 +33,8 @@ func (r *UserRepository) Create(ctx context.Context, q model.User) error {
 }
 
 func (r *UserRepository) Update(ctx context.Context, q model.User) error {
-	r.Lock()
-	defer r.Unlock()
+	r.mu.Lock()
+	defer r.mu.Unlock()
 
 	_, ok := r.m[q.ID]
 
@@ -46,8 +47,8 @@ func (r *UserRepository) Update(ctx context.Context, q model.User) error {
 }
 
 func (r *UserRepository) FindByID(ctx context.Context, id string) (model.User, error) {
-	r.Lock()
-	defer r.Unlock()
+	r.mu.RLock()
+	defer r.mu.RUnlock()
 
 	q, ok := r.m[id]
 	if !ok {
@@ -60,8 +61,8 @@ func (r *UserRepository) FindByID(ctx context.Context, id string) (model.User, e
 func (r *UserRepository) FindAll(ctx context.Context) ([]model.User, error) {
 	v := make([]model.User, 0, len(r.m))
 
-	r.Lock()
-	defer r.Unlock()
+	r.mu.RLock()
+	defer r.mu.RUnlock()
 
 	for _, value := range r.m {
 		v = append(v, value)
