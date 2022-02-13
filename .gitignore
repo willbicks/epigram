@@ -1,3 +1,7 @@
 # http config files
 config.*
 quiz.yml
+
+# IDE files
+.idea
+.vscode
