@@ -41,14 +41,14 @@ func requireLoggedIn(next http.Handler) http.Handler {
 }
 
 // requireQuizPassed requires that the user has passed the entry quiz before proceeding, and if not,
-// returns HTTP 403: Forbidden.
+// redirects them to the quiz page.
 func requireQuizPassed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		u := UserFromContext(r.Context())
 		if u.QuizPassed {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Error(w, "You are not authorized to access this resource.", http.StatusForbidden)
+			http.Redirect(w, r, "/quiz", http.StatusFound)
 		}
 	})
 }
