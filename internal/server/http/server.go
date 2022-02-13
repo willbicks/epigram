@@ -3,13 +3,12 @@ package http
 import (
 	"context"
 	"fmt"
-	"github.com/willbicks/charisms/internal/model"
-	service2 "github.com/willbicks/charisms/internal/service"
 	"html/template"
-	"io"
 	"io/fs"
-	"log"
 	"net/http"
+
+	"github.com/willbicks/charisms/internal/model"
+	"github.com/willbicks/charisms/internal/service"
 
 	"github.com/spf13/viper"
 )
@@ -19,30 +18,45 @@ type Config struct {
 	BaseURL string
 }
 type CharismsServer struct {
-	mux          *http.ServeMux
-	tmpl         *template.Template
-	QuoteService service2.Quote
-	UserService  service2.User
-	QuizService  service2.EntryQuiz
-	Cfg          Config
-	gOIDC        service2.OIDC
-	TmplFS       fs.FS
-	PubFS        fs.FS
+	mux   *http.ServeMux
+	views map[string]*template.Template
+
+	QuoteService service.Quote
+	UserService  service.User
+	QuizService  service.EntryQuiz
+	gOIDC        service.OIDC
+
+	PubFS fs.FS
+
+	Config Config
 }
 
-func (s *CharismsServer) Init() {
-	s.gOIDC = service2.OIDC{
+func (s *CharismsServer) Init(tmplFS fs.FS) error {
+	// Initialize service for Google OpenID COnnect
+	s.gOIDC = service.OIDC{
 		Name:         "google",
 		IssuerURL:    "https://accounts.google.com",
 		ClientID:     viper.GetString("googleOIDC.clientID"),
 		ClientSecret: viper.GetString("googleOIDC.clientSecret"),
 	}
 	if err := s.gOIDC.Init(viper.GetString("baseURL")); err != nil {
-		log.Panic(err)
+		return err
 	}
+
+	// Create a http mux
 	s.mux = http.NewServeMux()
-	s.templates()
+
+	// Create a new template cache for page views
+	views, err := newTemplateCache(tmplFS)
+	if err != nil {
+		return err
+	}
+	s.views = views
+
+	// Initialize server routes
 	s.routes()
+
+	return nil
 }
 
 func (s *CharismsServer) StuffFakeData() {
@@ -73,26 +87,6 @@ func (s *CharismsServer) StuffFakeData() {
 
 func (s CharismsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.interpretSession(s.mux).ServeHTTP(w, r)
-}
-
-func (s *CharismsServer) templates() {
-	t := template.New("t")
-	t, err := s.tmpl.ParseFS(s.TmplFS, "components/*.gohtml", "base.gohtml")
-	if err != nil {
-		log.Panicf("parsing TmplFS: %v", err)
-	}
-	s.tmpl = t
-
-	// FOR DEBUG
-	fmt.Println(s.tmpl.DefinedTemplates())
-}
-
-// renderPage renders the speciifed template, incorporating the base template and component templates, and
-// joins the page data to the global site data.
-func (s *CharismsServer) renderPage(w io.Writer, name string, data interface{}) error {
-	t := template.Must(s.tmpl.Clone())
-	t = template.Must(t.ParseFS(s.TmplFS, "views/"+name))
-	return t.ExecuteTemplate(w, name, s.Cfg.RootTD.joinPage(data))
 }
 
 func (s *CharismsServer) routes() {

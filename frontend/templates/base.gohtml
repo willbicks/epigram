@@ -1,3 +1,4 @@
+{{define "base"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,8 @@
 </head>
 <body>
     <div class="antialiased px-6">
-        {{block "body" .}}Default body content{{end}}
+        {{template "body" .}}
     </div>
 </body>
 </html>
+{{end}}

@@ -2,14 +2,15 @@ package main
 
 import (
 	"embed"
-	http2 "github.com/willbicks/charisms/internal/server/http"
-	service2 "github.com/willbicks/charisms/internal/service"
-	inmemory2 "github.com/willbicks/charisms/internal/storage/inmemory"
 	"io/fs"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	quote_server "github.com/willbicks/charisms/internal/server/http"
+	"github.com/willbicks/charisms/internal/service"
+	"github.com/willbicks/charisms/internal/storage/inmemory"
 
 	"github.com/spf13/viper"
 )
@@ -34,7 +35,7 @@ func main() {
 		}
 	}
 
-	var entryQuestions []service2.QuizQuestion
+	var entryQuestions []service.QuizQuestion
 	viper.UnmarshalKey("entryQuestions", &entryQuestions)
 
 	// embedded fs initialization
@@ -49,21 +50,24 @@ func main() {
 	}
 
 	// Charisms Server Initialization
-	cs := http2.CharismsServer{
-		QuoteService: service2.NewQuoteService(inmemory2.NewQuoteRepository()),
-		UserService:  service2.NewUserService(inmemory2.NewUserRepository(), inmemory2.NewUserSessionRepository()),
-		QuizService:  service2.NewEntryQuizService(entryQuestions),
-		TmplFS:       templateFS,
+	cs := quote_server.CharismsServer{
+		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
+		UserService:  service.NewUserService(inmemory.NewUserRepository(), inmemory.NewUserSessionRepository()),
+		QuizService:  service.NewEntryQuizService(entryQuestions),
 		PubFS:        publicFS,
 		// TODO: Can viper.Unmarshall be used here?
-		Cfg: http2.Config{
+		Config: quote_server.Config{
 			BaseURL: viper.GetString("baseURL"),
-			RootTD: http2.TemplateData{
+			RootTD: quote_server.TemplateData{
 				Title: viper.GetString("title"),
 			},
 		},
 	}
-	cs.Init()
+
+	if err := cs.Init(templateFS); err != nil {
+		log.Panicf("ciritical error while initializing server: %v", err)
+	}
+
 	cs.StuffFakeData()
 
 	port := viper.GetInt("Port")
