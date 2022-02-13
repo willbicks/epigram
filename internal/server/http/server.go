@@ -88,16 +88,3 @@ func (s *CharismsServer) StuffFakeData() {
 func (s CharismsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.interpretSession(s.mux).ServeHTTP(w, r)
 }
-
-func (s *CharismsServer) routes() {
-	s.mux.Handle("/", requireQuizPassed(http.HandlerFunc(s.homeHandler)))
-	s.mux.Handle("/static/", s.staticHandler())
-	s.mux.HandleFunc("/login", s.googleLoginHandler)
-	s.mux.HandleFunc("/quiz", s.quizHandler)
-	s.mux.HandleFunc("/login/google/callback", s.googleCallbackHandler)
-}
-
-func (s *CharismsServer) staticHandler() http.Handler {
-	// TODO: modify to disable directory listing
-	return http.StripPrefix("/static/", http.FileServer(http.FS(s.PubFS)))
-}
