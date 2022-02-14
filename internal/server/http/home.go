@@ -18,7 +18,20 @@ type homeTD struct {
 func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		// continue to render page after switch
+		qs, err := s.QuoteService.GetAllQuotes(r.Context())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			fmt.Println(err)
+			return
+		}
+
+		err = s.renderPage(w, "home.gohtml", homeTD{
+			Quotes: qs,
+		})
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			fmt.Println(err)
+		}
 	case "POST":
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, "Unable to parse form", http.StatusBadRequest)
@@ -51,24 +64,9 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
-
+		http.Redirect(w, r, paths.home, http.StatusFound)
 	default:
 		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		return
-	}
-
-	qs, err := s.QuoteService.GetAllQuotes(r.Context())
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		fmt.Println(err)
-		return
-	}
-
-	err = s.renderPage(w, "home.gohtml", homeTD{
-		Quotes: qs,
-	})
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		fmt.Println(err)
 	}
 }
