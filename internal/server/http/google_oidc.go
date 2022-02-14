@@ -77,5 +77,5 @@ func (s CharismsServer) googleCallbackHandler(w http.ResponseWriter, r *http.Req
 		// Session expires on client one hour before server to account for sync differences.
 		Expires: sess.Expires.Add(-time.Hour),
 	})
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, paths.home, http.StatusFound)
 }

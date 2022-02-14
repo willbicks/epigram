@@ -2,11 +2,22 @@ package http
 
 import "net/http"
 
-func (s *CharismsServer) routes() {
-	s.mux.Handle("/", requireQuizPassed(http.HandlerFunc(s.homeHandler)))
-	s.mux.Handle("/quiz", requireLoggedIn(http.HandlerFunc(s.quizHandler)))
+var paths = struct {
+	home           string
+	quiz           string
+	login          string
+	googleCallback string
+}{
+	home:  "/",
+	quiz:  "/quiz",
+	login: "/login",
+}
 
-	s.mux.HandleFunc("/login", s.googleLoginHandler)
+func (s *CharismsServer) routes() {
+	s.mux.Handle(paths.home, requireQuizPassed(http.HandlerFunc(s.homeHandler)))
+	s.mux.Handle(paths.quiz, requireLoggedIn(http.HandlerFunc(s.quizHandler)))
+
+	s.mux.HandleFunc(paths.login, s.googleLoginHandler)
 	s.mux.HandleFunc("/login/google/callback", s.googleCallbackHandler)
 
 	s.mux.Handle("/static/", s.staticHandler())

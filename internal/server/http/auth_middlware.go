@@ -35,7 +35,7 @@ func requireLoggedIn(next http.Handler) http.Handler {
 		if u.ID != "" {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, "/login", http.StatusFound)
+			http.Redirect(w, r, paths.login, http.StatusFound)
 		}
 	})
 }
@@ -48,7 +48,7 @@ func requireQuizPassed(next http.Handler) http.Handler {
 		if u.QuizPassed {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, "/quiz", http.StatusFound)
+			http.Redirect(w, r, paths.quiz, http.StatusFound)
 		}
 	})
 }
