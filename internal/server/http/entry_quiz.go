@@ -2,14 +2,15 @@ package http
 
 import (
 	"fmt"
-	"github.com/willbicks/charisms/internal/service"
 	"net/http"
 	"strconv"
+
+	"github.com/willbicks/charisms/internal/service"
 )
 
 // quizTD represents the template data (TD) needed to render the quiz page
 type quizTD struct {
-	Issues       []string
+	Error        error
 	NumQuestions int
 	Questions    []service.QuizQuestion
 }

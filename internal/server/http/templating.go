@@ -7,6 +7,8 @@ import (
 	"io/fs"
 	"log"
 	"path/filepath"
+
+	"github.com/willbicks/charisms/internal/service"
 )
 
 // newTemplateCache creates a cache of page templates from the provided filesystem, and returns
@@ -19,12 +21,30 @@ func newTemplateCache(fileSys fs.FS) (map[string]*template.Template, error) {
 		return nil, err
 	}
 
+	// define to transform an error into a list of issues.
+	getIssues := func(err error) []string {
+		if err == nil {
+			return []string{}
+		}
+
+		serr, ok := err.(service.ServiceError)
+		if ok {
+			return serr.Issues
+		} else {
+			return []string{err.Error()}
+		}
+	}
+
 	for _, view := range views {
 		// Parse the view and all associated components and layouts
 		t, err := template.ParseFS(fileSys, view)
 		if err != nil {
 			return nil, err
 		}
+
+		t = t.Funcs(template.FuncMap{
+			"getIssues": getIssues,
+		})
 
 		// Parse the view and all associated components and layouts
 		t, err = t.ParseFS(fileSys, "components/*.gohtml", "base.gohtml")

@@ -1,4 +1,4 @@
-{{template "base.gohtml" .}}
+{{template "base" .}}
 
 {{define "body"}}
 	<div class="section">
@@ -7,7 +7,9 @@
 	<div class="section my-12">
 		<form action="/" method="post">
 			<h2 class="text-2xl font-bold">Submit a new Charism:</h2>
-			{{ template "error" .Page.Issues }}
+
+			{{ template "error" .Page.Error }}
+
 			<div class="mt-8 max-w-md">
 				<div class="grid grid-cols-1 gap-6">
 					<label class="block">
