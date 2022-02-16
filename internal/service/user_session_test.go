@@ -28,11 +28,11 @@ func TestUserSessionService_CreateUserSession(t *testing.T) {
 	userRepo.Create(context.Background(), user)
 
 	sess, err := service.CreateUserSession(context.Background(), user)
-	is.NoErr(err)                                    // creating user session should not fail
-	is.Equal(sess.UserID, user.ID)                   // user sesision UserID should match user's ID
-	is.True(len(sess.ID) > 8)                        // session ID should be at least 8 characters
-	is.True(time.Since(sess.Created) < time.Second)  // session should be created within the last second
-	is.True(time.Until(sess.Expires) < 72*time.Hour) // session should expire within 72 hours
+	is.NoErr(err)                                        // creating user session should not fail
+	is.Equal(sess.UserID, user.ID)                       // user sesision UserID should match user's ID
+	is.True(len(sess.ID) > 8)                            // session ID should be at least 8 characters
+	is.True(time.Since(sess.Created) < time.Second)      // session should be created within the last second
+	is.True(time.Until(sess.Expires) <= 21*24*time.Hour) // session should expire within 3 weeks
 }
 
 func TestUserSessionService_FindSessionByID_Valid(t *testing.T) {
