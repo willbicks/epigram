@@ -22,8 +22,10 @@ func (s *CharismsServer) routes(pubFS fs.FS) {
 	s.mux.Handle(paths.home, requireQuizPassed(http.HandlerFunc(s.homeHandler)))
 	s.mux.Handle(paths.quiz, requireLoggedIn(http.HandlerFunc(s.quizHandler)))
 
-	s.mux.HandleFunc(paths.login, s.googleLoginHandler)
-	s.mux.HandleFunc(s.gOIDC.CallbackURL(), s.googleCallbackHandler)
+	// TODO: factor out into registerOIDCService(service.OIDC) method to prepare
+	// for multiple OIDC providers
+	s.mux.Handle(paths.login, s.oidcLoginHandler(s.gOIDC))
+	s.mux.Handle(s.gOIDC.CallbackURL(), s.oidcCallbackHandler(s.gOIDC))
 
 	s.mux.Handle("/static/", s.staticHandler(pubFS))
 }
