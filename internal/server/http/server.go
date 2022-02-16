@@ -28,12 +28,10 @@ type CharismsServer struct {
 	QuizService  service.EntryQuiz
 	gOIDC        service.OIDC
 
-	PubFS fs.FS
-
 	Config Config
 }
 
-func (s *CharismsServer) Init(tmplFS fs.FS) error {
+func (s *CharismsServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
 	// Initialize service for Google OpenID COnnect
 	s.gOIDC = service.OIDC{
 		Name:         "google",
@@ -55,7 +53,7 @@ func (s *CharismsServer) Init(tmplFS fs.FS) error {
 	}
 
 	// Initialize server routes
-	s.routes()
+	s.routes(pubFS)
 
 	return nil
 }

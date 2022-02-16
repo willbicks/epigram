@@ -59,7 +59,6 @@ func main() {
 		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
 		UserService:  service.NewUserService(inmemory.NewUserRepository(), inmemory.NewUserSessionRepository()),
 		QuizService:  service.NewEntryQuizService(entryQuestions),
-		PubFS:        publicFS,
 		Logger:       log,
 		// TODO: Can viper.Unmarshall be used here?
 		Config: quote_server.Config{
@@ -70,7 +69,7 @@ func main() {
 		},
 	}
 
-	if err := cs.Init(templateFS); err != nil {
+	if err := cs.Init(templateFS, publicFS); err != nil {
 		log.Fatalf("ciritical error while initializing server: %v", err)
 	}
 
