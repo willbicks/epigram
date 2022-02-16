@@ -2,11 +2,11 @@ package http
 
 import (
 	"context"
-	"fmt"
 	"html/template"
 	"io/fs"
 	"net/http"
 
+	"github.com/willbicks/charisms/internal/logger"
 	"github.com/willbicks/charisms/internal/model"
 	"github.com/willbicks/charisms/internal/service"
 
@@ -20,6 +20,8 @@ type Config struct {
 type CharismsServer struct {
 	mux   *http.ServeMux
 	views map[string]*template.Template
+
+	Logger logger.Logger
 
 	QuoteService service.Quote
 	UserService  service.User
@@ -47,11 +49,10 @@ func (s *CharismsServer) Init(tmplFS fs.FS) error {
 	s.mux = http.NewServeMux()
 
 	// Create a new template cache for page views
-	views, err := newTemplateCache(tmplFS)
-	if err != nil {
+
+	if err := s.initViewCache(tmplFS); err != nil {
 		return err
 	}
-	s.views = views
 
 	// Initialize server routes
 	s.routes()
@@ -80,9 +81,9 @@ func (s *CharismsServer) StuffFakeData() {
 
 	qs, err := s.QuoteService.GetAllQuotes(context.Background())
 	if err != nil {
-		panic(fmt.Sprintf("unable to get stuffed quotes %v", err))
+		s.Logger.Fatalf("unable to get stuffed quotes: %v", err)
 	}
-	fmt.Printf("created %v dummy records \n", len(qs))
+	s.Logger.Infof("created %v dummy records \n", len(qs))
 }
 
 func (s CharismsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {

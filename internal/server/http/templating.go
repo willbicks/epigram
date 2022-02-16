@@ -5,20 +5,19 @@ import (
 	"html/template"
 	"io"
 	"io/fs"
-	"log"
 	"path/filepath"
 
 	"github.com/willbicks/charisms/internal/service"
 )
 
-// newTemplateCache creates a cache of page templates from the provided filesystem, and returns
-// a map relating page view names to complete templates, with components and layouts included.
-func newTemplateCache(fileSys fs.FS) (map[string]*template.Template, error) {
-	cache := map[string]*template.Template{}
+// initViewCache initializes a cache of view templates from the provided filesystem in the form of a
+// map relating page view names to complete templates, with components and layouts included.
+func (s *CharismsServer) initViewCache(fileSys fs.FS) error {
+	s.views = make(map[string]*template.Template)
 
 	views, err := fs.Glob(fileSys, "views/*.gohtml")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// define to transform an error into a list of issues.
@@ -39,7 +38,7 @@ func newTemplateCache(fileSys fs.FS) (map[string]*template.Template, error) {
 		// Parse the view and all associated components and layouts
 		t, err := template.ParseFS(fileSys, view)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		t = t.Funcs(template.FuncMap{
@@ -49,17 +48,17 @@ func newTemplateCache(fileSys fs.FS) (map[string]*template.Template, error) {
 		// Parse the view and all associated components and layouts
 		t, err = t.ParseFS(fileSys, "components/*.gohtml", "base.gohtml")
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		// Cache the template
-		cache[filepath.Base(view)] = t
+		s.views[filepath.Base(view)] = t
 
 		// Print templates captured for debug
-		log.Printf("cached view %s%v", view, t.DefinedTemplates())
+		s.Logger.Debugf("cached view %s%v", view, t.DefinedTemplates())
 	}
 
-	return cache, nil
+	return nil
 }
 
 // renderPage renders the specified view with the provided data joined to the RootTD.

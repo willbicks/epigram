@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/willbicks/charisms/internal/model"
@@ -21,7 +20,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		qs, err := s.QuoteService.GetAllQuotes(r.Context())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-			fmt.Println(err)
+			s.Logger.Warn(err.Error())
 			return
 		}
 
@@ -30,7 +29,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-			fmt.Println(err)
+			s.Logger.Warn(err.Error())
 		}
 	case "POST":
 		if err := r.ParseForm(); err != nil {
@@ -49,7 +48,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 			qs, err := s.QuoteService.GetAllQuotes(r.Context())
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
-				fmt.Println(err)
+				s.Logger.Warn(err.Error())
 				return
 			}
 
@@ -60,7 +59,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 			})
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
-				fmt.Println(err)
+				s.Logger.Warn(err.Error())
 			}
 			return
 		}

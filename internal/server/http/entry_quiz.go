@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -25,7 +24,7 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-			fmt.Println(err)
+			s.Logger.Warn(err.Error())
 		}
 	case "POST":
 		if err := r.ParseForm(); err != nil {

@@ -3,11 +3,12 @@ package main
 import (
 	"embed"
 	"io/fs"
-	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
+	"github.com/willbicks/charisms/internal/logger"
 	quote_server "github.com/willbicks/charisms/internal/server/http"
 	"github.com/willbicks/charisms/internal/service"
 	"github.com/willbicks/charisms/internal/storage/inmemory"
@@ -27,11 +28,15 @@ func main() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".") // TODO: establish other configuration paths
 
+	// Initialize logger
+	log := logger.New(os.Stdout)
+	log.Level = logger.LevelDebug
+
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Panic("required configuation file not found: config")
+			log.Fatal("required configuation file not found: config")
 		} else {
-			log.Panicf("unable to read configuration file: %v", err)
+			log.Fatalf("unable to read configuration file: %v", err)
 		}
 	}
 
@@ -41,12 +46,12 @@ func main() {
 	// embedded fs initialization
 	templateFS, err := fs.Sub(templateEmbedFS, "frontend/templates")
 	if err != nil {
-		log.Panicf("creating templateFS: %v", err)
+		log.Fatalf("creating templateFS: %v", err)
 	}
 
 	publicFS, err := fs.Sub(publicEmbedFS, "frontend/public")
 	if err != nil {
-		log.Panicf("creating publicFS: %v", err)
+		log.Fatalf("creating publicFS: %v", err)
 	}
 
 	// Charisms Server Initialization
@@ -55,6 +60,7 @@ func main() {
 		UserService:  service.NewUserService(inmemory.NewUserRepository(), inmemory.NewUserSessionRepository()),
 		QuizService:  service.NewEntryQuizService(entryQuestions),
 		PubFS:        publicFS,
+		Logger:       log,
 		// TODO: Can viper.Unmarshall be used here?
 		Config: quote_server.Config{
 			BaseURL: viper.GetString("baseURL"),
@@ -65,13 +71,13 @@ func main() {
 	}
 
 	if err := cs.Init(templateFS); err != nil {
-		log.Panicf("ciritical error while initializing server: %v", err)
+		log.Fatalf("ciritical error while initializing server: %v", err)
 	}
 
 	cs.StuffFakeData()
 
 	port := viper.GetInt("Port")
-	log.Printf("Running server at http://localhost:%v ...", port)
+	log.Infof("Running server at http://localhost:%v ...", port)
 	s := http.Server{
 		Addr:              "localhost:" + strconv.Itoa(port),
 		ReadTimeout:       1 * time.Second,
