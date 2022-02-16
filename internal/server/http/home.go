@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/willbicks/charisms/internal/model"
@@ -19,8 +20,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		qs, err := s.QuoteService.GetAllQuotes(r.Context())
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			s.Logger.Warn(err.Error())
+			s.serverError(w, r, fmt.Errorf("unable to generate nonce: %v", err))
 			return
 		}
 
@@ -28,12 +28,12 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 			Quotes: qs,
 		})
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			s.serverError(w, r, err)
 			s.Logger.Warn(err.Error())
 		}
 	case "POST":
 		if err := r.ParseForm(); err != nil {
-			http.Error(w, "Unable to parse form", http.StatusBadRequest)
+			s.serverError(w, r, err)
 			return
 		}
 		q := model.Quote{
@@ -47,8 +47,7 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		if createErr != nil {
 			qs, err := s.QuoteService.GetAllQuotes(r.Context())
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				s.Logger.Warn(err.Error())
+				s.serverError(w, r, err)
 				return
 			}
 
@@ -58,14 +57,14 @@ func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 				Quotes: qs,
 			})
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				s.Logger.Warn(err.Error())
+				s.serverError(w, r, err)
+				return
 			}
 			return
 		}
 		http.Redirect(w, r, paths.home, http.StatusFound)
 	default:
-		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+		s.methodNotAllowedError(w, r)
 		return
 	}
 }

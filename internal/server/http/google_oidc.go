@@ -3,6 +3,7 @@ package http
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -35,12 +36,12 @@ func setCallbackCookie(w http.ResponseWriter, r *http.Request, name, value strin
 func (s CharismsServer) googleLoginHandler(w http.ResponseWriter, r *http.Request) {
 	state, err := randString(16)
 	if err != nil {
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		s.serverError(w, r, fmt.Errorf("unable to generate state key: %v", err))
 		return
 	}
 	nonce, err := randString(16)
 	if err != nil {
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		s.serverError(w, r, fmt.Errorf("unable to generate nonce key: %v", err))
 		return
 	}
 	setCallbackCookie(w, r, "state", state)
@@ -53,18 +54,19 @@ func (s CharismsServer) googleCallbackHandler(w http.ResponseWriter, r *http.Req
 	token, err := s.gOIDC.ValidateCallback(*r)
 	if err != nil {
 		// TODO: use error handler helper to use ServiceError StatusCode when available
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		s.serverError(w, r, fmt.Errorf("validating callback: %v", err))
+		return
 	}
 
 	user, err := s.UserService.GetUserFromIDToken(r.Context(), token)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		s.serverError(w, r, fmt.Errorf("getting user from OIDC token: %v", err))
 		return
 	}
 
 	sess, err := s.UserService.CreateUserSession(r.Context(), user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		s.serverError(w, r, fmt.Errorf("creating user session: %v", err))
 		return
 	}
 

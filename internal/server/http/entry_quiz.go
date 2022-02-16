@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -23,12 +24,12 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 			Questions:    s.QuizService.EntryQuestions,
 		})
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			s.Logger.Warn(err.Error())
+			s.serverError(w, r, err)
+			return
 		}
 	case "POST":
 		if err := r.ParseForm(); err != nil {
-			http.Error(w, "Unable to parse form", http.StatusBadRequest)
+			s.clientError(w, r, err, http.StatusBadRequest)
 			return
 		}
 
@@ -36,7 +37,8 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		for id, value := range r.PostForm {
 			id, err := strconv.Atoi(id)
 			if err != nil {
-				http.Error(w, "Invalid form value key", http.StatusBadRequest)
+				s.clientError(w, r, errors.New("invalid form value key"), http.StatusBadRequest)
+				return
 			}
 			answers[id] = value[0]
 		}
@@ -56,7 +58,7 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	default:
-		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
+		s.methodNotAllowedError(w, r)
 		return
 	}
 }
