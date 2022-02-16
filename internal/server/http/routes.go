@@ -8,10 +8,9 @@ import (
 // paths is a constsant, package scoped variable which stores the url paths to each page,
 // and should be used in place of magic strings to represent routes.
 var paths = struct {
-	home           string
-	quiz           string
-	login          string
-	googleCallback string
+	home  string
+	quiz  string
+	login string
 }{
 	home:  "/",
 	quiz:  "/quiz",
@@ -24,7 +23,7 @@ func (s *CharismsServer) routes(pubFS fs.FS) {
 	s.mux.Handle(paths.quiz, requireLoggedIn(http.HandlerFunc(s.quizHandler)))
 
 	s.mux.HandleFunc(paths.login, s.googleLoginHandler)
-	s.mux.HandleFunc("/login/google/callback", s.googleCallbackHandler)
+	s.mux.HandleFunc(s.gOIDC.CallbackURL(), s.googleCallbackHandler)
 
 	s.mux.Handle("/static/", s.staticHandler(pubFS))
 }
