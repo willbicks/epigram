@@ -6,8 +6,9 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	model2 "github.com/willbicks/charisms/internal/model"
 	"time"
+
+	"github.com/willbicks/charisms/internal/model"
 )
 
 const (
@@ -22,8 +23,8 @@ const (
 )
 
 type UserSessionRepository interface {
-	Create(ctx context.Context, us model2.UserSession) error
-	FindByID(ctx context.Context, id string) (model2.UserSession, error)
+	Create(ctx context.Context, us model.UserSession) error
+	FindByID(ctx context.Context, id string) (model.UserSession, error)
 }
 
 type UserSessionService struct {
@@ -36,17 +37,17 @@ func NewUserSessionService(repo UserSessionRepository) UserSessionService {
 	}
 }
 
-func (s UserSessionService) CreateUserSession(ctx context.Context, u model2.User) (model2.UserSession, error) {
-	session := model2.UserSession{}
+func (s UserSessionService) CreateUserSession(ctx context.Context, u model.User) (model.UserSession, error) {
+	session := model.UserSession{}
 
 	if u.ID == "" {
-		return model2.UserSession{}, errors.New("userSession: specified user has no id")
+		return model.UserSession{}, errors.New("userSession: specified user has no id")
 	}
 	session.UserID = u.ID
 
 	randBytes := make([]byte, _idRandBytes)
 	if _, err := rand.Read(randBytes); err != nil {
-		return model2.UserSession{}, fmt.Errorf("generate randBytes for UserSession: %w", err)
+		return model.UserSession{}, fmt.Errorf("generate randBytes for UserSession: %w", err)
 	}
 	session.ID = base64.URLEncoding.EncodeToString(randBytes)
 
@@ -56,14 +57,14 @@ func (s UserSessionService) CreateUserSession(ctx context.Context, u model2.User
 	return session, s.repo.Create(ctx, session)
 }
 
-func (s UserSessionService) FindSessionByID(ctx context.Context, id string) (model2.UserSession, error) {
+func (s UserSessionService) FindSessionByID(ctx context.Context, id string) (model.UserSession, error) {
 	session, err := s.repo.FindByID(ctx, id)
 	if err != nil {
-		return model2.UserSession{}, fmt.Errorf("UserSession: %w", err)
+		return model.UserSession{}, fmt.Errorf("UserSession: %w", err)
 	}
 
 	if session.IsExpired(time.Now()) {
-		return model2.UserSession{}, errors.New("UserSession is expired")
+		return model.UserSession{}, errors.New("UserSession is expired")
 	}
 
 	return session, nil

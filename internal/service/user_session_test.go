@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	model2 "github.com/willbicks/charisms/internal/model"
+	"github.com/willbicks/charisms/internal/model"
 	"github.com/willbicks/charisms/internal/service"
-	inmemory "github.com/willbicks/charisms/internal/storage/inmemory"
+	"github.com/willbicks/charisms/internal/storage/inmemory"
 
 	"github.com/matryer/is"
 	"github.com/rs/xid"
@@ -21,7 +21,7 @@ func TestUserSessionService_CreateUserSession(t *testing.T) {
 
 	service := service.NewUserSessionService(sessionRepo)
 
-	user := model2.User{
+	user := model.User{
 		ID:   xid.New().String(),
 		Name: "Test user",
 	}
@@ -42,7 +42,7 @@ func TestUserSessionService_FindSessionByID_Valid(t *testing.T) {
 
 	service := service.NewUserSessionService(sessionRepo)
 
-	user := model2.User{
+	user := model.User{
 		ID:   xid.New().String(),
 		Name: "Test user",
 	}
@@ -61,12 +61,12 @@ func TestUserSessionService_FindSessionByID_Invalid(t *testing.T) {
 
 	service := service.NewUserSessionService(sessionRepo)
 
-	user := model2.User{
+	user := model.User{
 		ID:   xid.New().String(),
 		Name: "Test user",
 	}
 
-	sessionRepo.Create(context.Background(), model2.UserSession{
+	sessionRepo.Create(context.Background(), model.UserSession{
 		ID:      "ExPiReD000",
 		UserID:  user.ID,
 		Created: time.Now().Add(-25 * time.Hour),
