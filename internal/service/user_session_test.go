@@ -13,7 +13,7 @@ import (
 	"github.com/rs/xid"
 )
 
-func TestUserSessionService_CreateUserSession(t *testing.T) {
+func TestUserSession_CreateUserSession(t *testing.T) {
 	is := is.New(t)
 
 	userRepo := inmemory.NewUserRepository()
@@ -35,7 +35,7 @@ func TestUserSessionService_CreateUserSession(t *testing.T) {
 	is.True(time.Until(sess.Expires) <= 21*24*time.Hour) // session should expire within 3 weeks
 }
 
-func TestUserSessionService_FindSessionByID_Valid(t *testing.T) {
+func TestUserSession_FindSessionByID_Valid(t *testing.T) {
 	is := is.New(t)
 
 	sessionRepo := inmemory.NewUserSessionRepository()
@@ -54,7 +54,7 @@ func TestUserSessionService_FindSessionByID_Valid(t *testing.T) {
 	is.Equal(found.UserID, user.ID) // found session's UserID should match users's ID
 }
 
-func TestUserSessionService_FindSessionByID_Invalid(t *testing.T) {
+func TestUserSession_FindSessionByID_Invalid(t *testing.T) {
 	is := is.New(t)
 
 	sessionRepo := inmemory.NewUserSessionRepository()

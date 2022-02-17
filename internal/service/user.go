@@ -20,7 +20,7 @@ type UserRepository interface {
 
 type User struct {
 	ur   UserRepository
-	sess UserSessionService
+	sess UserSession
 }
 
 func NewUserService(ur UserRepository, sr UserSessionRepository) User {

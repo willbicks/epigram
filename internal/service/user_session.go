@@ -27,17 +27,17 @@ type UserSessionRepository interface {
 	FindByID(ctx context.Context, id string) (model.UserSession, error)
 }
 
-type UserSessionService struct {
+type UserSession struct {
 	repo UserSessionRepository
 }
 
-func NewUserSessionService(repo UserSessionRepository) UserSessionService {
-	return UserSessionService{
+func NewUserSessionService(repo UserSessionRepository) UserSession {
+	return UserSession{
 		repo,
 	}
 }
 
-func (s UserSessionService) CreateUserSession(ctx context.Context, u model.User) (model.UserSession, error) {
+func (s UserSession) CreateUserSession(ctx context.Context, u model.User) (model.UserSession, error) {
 	session := model.UserSession{}
 
 	if u.ID == "" {
@@ -57,7 +57,7 @@ func (s UserSessionService) CreateUserSession(ctx context.Context, u model.User)
 	return session, s.repo.Create(ctx, session)
 }
 
-func (s UserSessionService) FindSessionByID(ctx context.Context, id string) (model.UserSession, error) {
+func (s UserSession) FindSessionByID(ctx context.Context, id string) (model.UserSession, error) {
 	session, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return model.UserSession{}, fmt.Errorf("UserSession: %w", err)
