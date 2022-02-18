@@ -30,7 +30,7 @@ func NewUserService(ur UserRepository, sr UserSessionRepository) User {
 	}
 }
 
-// FromIDToken returns a user from the specified OIDC token (assumed to be allready verified).
+// GetUserFromIDToken returns a user from the specified OIDC token (assumed to be allready verified).
 // If a user allready exists with the specified ID (derrived from the issuer URL and sub claim),
 // that user is returned. If no such user exists, a new user is created based on the token
 // details and returned.
@@ -117,4 +117,25 @@ func (s User) GetUserFromSessionID(ctx context.Context, sessID string) (model.Us
 		return model.User{}, err
 	}
 	return s.ur.FindByID(ctx, sess.UserID)
+}
+
+// RecordQuizAttempt records that the user attempted to complete a quiz, updates their information, and returns
+// either an empty string (pass), or the reason they failed (either got a question wrong or too many attempts),
+func (s *User) RecordQuizAttempt(ctx context.Context, u *model.User, passed bool) (failReason string, err error) {
+	u.QuizAttempts++
+	u.QuizPassed = passed
+
+	if err := s.UpdateUser(ctx, *u); err != nil {
+		return "Unable to update user", err
+	}
+
+	if u.QuizAttempts > model.MaxQuizAttempts {
+		return "Too many failed quiz attempts, please contact an administrator.", nil
+	}
+
+	if passed {
+		return "", nil
+	} else {
+		return "Sorry, at least one answer was incorrect.", nil
+	}
 }

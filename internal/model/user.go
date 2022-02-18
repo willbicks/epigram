@@ -2,6 +2,8 @@ package model
 
 import "time"
 
+const MaxQuizAttempts = 5
+
 type User struct {
 	ID         string
 	Name       string
@@ -15,10 +17,10 @@ type User struct {
 	Admin        bool
 }
 
-func (u User) isAuthorized() bool {
+func (u User) IsAuthorized() bool {
 	return (u.QuizPassed && !u.Banned) || u.Admin
 }
 
-func (u User) isAdmin() bool {
+func (u User) IsAdmin() bool {
 	return u.Admin
 }

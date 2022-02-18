@@ -20,8 +20,8 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		err := s.renderPage(w, "quiz.gohtml", quizTD{
-			NumQuestions: len(s.QuizService.EntryQuestions),
-			Questions:    s.QuizService.EntryQuestions,
+			NumQuestions: len(s.QuizService.Questions),
+			Questions:    s.QuizService.Questions,
 		})
 		if err != nil {
 			s.serverError(w, r, err)
@@ -44,17 +44,25 @@ func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		u := UserFromContext(r.Context())
-		s.QuizService.VerifyAnswers(answers, &u)
-		s.UserService.UpdateUser(r.Context(), u)
+		passed := s.QuizService.VerifyAnswers(answers)
+		failReason, err := s.UserService.RecordQuizAttempt(r.Context(), &u, passed)
+		if err != nil {
+			s.serverError(w, r, err)
+		}
 
 		if u.QuizPassed {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("answers correct"))
+			http.Redirect(w, r, paths.home, http.StatusFound)
 			return
 		} else {
-			w.WriteHeader(http.StatusForbidden)
-			w.Write([]byte("at least one answer is incorrect"))
-			return
+			err := s.renderPage(w, "quiz.gohtml", quizTD{
+				NumQuestions: len(s.QuizService.Questions),
+				Questions:    s.QuizService.Questions,
+				Error:        errors.New(failReason),
+			})
+			if err != nil {
+				s.serverError(w, r, err)
+				return
+			}
 		}
 
 	default:
