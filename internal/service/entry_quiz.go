@@ -2,8 +2,6 @@ package service
 
 import (
 	"strings"
-
-	"github.com/willbicks/epigram/internal/model"
 )
 
 // QuizQuestion is a crossword style question presented to the user to verify them before
