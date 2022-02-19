@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/willbicks/charisms/internal/model"
-	"github.com/willbicks/charisms/internal/service"
-	"github.com/willbicks/charisms/internal/storage/inmemory"
+	"github.com/willbicks/epigram/internal/model"
+	"github.com/willbicks/epigram/internal/service"
+	"github.com/willbicks/epigram/internal/storage/inmemory"
 
 	"github.com/matryer/is"
 	"github.com/rs/xid"

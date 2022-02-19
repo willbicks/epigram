@@ -7,12 +7,12 @@ import (
 	"io/fs"
 	"path/filepath"
 
-	"github.com/willbicks/charisms/internal/service"
+	"github.com/willbicks/epigram/internal/service"
 )
 
 // initViewCache initializes a cache of view templates from the provided filesystem in the form of a
 // map relating page view names to complete templates, with components and layouts included.
-func (s *CharismsServer) initViewCache(fileSys fs.FS) error {
+func (s *QuoteServer) initViewCache(fileSys fs.FS) error {
 	s.views = make(map[string]*template.Template)
 
 	views, err := fs.Glob(fileSys, "views/*.gohtml")
@@ -62,7 +62,7 @@ func (s *CharismsServer) initViewCache(fileSys fs.FS) error {
 }
 
 // renderPage renders the specified view with the provided data joined to the RootTD.
-func (s *CharismsServer) renderPage(w io.Writer, name string, data interface{}) error {
+func (s *QuoteServer) renderPage(w io.Writer, name string, data interface{}) error {
 	t, ok := s.views[name]
 	if !ok {
 		return errors.New("template not found in cache")

@@ -2,7 +2,8 @@ package http
 
 import (
 	"context"
-	"github.com/willbicks/charisms/internal/model"
+
+	"github.com/willbicks/epigram/internal/model"
 )
 
 // TODO: Consider moving this to another package

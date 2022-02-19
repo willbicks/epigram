@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/willbicks/charisms/internal/service"
+	"github.com/willbicks/epigram/internal/service"
 )
 
 // quizTD represents the template data (TD) needed to render the quiz page
@@ -16,7 +16,7 @@ type quizTD struct {
 }
 
 // quizHandler handles requests to the quizpage (/)
-func (s *CharismsServer) quizHandler(w http.ResponseWriter, r *http.Request) {
+func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		err := s.renderPage(w, "quiz.gohtml", quizTD{

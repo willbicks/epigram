@@ -6,9 +6,9 @@ import (
 	"io/fs"
 	"net/http"
 
-	"github.com/willbicks/charisms/internal/logger"
-	"github.com/willbicks/charisms/internal/model"
-	"github.com/willbicks/charisms/internal/service"
+	"github.com/willbicks/epigram/internal/logger"
+	"github.com/willbicks/epigram/internal/model"
+	"github.com/willbicks/epigram/internal/service"
 
 	"github.com/spf13/viper"
 )
@@ -17,7 +17,7 @@ type Config struct {
 	RootTD  TemplateData
 	BaseURL string
 }
-type CharismsServer struct {
+type QuoteServer struct {
 	mux   *http.ServeMux
 	views map[string]*template.Template
 
@@ -31,7 +31,7 @@ type CharismsServer struct {
 	Config Config
 }
 
-func (s *CharismsServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
+func (s *QuoteServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
 	// Initialize service for Google OpenID COnnect
 	s.gOIDC = service.OIDC{
 		Name:         "google",
@@ -58,7 +58,7 @@ func (s *CharismsServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
 	return nil
 }
 
-func (s *CharismsServer) StuffFakeData() {
+func (s *QuoteServer) StuffFakeData() {
 	s.QuoteService.CreateQuote(context.Background(), &model.Quote{
 		Quote:   "Who can I fire over that?",
 		Quotee:  "Rob Lewis",
@@ -84,6 +84,6 @@ func (s *CharismsServer) StuffFakeData() {
 	s.Logger.Infof("created %v dummy records \n", len(qs))
 }
 
-func (s CharismsServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s QuoteServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.interpretSession(s.mux).ServeHTTP(w, r)
 }

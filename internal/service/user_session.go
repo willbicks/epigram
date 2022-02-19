@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/willbicks/charisms/internal/model"
+	"github.com/willbicks/epigram/internal/model"
 )
 
 const (

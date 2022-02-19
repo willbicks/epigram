@@ -1,5 +1,5 @@
 {
-  "name": "charisms-frontend",
+  "name": "epigram-frontend",
   "scripts": {
     "build": "npx postcss build style/main.css -o public/styles/app.css",
     "watch": "npx postcss build style/main.css -o public/styles/app.css -w"

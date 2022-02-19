@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/willbicks/charisms/internal/logger"
-	quote_server "github.com/willbicks/charisms/internal/server/http"
-	"github.com/willbicks/charisms/internal/service"
-	"github.com/willbicks/charisms/internal/storage/inmemory"
+	"github.com/willbicks/epigram/internal/logger"
+	quote_server "github.com/willbicks/epigram/internal/server/http"
+	"github.com/willbicks/epigram/internal/service"
+	"github.com/willbicks/epigram/internal/storage/inmemory"
 
 	"github.com/spf13/viper"
 )
@@ -54,8 +54,8 @@ func main() {
 		log.Fatalf("creating publicFS: %v", err)
 	}
 
-	// Charisms Server Initialization
-	cs := quote_server.CharismsServer{
+	// Quote Server Initialization
+	cs := quote_server.QuoteServer{
 		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
 		UserService:  service.NewUserService(inmemory.NewUserRepository(), inmemory.NewUserSessionRepository()),
 		QuizService:  service.NewEntryQuizService(entryQuestions),

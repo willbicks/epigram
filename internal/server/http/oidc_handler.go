@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/willbicks/charisms/internal/service"
+	"github.com/willbicks/epigram/internal/service"
 )
 
 const sessionCookieName = "sess"
@@ -34,7 +34,7 @@ func setCallbackCookie(w http.ResponseWriter, r *http.Request, name, value strin
 	http.SetCookie(w, c)
 }
 
-func (s CharismsServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
+func (s QuoteServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		state, err := randString(16)
 		if err != nil {
@@ -53,7 +53,7 @@ func (s CharismsServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
 	})
 }
 
-func (s CharismsServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
+func (s QuoteServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token, err := oidc.ValidateCallback(*r)
 		if err != nil {

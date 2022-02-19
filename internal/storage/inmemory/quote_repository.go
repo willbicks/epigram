@@ -4,9 +4,9 @@ import (
 	"context"
 	"sync"
 
-	"github.com/willbicks/charisms/internal/model"
-	"github.com/willbicks/charisms/internal/service"
-	storage "github.com/willbicks/charisms/internal/storage/common"
+	"github.com/willbicks/epigram/internal/model"
+	"github.com/willbicks/epigram/internal/service"
+	storage "github.com/willbicks/epigram/internal/storage/common"
 )
 
 type QuoteRepository struct {

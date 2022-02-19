@@ -1,4 +1,4 @@
-module github.com/willbicks/charisms
+module github.com/willbicks/epigram
 
 go 1.17
 

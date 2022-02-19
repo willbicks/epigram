@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/willbicks/charisms/internal/model"
+	"github.com/willbicks/epigram/internal/model"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 )

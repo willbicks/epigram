@@ -18,7 +18,7 @@ var paths = struct {
 }
 
 // routes initializes the mux in the server struct with all of the desired routes.
-func (s *CharismsServer) routes(pubFS fs.FS) {
+func (s *QuoteServer) routes(pubFS fs.FS) {
 	s.mux.Handle(paths.home, requireQuizPassed(http.HandlerFunc(s.homeHandler)))
 	s.mux.Handle(paths.quiz, requireLoggedIn(http.HandlerFunc(s.quizHandler)))
 
@@ -32,7 +32,7 @@ func (s *CharismsServer) routes(pubFS fs.FS) {
 
 // staticHandler accepts a file system containging files that should be publicly
 // available, and returns a handler which serves them less the `/static/` prefix.
-func (s *CharismsServer) staticHandler(fileSys fs.FS) http.Handler {
+func (s *QuoteServer) staticHandler(fileSys fs.FS) http.Handler {
 	// TODO: modify to disable directory listing
 	return http.StripPrefix("/static/", http.FileServer(http.FS(fileSys)))
 }

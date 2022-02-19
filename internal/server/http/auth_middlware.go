@@ -6,7 +6,7 @@ import (
 
 // interpretSession wraps the request's context with the authenticated user, if they are known.
 // Otherwise, execution passes to the next handler.
-func (s *CharismsServer) interpretSession(next http.Handler) http.Handler {
+func (s *QuoteServer) interpretSession(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c, err := r.Cookie(sessionCookieName)
 		if err != nil {

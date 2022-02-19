@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/willbicks/charisms/internal/model"
+	"github.com/willbicks/epigram/internal/model"
 )
 
 // homeTD represents the template data (TD) needed to render the home page
@@ -15,7 +15,7 @@ type homeTD struct {
 }
 
 // homeHandler handles requests to the homepage (/)
-func (s *CharismsServer) homeHandler(w http.ResponseWriter, r *http.Request) {
+func (s *QuoteServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		qs, err := s.QuoteService.GetAllQuotes(r.Context())

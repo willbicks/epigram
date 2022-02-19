@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/willbicks/charisms/internal/model"
 	"time"
+
+	"github.com/willbicks/epigram/internal/model"
 
 	"github.com/rs/xid"
 )
