@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"embed"
 	"io/fs"
 	"net/http"
@@ -12,7 +13,9 @@ import (
 	quote_server "github.com/willbicks/epigram/internal/server/http"
 	"github.com/willbicks/epigram/internal/service"
 	"github.com/willbicks/epigram/internal/storage/inmemory"
+	"github.com/willbicks/epigram/internal/storage/sqlite"
 
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/viper"
 )
 
@@ -25,6 +28,7 @@ var templateEmbedFS embed.FS
 func main() {
 	// Viper Configuration Management
 	viper.SetDefault("Port", 8080)
+	viper.SetDefault("database", "inmemory")
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".") // TODO: establish other configuration paths
 
@@ -54,10 +58,37 @@ func main() {
 		log.Fatalf("creating publicFS: %v", err)
 	}
 
+	var userRepo service.UserRepository
+	var userSessionRepo service.UserSessionRepository
+	var quoteRepo service.QuoteRepository
+
+	switch viper.GetString("database") {
+	case "inmemory":
+		userRepo = inmemory.NewUserRepository()
+		userSessionRepo = inmemory.NewUserSessionRepository()
+		quoteRepo = inmemory.NewQuoteRepository()
+	case "sqlite":
+		mc := &sqlite.MigrationController{}
+		db, err := sql.Open("sqlite3", "file:./database.db?cache=shared&mode=rwc")
+		if err != nil {
+			log.Fatalf("unable to open database: %v", err)
+		}
+		defer db.Close()
+
+		userRepo, err = sqlite.NewUserRepository(db, mc)
+		if err != nil {
+			log.Fatalf("unable to create user repo: %v", err)
+		}
+
+		// TODO: Implement and replace
+		userSessionRepo = inmemory.NewUserSessionRepository()
+		quoteRepo = inmemory.NewQuoteRepository()
+	}
+
 	// Quote Server Initialization
 	cs := quote_server.QuoteServer{
-		QuoteService: service.NewQuoteService(inmemory.NewQuoteRepository()),
-		UserService:  service.NewUserService(inmemory.NewUserRepository(), inmemory.NewUserSessionRepository()),
+		QuoteService: service.NewQuoteService(quoteRepo),
+		UserService:  service.NewUserService(userRepo, userSessionRepo),
 		QuizService:  service.NewEntryQuizService(entryQuestions),
 		Logger:       log,
 		// TODO: Can viper.Unmarshall be used here?

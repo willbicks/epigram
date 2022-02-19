@@ -1,6 +1,8 @@
-# http config files
-config.*
-quiz.yml
+# config files
+config.yml
+
+# database files
+*.db
 
 # IDE files
 .idea

@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/coreos/go-oidc/v3 v3.1.0
 	github.com/matryer/is v1.4.0
+	github.com/mattn/go-sqlite3 v1.14.11
 	github.com/rs/xid v1.3.0
 	github.com/spf13/viper v1.10.1
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
