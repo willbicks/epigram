@@ -12,8 +12,8 @@ import (
 )
 
 type UserRepository interface {
-	Create(ctx context.Context, q model.User) error
-	Update(ctx context.Context, q model.User) error
+	Create(ctx context.Context, u model.User) error
+	Update(ctx context.Context, u model.User) error
 	FindByID(ctx context.Context, id string) (model.User, error)
 	FindAll(ctx context.Context) ([]model.User, error)
 }
