@@ -18,6 +18,7 @@ func (s *QuoteServer) interpretSession(next http.Handler) http.Handler {
 		u, err := s.UserService.GetUserFromSessionID(r.Context(), c.Value)
 		if err != nil {
 			// session token is invalid
+			s.Logger.Warnf("unable to get user from session ID: %v", err)
 			next.ServeHTTP(w, r)
 			return
 		}

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/willbicks/epigram/internal/model"
+	storage_common "github.com/willbicks/epigram/internal/storage/common"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 )
@@ -56,12 +57,15 @@ func (s User) GetUserFromIDToken(ctx context.Context, token oidc.IDToken) (model
 	id := domain + "/" + claims.Subject
 
 	// Check if the user exists, and if so, return them
-	if u, err := s.ur.FindByID(ctx, id); err == nil {
+	u, err := s.ur.FindByID(ctx, id)
+	if err == nil {
 		return u, nil
+	} else if err != storage_common.ErrNotFound {
+		return model.User{}, fmt.Errorf("unable to find from user repo: %w", err)
 	}
 
 	// User does not exist, create them
-	u := model.User{
+	u = model.User{
 		ID:         id,
 		Name:       claims.Name,
 		Email:      claims.Email,
