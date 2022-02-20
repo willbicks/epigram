@@ -18,7 +18,7 @@ func NewUserRepository(db *sql.DB, c *MigrationController) (*UserRepository, err
 			version: 1,
 			stmts: []string{
 				`CREATE TABLE users (
-					ID varchar(20) PRIMARY KEY,
+					ID text PRIMARY KEY,
 					Name text NOT NULL,
 					Email text NOT NULL,
 					PictureURL text NOT NULL,
