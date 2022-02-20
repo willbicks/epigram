@@ -4,6 +4,9 @@ config.yml
 # database files
 *.db
 
+# compiled binaries
+*.exe
+
 # IDE files
 .idea
 .vscode
