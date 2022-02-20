@@ -50,11 +50,13 @@ func (r *UserRepository) Create(ctx context.Context, u model.User) error {
 }
 
 func (r *UserRepository) Update(ctx context.Context, u model.User) error {
-	_, err := r.db.ExecContext(ctx, "UPDATE users SET Name = ?, Email = ?, PictureURL = ?, Created = ?, QuizAttempts = ?, QuizPassed = ?, Banned = ?, Admin = ? WHERE ID = ?;",
+	result, err := r.db.ExecContext(ctx, "UPDATE users SET Name = ?, Email = ?, PictureURL = ?, Created = ?, QuizAttempts = ?, QuizPassed = ?, Banned = ?, Admin = ? WHERE ID = ?;",
 		u.Name, u.Email, u.PictureURL, u.Created, u.QuizAttempts, u.QuizPassed, u.Banned, u.Admin, u.ID)
 
 	// TODO: Return ErrNotFound if user does not exist
-	if err != nil {
+	if i, _ := result.RowsAffected(); i == 0 {
+		return storage_common.ErrNotFound
+	} else if err != nil {
 		return err
 	}
 	return nil
