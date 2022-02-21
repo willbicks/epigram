@@ -12,7 +12,7 @@ import (
 	"github.com/rs/xid"
 
 	"github.com/willbicks/epigram/internal/model"
-	storage_common "github.com/willbicks/epigram/internal/storage/common"
+	"github.com/willbicks/epigram/internal/storage"
 )
 
 func createRepo(t *testing.T) *UserRepository {
@@ -105,7 +105,7 @@ func TestUserRepository_FindByID(t *testing.T) {
 	is.True(usersEqual(u2, uFound)) // u2 should equal uFound
 
 	uFound, err = repo.FindByID(context.Background(), xid.New().String())
-	is.Equal(err, storage_common.ErrNotFound) // random should not be found
+	is.Equal(err, storage.ErrNotFound) // random should not be found
 }
 
 func TestUserRepository_Update(t *testing.T) {

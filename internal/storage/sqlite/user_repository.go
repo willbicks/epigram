@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/willbicks/epigram/internal/model"
-	storage_common "github.com/willbicks/epigram/internal/storage/common"
+	"github.com/willbicks/epigram/internal/storage"
 )
 
 type UserRepository struct {
@@ -55,7 +55,7 @@ func (r *UserRepository) Update(ctx context.Context, u model.User) error {
 
 	// TODO: Return ErrNotFound if user does not exist
 	if i, _ := result.RowsAffected(); i == 0 {
-		return storage_common.ErrNotFound
+		return storage.ErrNotFound
 	} else if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (r *UserRepository) FindByID(ctx context.Context, id string) (model.User, e
 		&u.ID, &u.Name, &u.Email, &u.PictureURL, &u.Created, &u.QuizAttempts, &u.QuizPassed, &u.Banned, &u.Admin)
 
 	if err == sql.ErrNoRows {
-		return model.User{}, storage_common.ErrNotFound
+		return model.User{}, storage.ErrNotFound
 	} else if err != nil {
 		return model.User{}, err
 	}

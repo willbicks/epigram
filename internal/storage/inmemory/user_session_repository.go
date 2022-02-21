@@ -6,7 +6,7 @@ import (
 
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/service"
-	storage "github.com/willbicks/epigram/internal/storage/common"
+	"github.com/willbicks/epigram/internal/storage"
 )
 
 type UserSessionRepository struct {
