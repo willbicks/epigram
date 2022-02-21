@@ -7,6 +7,9 @@ config.yml
 # compiled binaries
 *.exe
 
+# test coverage
+*.out
+
 # IDE files
 .idea
 .vscode
