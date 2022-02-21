@@ -80,9 +80,13 @@ func main() {
 			log.Fatalf("unable to create user repo: %v", err)
 		}
 
+		quoteRepo, err = sqlite.NewQuoteRepository(db, mc)
+		if err != nil {
+			log.Fatalf("unable to create user repo: %v", err)
+		}
+
 		// TODO: Implement and replace
 		userSessionRepo = inmemory.NewUserSessionRepository()
-		quoteRepo = inmemory.NewQuoteRepository()
 	}
 
 	// Quote Server Initialization
@@ -104,7 +108,7 @@ func main() {
 		log.Fatalf("ciritical error while initializing server: %v", err)
 	}
 
-	cs.StuffFakeData()
+	//cs.StuffFakeData()
 
 	port := viper.GetInt("Port")
 	log.Infof("Running server at http://localhost:%v ...", port)
