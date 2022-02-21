@@ -29,16 +29,37 @@
 			</div>
 		</form>
 	</div>
-	<div class="section my-12">
+	<div class="wide-section my-12">
 		{{ $byYear := quotesByYear .Page.Quotes }}
 		{{ range $year := orderedYearKeys $byYear }}
-			<h3 class="text-2xl">{{ $year }}</h3>
+			<h3 class="text-3xl mb-4">{{ $year }}</h3>
 			<hr class="mb-4" />
-			<div class="md:masonry-cols-2 before:box-inherit after:box-inherit mb-6">
+			<div class="masonry-container mb-6">
 				{{ range index $byYear $year }}
-					{{ template "quote-card" .}}
+					<div class="bg-gray-100 p-4">
+						{{with .Context}}<p class="text-lg font-light lowercase mb-3">{{.}}</p>{{end}}
+						<p class="text-xl text-gray-800 font-medium mb-3">{{.Quote}}</p>
+						<p class="text-xl text-gray-600 font-medium text-right">- {{.Quotee}}</p>
+					</div>
 				{{ end }}
 			</div>
 		{{end}}
 	</div>
+{{end}}
+
+{{define "scripts"}}
+	<script src="/static/scripts/macy.js"></script>
+	<script>
+		var masonry = Macy({
+			container: '.masonry-container',
+			mobileFirst: true,
+			columns:1 ,
+			margin: 16,
+			breakAt: {
+				768: 2,
+				1024: 3,
+				1280: 4
+			}
+		})
+	</script>
 {{end}}
