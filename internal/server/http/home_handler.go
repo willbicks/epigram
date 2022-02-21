@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/willbicks/epigram/internal/model"
@@ -18,14 +17,13 @@ type homeTD struct {
 func (s *QuoteServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		qs, err := s.QuoteService.GetAllQuotes(r.Context())
+		quotes, err := s.QuoteService.GetAllQuotes(r.Context())
 		if err != nil {
-			s.serverError(w, r, fmt.Errorf("unable to generate nonce: %v", err))
+			s.serverError(w, r, err)
 			return
 		}
-
 		err = s.renderPage(w, "home.gohtml", homeTD{
-			Quotes: qs,
+			Quotes: quotes,
 		})
 		if err != nil {
 			s.serverError(w, r, err)
@@ -45,16 +43,15 @@ func (s *QuoteServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		createErr := s.QuoteService.CreateQuote(r.Context(), &q)
 
 		if createErr != nil {
-			qs, err := s.QuoteService.GetAllQuotes(r.Context())
+			quotes, err := s.QuoteService.GetAllQuotes(r.Context())
 			if err != nil {
 				s.serverError(w, r, err)
 				return
 			}
-
 			err = s.renderPage(w, "home.gohtml", homeTD{
 				Error:  createErr,
 				Quote:  q,
-				Quotes: qs,
+				Quotes: quotes,
 			})
 			if err != nil {
 				s.serverError(w, r, err)

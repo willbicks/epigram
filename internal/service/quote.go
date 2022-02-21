@@ -26,7 +26,7 @@ func NewQuoteService(repo QuoteRepository) Quote {
 	}
 }
 
-func (s Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
+func (s *Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
 	var err ServiceError
 	if q.Quote == "" {
 		err.addIssue("Quote must not be blank.")
@@ -44,7 +44,7 @@ func (s Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
 	return s.repo.Create(ctx, *q)
 }
 
-func (s Quote) GetAllQuotes(ctx context.Context) ([]model.Quote, error) {
+func (s *Quote) GetAllQuotes(ctx context.Context) ([]model.Quote, error) {
 	quotes, err := s.repo.FindAll(ctx)
 	return quotes, err
 }

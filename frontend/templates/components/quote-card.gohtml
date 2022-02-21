@@ -1,6 +1,6 @@
 {{define "quote-card"}}
 <div class=" break-inside-avoid bg-gray-100 p-4 mb-4">
-    <p class="text-lg font-light lowercase mb-3">{{.Context}}</p>
+    {{with .Context}}<p class="text-lg font-light lowercase mb-3">{{.}}</p>{{end}}
     <p class="text-xl text-gray-800 font-medium mb-3">{{.Quote}}</p>
     <p class="text-xl text-gray-600 font-medium text-right">- {{.Quotee}}</p>
 </div>
