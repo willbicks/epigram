@@ -19,6 +19,8 @@ var paths = struct {
 
 // routes initializes the mux in the server struct with all of the desired routes.
 func (s *QuoteServer) routes(pubFS fs.FS) {
+	s.mux.Handle("/favicon.ico", http.FileServer(http.FS(pubFS)))
+
 	s.mux.Handle(paths.home, requireQuizPassed(http.HandlerFunc(s.homeHandler)))
 	s.mux.Handle(paths.quiz, requireLoggedIn(http.HandlerFunc(s.quizHandler)))
 
