@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/willbicks/epigram/internal/model"
-	storage_common "github.com/willbicks/epigram/internal/storage/common"
+	"github.com/willbicks/epigram/internal/storage"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 )
@@ -60,7 +60,7 @@ func (s User) GetUserFromIDToken(ctx context.Context, token oidc.IDToken) (model
 	u, err := s.ur.FindByID(ctx, id)
 	if err == nil {
 		return u, nil
-	} else if err != storage_common.ErrNotFound {
+	} else if err != storage.ErrNotFound {
 		return model.User{}, fmt.Errorf("unable to find from user repo: %w", err)
 	}
 

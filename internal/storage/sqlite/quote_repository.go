@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/willbicks/epigram/internal/model"
-	storage_common "github.com/willbicks/epigram/internal/storage/common"
+	"github.com/willbicks/epigram/internal/storage"
 )
 
 type QuoteRepository struct {
@@ -52,7 +52,7 @@ func (r *QuoteRepository) Update(ctx context.Context, q model.Quote) error {
 
 	// TODO: Return ErrNotFound if quote does not exist
 	if i, _ := result.RowsAffected(); i == 0 {
-		return storage_common.ErrNotFound
+		return storage.ErrNotFound
 	} else if err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func (r *QuoteRepository) FindByID(ctx context.Context, id string) (model.Quote,
 		&q.ID, &q.SubmitterID, &q.Quotee, &q.Context, &q.Quote, &q.Created)
 
 	if err == sql.ErrNoRows {
-		return model.Quote{}, storage_common.ErrNotFound
+		return model.Quote{}, storage.ErrNotFound
 	} else if err != nil {
 		return model.Quote{}, err
 	}
