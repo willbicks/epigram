@@ -13,7 +13,8 @@ func (s *QuoteServer) serverError(w http.ResponseWriter, r *http.Request, err er
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
 	s.Logger.Warn(trace)
 
-	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	status := http.StatusInternalServerError
+	http.Error(w, fmt.Sprintf("Error %v: %s", status, http.StatusText(status)), status)
 }
 
 // clientError is a helper which sends a specific status code and corresponding
@@ -23,9 +24,9 @@ func (s *QuoteServer) clientError(w http.ResponseWriter, r *http.Request, err er
 	var status string
 
 	if err != nil {
-		status = fmt.Sprintf("%s: %s", http.StatusText(code), err.Error())
+		status = fmt.Sprintf("%v: %s", code, err.Error())
 	} else {
-		status = http.StatusText(code)
+		status = fmt.Sprintf("Error %v: %v", code, http.StatusText(code))
 	}
 
 	s.Logger.Debug(status)

@@ -15,6 +15,10 @@ type homeTD struct {
 
 // homeHandler handles requests to the homepage (/)
 func (s *QuoteServer) homeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		s.notFoundError(w, r)
+		return
+	}
 	switch r.Method {
 	case "GET":
 		quotes, err := s.QuoteService.GetAllQuotes(r.Context())
