@@ -85,8 +85,10 @@ func main() {
 			log.Fatalf("unable to create user repo: %v", err)
 		}
 
-		// TODO: Implement and replace
-		userSessionRepo = inmemory.NewUserSessionRepository()
+		userSessionRepo, err = sqlite.NewUserSessionRepository(db, mc)
+		if err != nil {
+			log.Fatalf("unable to create user sess repo: %v", err)
+		}
 	}
 
 	// Quote Server Initialization
