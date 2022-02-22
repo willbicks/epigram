@@ -79,6 +79,7 @@ func (s QuoteServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
 			Value:    sess.ID,
 			Path:     "/",
 			Secure:   r.TLS != nil,
+			SameSite: http.SameSiteStrictMode,
 			HttpOnly: true,
 			// Session expires on client one hour before server to account for sync differences.
 			Expires: sess.Expires.Add(-time.Hour),
