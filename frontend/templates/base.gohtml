@@ -12,7 +12,7 @@
     <div class="antialiased px-6">
         {{template "body" .}}
     </div>
-    {{template "scripts" .}}
+    {{block "scripts" .}}{{end}}
 </body>
 </html>
 {{end}}
