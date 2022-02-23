@@ -1,6 +1,6 @@
 ## Project Structure
 
-QuoteServer is based on a hexagonal architecture (also known as ports and adapters), which permit swapping both the database / storage infrastructure as well as the front end presentation layer, with minimal changes to the codebase and preservation of the core application logic. 
+Epigram is based on a hexagonal architecture (also known as ports and adapters), which permits swapping both the database / storage infrastructure as well as the front end presentation layer with minimal changes to the codebase and preservation of the core application logic. 
 
 To accomplish this, the application is broken down into three primary tiers:
 
@@ -14,13 +14,15 @@ To accomplish this, the application is broken down into three primary tiers:
     - Each service requires a unique repository to maintain on it's data.
     - Some services interface with sub-services, and abstract their methods for use by the server.
 - **`storage`**
-    - Application state storage
+    - Application state storage.
     - Comprised of multiple repositories, each one tasked with storing a specific, consistent type of data.
     - Currently implemented adapters:
         - `inmemory` - stores all data in maps in memory, useful for testing.
+        - `sqlite` - uses statically-linked sqlite3 library to store data in local database file.
 
 In addition, each layer depends on the **`model`** package, which holds all of the structure definitions for objects used throughout the above three tiers. 
 
+**WIP DIAGRAMS:**
 ```mermaid
 classDiagram
     class `model.User` {
