@@ -37,7 +37,7 @@ func NewUserSessionService(repo UserSessionRepository) UserSession {
 	}
 }
 
-func (s UserSession) CreateUserSession(ctx context.Context, u model.User) (model.UserSession, error) {
+func (s UserSession) CreateUserSession(ctx context.Context, u model.User, IP string) (model.UserSession, error) {
 	session := model.UserSession{}
 
 	if u.ID == "" {
@@ -53,6 +53,7 @@ func (s UserSession) CreateUserSession(ctx context.Context, u model.User) (model
 
 	session.Created = time.Now()
 	session.Expires = session.Created.Add(_defaultExpiry)
+	session.IP = IP
 
 	return session, s.repo.Create(ctx, session)
 }

@@ -68,7 +68,7 @@ func (s QuoteServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
 			return
 		}
 
-		sess, err := s.UserService.CreateUserSession(r.Context(), user)
+		sess, err := s.UserService.CreateUserSession(r.Context(), user, "TODO:")
 		if err != nil {
 			s.serverError(w, r, fmt.Errorf("creating user session: %v", err))
 			return

@@ -111,8 +111,8 @@ func (s User) UpdateUser(ctx context.Context, u model.User) error {
 	return s.ur.Update(ctx, u)
 }
 
-func (s User) CreateUserSession(ctx context.Context, u model.User) (model.UserSession, error) {
-	return s.sess.CreateUserSession(ctx, u)
+func (s User) CreateUserSession(ctx context.Context, u model.User, IP string) (model.UserSession, error) {
+	return s.sess.CreateUserSession(ctx, u, IP)
 }
 
 func (s User) GetUserFromSessionID(ctx context.Context, sessID string) (model.User, error) {
