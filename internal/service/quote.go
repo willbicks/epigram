@@ -27,6 +27,11 @@ func NewQuoteService(repo QuoteRepository) Quote {
 }
 
 func (s *Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
+
+	if err := verifyUserPrivlege(ctx); err != nil {
+		return err
+	}
+
 	var err ServiceError
 	if q.Quote == "" {
 		err.addIssue("Quote must not be blank.")
@@ -45,6 +50,10 @@ func (s *Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
 }
 
 func (s *Quote) GetAllQuotes(ctx context.Context) ([]model.Quote, error) {
+	if err := verifyUserPrivlege(ctx); err != nil {
+		return nil, err
+	}
+
 	quotes, err := s.repo.FindAll(ctx)
 	return quotes, err
 }
