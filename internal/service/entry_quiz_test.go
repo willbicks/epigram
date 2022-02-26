@@ -1,7 +1,11 @@
 package service
 
 import (
+	"context"
 	"testing"
+
+	"github.com/willbicks/epigram/internal/ctxval"
+	"github.com/willbicks/epigram/internal/model"
 )
 
 func TestNewEntryQuizService(t *testing.T) {
@@ -81,6 +85,9 @@ func TestNewEntryQuizService(t *testing.T) {
 
 func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 
+	ctxNoUser := context.Background()
+	ctxSignedIn := ctxval.ContextWithUser(context.Background(), model.User{ID: "f00"})
+
 	service1 := NewEntryQuizService([]QuizQuestion{
 		{
 			Question: "the best place to find a fox",
@@ -106,57 +113,72 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 	tests := []struct {
 		name       string
 		eq         EntryQuiz
+		ctx        context.Context
 		answers    map[int]string
 		wantPassed bool
+		wantErr    bool
 	}{
 		{
 			name:       "1 Quesion - no answers",
+			ctx:        ctxSignedIn,
 			eq:         service1,
 			answers:    map[int]string{},
 			wantPassed: false,
+			wantErr:    false,
 		},
 		{
 			name: "1 Quesion - wrong",
+			ctx:  ctxSignedIn,
 			eq:   service1,
 			answers: map[int]string{
 				0: "ocean",
 			},
 			wantPassed: false,
+			wantErr:    false,
 		},
 		{
 			name: "1 Quesion - too many answers",
+			ctx:  ctxSignedIn,
 			eq:   service1,
 			answers: map[int]string{
 				0: "ocean",
 				1: "claimant",
 			},
 			wantPassed: false,
+			wantErr:    false,
 		},
 		{
 			name: "1 Quesion - right answer",
+			ctx:  ctxSignedIn,
 			eq:   service1,
 			answers: map[int]string{
 				0: "PANeL",
 			},
 			wantPassed: true,
+			wantErr:    false,
 		},
 		{
 			name:       "3 Quesion - no answer",
+			ctx:        ctxSignedIn,
 			eq:         service3,
 			answers:    map[int]string{},
 			wantPassed: false,
+			wantErr:    false,
 		},
 		{
 			name: "3 Quesion - not enough answers",
+			ctx:  ctxSignedIn,
 			eq:   service3,
 			answers: map[int]string{
 				0: "woods",
 				2: "washington",
 			},
 			wantPassed: false,
+			wantErr:    false,
 		},
 		{
 			name: "3 Quesion - wrong 1",
+			ctx:  ctxSignedIn,
 			eq:   service3,
 			answers: map[int]string{
 				0: "woods",
@@ -164,9 +186,11 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 				2: "washington",
 			},
 			wantPassed: false,
+			wantErr:    false,
 		},
 		{
 			name: "3 Quesion - too many answers",
+			ctx:  ctxSignedIn,
 			eq:   service3,
 			answers: map[int]string{
 				0: "ocean",
@@ -175,9 +199,11 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 				3: "RANGES",
 			},
 			wantPassed: false,
+			wantErr:    false,
 		},
 		{
 			name: "3 Quesion - right",
+			ctx:  ctxSignedIn,
 			eq:   service3,
 			answers: map[int]string{
 				0: "woods",
@@ -185,11 +211,28 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 				2: "washingTON",
 			},
 			wantPassed: true,
+			wantErr:    false,
+		},
+		{
+			name: "3 Quesion - right, not signed in",
+			ctx:  ctxNoUser,
+			eq:   service3,
+			answers: map[int]string{
+				0: "woods",
+				1: "THREE",
+				2: "washingTON",
+			},
+			wantPassed: false,
+			wantErr:    true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if gotPassed := tt.eq.VerifyAnswers(tt.answers); gotPassed != tt.wantPassed {
+			gotPassed, err := tt.eq.VerifyAnswers(tt.ctx, tt.answers)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("EntryQuiz.VerifyAnswers() unexpected error value")
+			}
+			if gotPassed != tt.wantPassed {
 				t.Errorf("EntryQuiz.VerifyAnswers() = %v, want %v", gotPassed, tt.wantPassed)
 			}
 		})

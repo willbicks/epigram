@@ -45,7 +45,11 @@ func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		u := ctxval.UserFromContext(r.Context())
-		passed := s.QuizService.VerifyAnswers(answers)
+		passed, err := s.QuizService.VerifyAnswers(r.Context(), answers)
+		if err != nil {
+			s.serverError(w, r, err)
+		}
+
 		failReason, err := s.UserService.RecordQuizAttempt(r.Context(), &u, passed)
 		if err != nil {
 			s.serverError(w, r, err)

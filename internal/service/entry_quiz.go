@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"strings"
 )
 
@@ -37,7 +38,12 @@ func NewEntryQuizService(entryQuestions []QuizQuestion) EntryQuiz {
 
 // VerifyAnswers accepts a map of question IDs and string responses, and checks them
 // against the correct answers, and returns whether or not they match the expectation.
-func (eq EntryQuiz) VerifyAnswers(answers map[int]string) (passed bool) {
+func (eq EntryQuiz) VerifyAnswers(ctx context.Context, answers map[int]string) (passed bool, err error) {
+
+	if err := verifySignedIn(ctx); err != nil {
+		return false, err
+	}
+
 	var wrongAnswer bool
 	for _, q := range eq.Questions {
 		if !strings.EqualFold(q.Answer, answers[q.Id]) {
@@ -45,5 +51,5 @@ func (eq EntryQuiz) VerifyAnswers(answers map[int]string) (passed bool) {
 		}
 	}
 
-	return !wrongAnswer
+	return !wrongAnswer, nil
 }
