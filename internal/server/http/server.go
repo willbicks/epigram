@@ -14,9 +14,16 @@ import (
 )
 
 type Config struct {
-	RootTD     TemplateData
-	BaseURL    string
+	RootTD RootTD
+	// BaseURL is the complete domain and path to access the root of this server, used for creating
+	// callback URLs.
+	BaseURL string
+	// TrustProxy determines whether X-Forwarded-For header should be trusted to obtain the client IP,
+	// or if the requestor IP shoud be used instead.
 	TrustProxy bool
+	// routes is a struct which stores the url paths to each page,
+	// and should be used in place of magic strings to represent routes.
+	routes routeStruct
 }
 type QuoteServer struct {
 	mux   *http.ServeMux
@@ -54,6 +61,13 @@ func (s *QuoteServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
 	}
 
 	// Initialize server routes
+	s.Config.routes = routeStruct{
+		Home:   "/",
+		Quotes: "/quotes",
+		Quiz:   "/quiz",
+		Login:  "/login",
+	}
+	s.Config.RootTD.Routes = s.Config.routes
 	s.routes(pubFS)
 
 	return nil

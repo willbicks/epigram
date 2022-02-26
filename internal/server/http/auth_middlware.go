@@ -14,6 +14,7 @@ func (s *QuoteServer) interpretSession(next http.Handler) http.Handler {
 		c, err := r.Cookie(sessionCookieName)
 		if err != nil {
 			// unable to read cookie (probably not set / no session)
+			s.Logger.Debug("session cookie not found")
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -33,26 +34,26 @@ func (s *QuoteServer) interpretSession(next http.Handler) http.Handler {
 
 // requireLoggedIn requires that the request has a valid session which has been translated to a user.
 // If the user is not logged in, they will be redirected to the login page.
-func requireLoggedIn(next http.Handler) http.Handler {
+func (s *QuoteServer) requireLoggedIn(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		u := ctxval.UserFromContext(r.Context())
 		if u.ID != "" {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, paths.login, http.StatusFound)
+			http.Redirect(w, r, s.Config.routes.Login, http.StatusFound)
 		}
 	})
 }
 
 // requireQuizPassed requires that the user has passed the entry quiz before proceeding, and if not,
 // redirects them to the quiz page.
-func requireQuizPassed(next http.Handler) http.Handler {
+func (s *QuoteServer) requireQuizPassed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		u := ctxval.UserFromContext(r.Context())
 		if u.QuizPassed {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, paths.quiz, http.StatusFound)
+			http.Redirect(w, r, s.Config.routes.Quiz, http.StatusFound)
 		}
 	})
 }

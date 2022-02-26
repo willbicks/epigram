@@ -78,15 +78,15 @@ func (s QuoteServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
 		}
 
 		http.SetCookie(w, &http.Cookie{
-			Name:     sessionCookieName,
-			Value:    sess.ID,
-			Path:     "/",
-			Secure:   r.TLS != nil,
-			SameSite: http.SameSiteStrictMode,
+			Name:   sessionCookieName,
+			Value:  sess.ID,
+			Path:   "/",
+			Secure: r.TLS != nil,
+			//SameSite: http.SameSiteStrictMode, // breaks redirect from after oidc callback?
 			HttpOnly: true,
 			// Session expires on client one hour before server to account for sync differences.
 			Expires: sess.Expires.Add(-time.Hour),
 		})
-		http.Redirect(w, r, paths.home, http.StatusFound)
+		http.Redirect(w, r, s.Config.routes.Quotes, http.StatusFound)
 	})
 }

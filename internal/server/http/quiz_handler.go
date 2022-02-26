@@ -56,7 +56,7 @@ func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if u.QuizPassed {
-			http.Redirect(w, r, paths.home, http.StatusFound)
+			http.Redirect(w, r, s.Config.routes.Quotes, http.StatusFound)
 			return
 		} else {
 			err := s.renderPage(w, "quiz.gohtml", quizTD{
