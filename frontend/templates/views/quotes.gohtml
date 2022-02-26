@@ -1,0 +1,65 @@
+{{template "base" .}}
+
+{{define "body"}}
+	<div class="section text-center">
+		<h1 class="h1">💬 {{.Title}}</h1>
+	</div>
+	<div class="section my-8">
+		<form action="/" method="post">
+			<h2 class="text-2xl font-bold">Submit a new quote:</h2>
+
+			{{ template "error" .Page.Error }}
+
+			<div class="mt-8 max-w-md">
+				<div class="grid grid-cols-1 gap-6">
+					<label class="block">
+						<span class="text-gray-700">Quote</span>
+						<textarea name="quote" class="mt-1 block w-full" rows="3">{{.Page.Quote.Quote}}</textarea>
+					</label>
+					<label class="block">
+						<span class="text-gray-700">Subtitle / context (optional)</span>
+						<input name="context" type="text" class="mt-1 block w-full" placeholder="bullying Josh" value="{{.Page.Quote.Context}}" />
+					</label>
+					<label class="block">
+						<span class="text-gray-700">Said by</span>
+						<input name="quotee" type="text" class="mt-1 block w-full" placeholder="Jaustin Ross" value="{{.Page.Quote.Quotee}}" />
+					</label>
+					<input class="button" type="submit" value="Submit"/> 
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="wide-section my-12">
+		{{ $byYear := quotesByYear .Page.Quotes }}
+		{{ range $year := orderedYearKeys $byYear }}
+			<h3 class="text-3xl mb-4">{{ $year }}</h3>
+			<hr class="mb-4" />
+			<div class="masonry-container mb-6">
+				{{ range index $byYear $year }}
+					<div class="bg-gray-100 p-4">
+						{{with .Context}}<p class="text-lg font-light lowercase mb-3">{{.}}</p>{{end}}
+						<p class="text-xl text-gray-800 font-medium mb-3">{{.Quote}}</p>
+						<p class="text-xl text-gray-600 font-medium text-right">- {{.Quotee}}</p>
+					</div>
+				{{ end }}
+			</div>
+		{{end}}
+	</div>
+{{end}}
+
+{{define "scripts"}}
+	<script src="/static/scripts/macy.js"></script>
+	<script>
+		var masonry = Macy({
+			container: '.masonry-container',
+			mobileFirst: true,
+			columns:1 ,
+			margin: 16,
+			breakAt: {
+				768: 2,
+				1024: 3,
+				1280: 4
+			}
+		})
+	</script>
+{{end}}

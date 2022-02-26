@@ -100,8 +100,9 @@ func main() {
 		// TODO: Can viper.Unmarshall be used here?
 		Config: quote_server.Config{
 			BaseURL: viper.GetString("baseURL"),
-			RootTD: quote_server.TemplateData{
-				Title: viper.GetString("title"),
+			RootTD: quote_server.RootTD{
+				Title:       viper.GetString("title"),
+				Description: viper.GetString("description"),
 			},
 		},
 	}
