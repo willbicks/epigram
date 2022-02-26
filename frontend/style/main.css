@@ -4,10 +4,10 @@
 
 @layer components {
     .section {
-        @apply mx-auto md:max-w-4xl py-6;
+        @apply w-full mx-auto md:max-w-4xl py-6;
     }
     .wide-section {
-        @apply mx-auto md:max-w-4xl lg:max-w-7xl py-6;
+        @apply w-full mx-auto md:max-w-4xl lg:max-w-7xl py-6;
     }
     .h1 {
         @apply text-5xl font-medium leading-tight mt-0 mb-2;

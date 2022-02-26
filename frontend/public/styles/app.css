@@ -626,6 +626,7 @@ select {
 .section {
   margin-left: auto;
   margin-right: auto;
+  width: 100%;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 }
@@ -638,6 +639,7 @@ select {
 .wide-section {
   margin-left: auto;
   margin-right: auto;
+  width: 100%;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 }
@@ -720,8 +722,9 @@ select {
   -webkit-text-decoration-color: #60a5fa;
           text-decoration-color: #60a5fa;
 }
-.m-auto {
-  margin: auto;
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
 .my-12 {
   margin-top: 3rem;
@@ -731,9 +734,8 @@ select {
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
+.mb-6 {
+  margin-bottom: 1.5rem;
 }
 .mt-8 {
   margin-top: 2rem;
@@ -743,9 +745,6 @@ select {
 }
 .mb-4 {
   margin-bottom: 1rem;
-}
-.mb-6 {
-  margin-bottom: 1.5rem;
 }
 .mb-3 {
   margin-bottom: 0.75rem;
@@ -764,9 +763,6 @@ select {
 }
 .w-full {
   width: 100%;
-}
-.w-2\/5 {
-  width: 40%;
 }
 .max-w-md {
   max-width: 28rem;
@@ -815,10 +811,6 @@ select {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 }
-.px-12 {
-  padding-left: 3rem;
-  padding-right: 3rem;
-}
 .px-10 {
   padding-left: 2.5rem;
   padding-right: 2.5rem;
@@ -829,9 +821,6 @@ select {
 .text-right {
   text-align: right;
 }
-.align-middle {
-  vertical-align: middle;
-}
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -840,6 +829,10 @@ select {
   font-size: 3rem;
   line-height: 1;
 }
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
@@ -847,10 +840,6 @@ select {
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
-}
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
 }
 .font-bold {
   font-weight: 700;
