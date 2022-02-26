@@ -14,8 +14,9 @@ import (
 )
 
 type Config struct {
-	RootTD  TemplateData
-	BaseURL string
+	RootTD     TemplateData
+	BaseURL    string
+	TrustProxy bool
 }
 type QuoteServer struct {
 	mux   *http.ServeMux
@@ -85,5 +86,5 @@ func (s *QuoteServer) StuffFakeData() {
 }
 
 func (s QuoteServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s.interpretSession(s.mux).ServeHTTP(w, r)
+	s.interpretSession(s.getIP(s.mux)).ServeHTTP(w, r)
 }

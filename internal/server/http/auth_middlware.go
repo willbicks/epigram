@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/willbicks/epigram/internal/ctxval"
 )
@@ -53,5 +54,23 @@ func requireQuizPassed(next http.Handler) http.Handler {
 		} else {
 			http.Redirect(w, r, paths.quiz, http.StatusFound)
 		}
+	})
+}
+
+// getIp gets the IP of client making the request (using Config.TrustProxy to determine whether
+// to use the X-Forwarded-For header), and stores it in the context of the request passed to the,
+// next handler.
+func (s *QuoteServer) getIP(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var ip string
+
+		if s.Config.TrustProxy {
+			ip = strings.Split(r.Header.Get("X-Forwarded-For"), ",")[0]
+		} else {
+			ip = r.RemoteAddr
+		}
+
+		ctx := ctxval.ContextWithIP(r.Context(), ip)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
