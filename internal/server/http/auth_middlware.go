@@ -2,6 +2,8 @@ package http
 
 import (
 	"net/http"
+
+	"github.com/willbicks/epigram/internal/ctxval"
 )
 
 // interpretSession wraps the request's context with the authenticated user, if they are known.
@@ -23,7 +25,7 @@ func (s *QuoteServer) interpretSession(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := ContextWithUser(r.Context(), u)
+		ctx := ctxval.ContextWithUser(r.Context(), u)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -32,7 +34,7 @@ func (s *QuoteServer) interpretSession(next http.Handler) http.Handler {
 // If the user is not logged in, they will be redirected to the login page.
 func requireLoggedIn(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		u := UserFromContext(r.Context())
+		u := ctxval.UserFromContext(r.Context())
 		if u.ID != "" {
 			next.ServeHTTP(w, r)
 		} else {
@@ -45,7 +47,7 @@ func requireLoggedIn(next http.Handler) http.Handler {
 // redirects them to the quiz page.
 func requireQuizPassed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		u := UserFromContext(r.Context())
+		u := ctxval.UserFromContext(r.Context())
 		if u.QuizPassed {
 			next.ServeHTTP(w, r)
 		} else {

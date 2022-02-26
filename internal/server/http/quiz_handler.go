@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/willbicks/epigram/internal/ctxval"
 	"github.com/willbicks/epigram/internal/service"
 )
 
@@ -43,7 +44,7 @@ func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 			answers[id] = value[0]
 		}
 
-		u := UserFromContext(r.Context())
+		u := ctxval.UserFromContext(r.Context())
 		passed := s.QuizService.VerifyAnswers(answers)
 		failReason, err := s.UserService.RecordQuizAttempt(r.Context(), &u, passed)
 		if err != nil {
