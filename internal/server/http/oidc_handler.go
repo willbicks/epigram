@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/willbicks/epigram/internal/ctxval"
 	"github.com/willbicks/epigram/internal/service"
 )
 
@@ -68,7 +69,9 @@ func (s QuoteServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
 			return
 		}
 
-		sess, err := s.UserService.CreateUserSession(r.Context(), user, "TODO:")
+		ip := ctxval.IPFromContext(r.Context())
+
+		sess, err := s.UserService.CreateUserSession(r.Context(), user, ip)
 		if err != nil {
 			s.serverError(w, r, fmt.Errorf("creating user session: %v", err))
 			return
