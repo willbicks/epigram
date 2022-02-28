@@ -111,8 +111,6 @@ func main() {
 		log.Fatalf("ciritical error while initializing server: %v", err)
 	}
 
-	//cs.StuffFakeData()
-
 	port := viper.GetInt("Port")
 	log.Infof("Running server at http://localhost:%v ...", port)
 	s := http.Server{
