@@ -3,6 +3,7 @@ config.yml
 
 # database files
 *.db
+*.json
 
 # compiled binaries
 *.exe
