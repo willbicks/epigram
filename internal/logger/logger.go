@@ -40,12 +40,16 @@ type Logger struct {
 	Level    Level
 }
 
-func New(out io.Writer) Logger {
+func New(out io.Writer, timestamp bool) Logger {
+	var flags int
+	if timestamp {
+		flags = log.Ldate | log.Ltime
+	}
 	return Logger{
-		debugLog: log.New(out, colorCyan+"DEBUG \t"+colorReset, log.Ldate|log.Ltime),
-		infoLog:  log.New(out, colorBlue+"INFO \t"+colorReset, log.Ldate|log.Ltime),
-		warnLog:  log.New(out, colorYellow+"WARN \t"+colorReset, log.Ldate|log.Ltime),
-		fatalLog: log.New(out, colorRed+"FATAL \t"+colorReset, log.Ldate|log.Ltime),
+		debugLog: log.New(out, colorCyan+"DEBUG \t"+colorReset, flags),
+		infoLog:  log.New(out, colorBlue+"INFO \t"+colorReset, flags),
+		warnLog:  log.New(out, colorYellow+"WARN \t"+colorReset, flags),
+		fatalLog: log.New(out, colorRed+"FATAL \t"+colorReset, flags),
 	}
 }
 

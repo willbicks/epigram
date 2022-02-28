@@ -33,7 +33,7 @@ func main() {
 	viper.AddConfigPath(".") // TODO: establish other configuration paths
 
 	// Initialize logger
-	log := logger.New(os.Stdout)
+	log := logger.New(os.Stdout, true)
 	log.Level = logger.LevelDebug
 
 	if err := viper.ReadInConfig(); err != nil {
