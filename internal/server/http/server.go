@@ -5,10 +5,11 @@ import (
 	"io/fs"
 	"net/http"
 
+	"github.com/NYTimes/gziphandler"
+	"github.com/spf13/viper"
+
 	"github.com/willbicks/epigram/internal/logger"
 	"github.com/willbicks/epigram/internal/service"
-
-	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -72,5 +73,5 @@ func (s *QuoteServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
 }
 
 func (s QuoteServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s.interpretSession(s.getIP(s.mux)).ServeHTTP(w, r)
+	gziphandler.GzipHandler(s.interpretSession(s.getIP(s.mux))).ServeHTTP(w, r)
 }

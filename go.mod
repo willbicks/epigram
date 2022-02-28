@@ -12,6 +12,7 @@ require (
 )
 
 require (
+	github.com/NYTimes/gziphandler v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
