@@ -50,16 +50,21 @@
 {{define "scripts"}}
 	<script src="/static/scripts/macy.js"></script>
 	<script>
-		var masonry = Macy({
-			container: '.masonry-container',
-			mobileFirst: true,
-			columns:1 ,
-			margin: 16,
-			breakAt: {
-				768: 2,
-				1024: 3,
-				1280: 4
-			}
-		})
+		var macyInstances = []
+
+		document.querySelectorAll('.masonry-container').forEach((ctr) => {
+			//macyOptions.container = ctr
+			macyInstances.push(Macy({
+				container: ctr,
+				mobileFirst: true,
+				columns: 1,
+				margin: 16,
+				breakAt: {
+					768: 2,
+					1024: 3,
+					1280: 4
+				}
+			}))
+		});
 	</script>
 {{end}}
