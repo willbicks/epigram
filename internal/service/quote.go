@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/willbicks/epigram/internal/ctxval"
 	"github.com/willbicks/epigram/internal/model"
 
 	"github.com/rs/xid"
@@ -46,6 +47,7 @@ func (s *Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
 
 	q.ID = xid.New().String()
 	q.Created = time.Now()
+	q.SubmitterID = ctxval.UserFromContext(ctx).ID
 	return s.repo.Create(ctx, *q)
 }
 
