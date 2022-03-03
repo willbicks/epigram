@@ -4,13 +4,13 @@
 	<div class="section text-center">
 		<h1 class="h1">💬 {{.Title}}</h1>
 	</div>
-	<div class="section my-8">
+	<div class="section my-8 max-w-md">
 		<form action="{{.Routes.Quotes}}" method="post">
-			<h2 class="text-2xl font-bold">Submit a new quote:</h2>
+			<h2 class="text-3xl font-semibold text-center">Submit a new quote:</h2>
 
 			{{ template "error" .Page.Error }}
 
-			<div class="mt-8 max-w-md">
+			<div class="mt-8">
 				<div class="grid grid-cols-1 gap-6">
 					<label class="block">
 						<span class="text-gray-700">Quote</span>
