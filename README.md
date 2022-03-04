@@ -12,7 +12,9 @@ Epigram is a simple web service for communities to immortalize the enlightening,
 
 Epigram is still in early stages of development, and should be considered a work in progress.
 
-## Installation
+## Usage
+
+### Installation
 
 Epigram can be compiled and installed directly from source as follows:
 
@@ -22,9 +24,15 @@ go install github.com/willbicks/epigram@latest
 
 Alternatively, pre-compiled binaries can be downloaded from the [releases section.](#TODO)
 
-## Usage
+### Configuration
 
-TODO
+Epigram expects a `config.yml` in the same directory as it is run, or in the location specified by the `--cfg` flag (coming soon).
+
+TODO: Explain config file contents.
+
+## Documentation
+
+- [Project Structure / Architecture](docs/structure.md)
 
 ## Contributing
 
