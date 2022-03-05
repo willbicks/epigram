@@ -79,6 +79,8 @@ func main() {
 	log.Infof("Sucessfully migrated %v out of %v legacy quotes.", successful, total)
 }
 
+// initSqliteRepo accepts an sqlite db conncetion, creates a user and quote repository,
+// creates a user to own migrated quotes, and returns the user and quote repo.
 func initSqliteRepo(db *sql.DB) (*sqlite.QuoteRepository, *model.User, error) {
 	mc := &sqlite.MigrationController{}
 

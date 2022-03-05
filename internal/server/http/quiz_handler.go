@@ -16,7 +16,8 @@ type quizTD struct {
 	Questions    []service.QuizQuestion
 }
 
-// quizHandler handles requests to the quizpage (/)
+// quizHandler handles requests to the quizPage, either GET requests to render the page,
+// or POST requests to submit attempts.
 func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":

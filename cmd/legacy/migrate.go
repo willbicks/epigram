@@ -57,8 +57,10 @@ func findQuoteArray(log logger.Logger, jMsg json.RawMessage) map[string]legacyQu
 	return nil
 }
 
+// migrateQuote takes a legacy quote, normalizes the timestamp precision, and migrates it
+// to a epigram model.Quote. Returns error if cannot be stored by repository.
 func migrateQuote(repo *sqlite.QuoteRepository, uid string, q legacyQuote) error {
-	// Normize unix timecode precision. If number of digits is less than 12, it is likely
+	// Normize unix timestamp precision. If number of digits is less than 12, it is likely
 	// in seconds format instead of milliscond, and should be multiplied by 1000 to convert.
 	if q.Date < 1000000000000 {
 		q.Date = q.Date * 1000

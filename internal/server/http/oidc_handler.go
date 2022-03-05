@@ -14,28 +14,32 @@ import (
 
 const sessionCookieName = "sess"
 
-// randString is a helper function used by OIDC to generate random strings for state and nonce.
-func randString(nByte int) (string, error) {
-	b := make([]byte, nByte)
-	if _, err := io.ReadFull(rand.Reader, b); err != nil {
-		return "", err
-	}
-	return base64.RawURLEncoding.EncodeToString(b), nil
-}
+// oidcLoginHandler generates state and nonce keys, adds them to the client, and redirects to the
+// oidc provider for authentication
+func (s *QuoteServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
 
-// setCallbackCookie is a helper function used to create secure cookes containing state and nonce information.
-func setCallbackCookie(w http.ResponseWriter, r *http.Request, name, value string) {
-	c := &http.Cookie{
-		Name:     name,
-		Value:    value,
-		MaxAge:   int(time.Hour.Seconds()),
-		Secure:   r.TLS != nil,
-		HttpOnly: true,
+	// randString is a helper function used by OIDC to generate random strings for state and nonce.
+	randString := func(nByte int) (string, error) {
+		b := make([]byte, nByte)
+		if _, err := io.ReadFull(rand.Reader, b); err != nil {
+			return "", err
+		}
+		return base64.RawURLEncoding.EncodeToString(b), nil
 	}
-	http.SetCookie(w, c)
-}
 
-func (s QuoteServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
+	// setCallbackCookie is a helper function used to create secure cookes containing state and nonce information.
+	setCallbackCookie := func(w http.ResponseWriter, r *http.Request, name, value string) {
+		c := &http.Cookie{
+			Name:     name,
+			Value:    value,
+			MaxAge:   int(time.Hour.Seconds()),
+			Secure:   r.TLS != nil,
+			HttpOnly: true,
+		}
+		http.SetCookie(w, c)
+	}
+
+	// http handler func to set coookies and redirect to provider
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		state, err := randString(16)
 		if err != nil {
@@ -54,11 +58,11 @@ func (s QuoteServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
 	})
 }
 
-func (s QuoteServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
+// oidcCallbackHandler handles callbacks from the OIDC provider
+func (s *QuoteServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token, err := oidc.ValidateCallback(*r)
 		if err != nil {
-			// TODO: use error handler helper to use ServiceError StatusCode when available
 			s.serverError(w, r, fmt.Errorf("validating callback: %v", err))
 			return
 		}

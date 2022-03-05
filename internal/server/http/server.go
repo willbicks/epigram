@@ -38,6 +38,8 @@ type QuoteServer struct {
 	Config Config
 }
 
+// Init initalizes the quote server, including Google OIDC proivder, http ServerMux, creates a cache of html templates,
+// and initializes server routes.
 func (s *QuoteServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
 	// Initialize service for Google OpenID COnnect
 	s.gOIDC = service.OIDC{
@@ -54,7 +56,6 @@ func (s *QuoteServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
 	s.mux = http.NewServeMux()
 
 	// Create a new template cache for page views
-
 	if err := s.initViewCache(tmplFS); err != nil {
 		return err
 	}
@@ -72,6 +73,8 @@ func (s *QuoteServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
 	return nil
 }
 
+// ServeHTTP serves as the entrypoint for HTTP requests to the quote server. It applies the appropriate globalmiddleware,
+// and then serves request responses using the http ServeMux
 func (s QuoteServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	gziphandler.GzipHandler(s.interpretSession(s.getIP(s.mux))).ServeHTTP(w, r)
 }

@@ -13,7 +13,8 @@ type quotesTD struct {
 	Quotes []model.Quote
 }
 
-// quotesHandler handles requests to the quotes page
+// quotesHandler handles requests to the quotes page, either GET requests to render
+// quotes, or POST requests to submit a new quote
 func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
