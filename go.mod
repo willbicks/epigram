@@ -3,6 +3,7 @@ module github.com/willbicks/epigram
 go 1.17
 
 require (
+	github.com/NYTimes/gziphandler v1.1.1
 	github.com/coreos/go-oidc/v3 v3.1.0
 	github.com/matryer/is v1.4.0
 	github.com/mattn/go-sqlite3 v1.14.11
@@ -12,7 +13,6 @@ require (
 )
 
 require (
-	github.com/NYTimes/gziphandler v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
