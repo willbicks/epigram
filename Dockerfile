@@ -22,8 +22,8 @@ RUN go mod download
 
 RUN go build github.com/mattn/go-sqlite3
 
-COPY . .
-COPY ./internal/server/http/frontend/templates ./internal/server/http/frontend/templates 
+COPY ./cmd/server ./cmd/server
+COPY ./internal ./internal
 COPY --from=node /frontend/public ./internal/server/http/frontend/public
 
 RUN go build -ldflags '-extldflags "-static"' -o ./epigram-server ./cmd/server
