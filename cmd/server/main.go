@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/willbicks/epigram/internal/logger"
@@ -19,15 +19,18 @@ import (
 )
 
 func main() {
-	// Viper Configuration Management
-	viper.SetDefault("Port", 8080)
-	viper.SetDefault("database", "inmemory")
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".") // TODO: establish other configuration paths
-
 	// Initialize logger
 	log := logger.New(os.Stdout, true)
 	log.Level = logger.LevelDebug
+
+	// Viper Configuration Management
+	viper.SetDefault("Port", 8080)
+	viper.SetDefault("Bind", "0.0.0.0")
+	viper.SetDefault("database", "inmemory")
+	viper.SetDefault("sqlite-db", "/var/epigram/database.db")
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("/etc/epigram")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
@@ -51,7 +54,7 @@ func main() {
 		quoteRepo = inmemory.NewQuoteRepository()
 	case "sqlite":
 		mc := &sqlite.MigrationController{}
-		db, err := sql.Open("sqlite3", "file:./database.db?cache=shared&mode=rwc")
+		db, err := sql.Open("sqlite3", fmt.Sprint("file:", viper.GetString("sqlite-db"), "?cache=shared&mode=rwc"))
 		if err != nil {
 			log.Fatalf("unable to open database: %v", err)
 		}
@@ -93,10 +96,10 @@ func main() {
 		log.Fatalf("ciritical error while initializing server: %v", err)
 	}
 
-	port := viper.GetInt("Port")
-	log.Infof("Running server at http://localhost:%v ...", port)
+	addr := fmt.Sprintf("%s:%d", viper.GetString("bind"), viper.GetInt("port"))
+	log.Infof("Running server at %s ...", addr)
 	s := http.Server{
-		Addr:              "localhost:" + strconv.Itoa(port),
+		Addr:              addr,
 		ReadTimeout:       1 * time.Second,
 		WriteTimeout:      1 * time.Second,
 		IdleTimeout:       30 * time.Second,
