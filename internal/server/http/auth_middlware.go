@@ -40,7 +40,7 @@ func (s *QuoteServer) requireLoggedIn(next http.Handler) http.Handler {
 		if u.ID != "" {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, s.Config.routes.Login, http.StatusFound)
+			http.Redirect(w, r, s.config.paths.Login, http.StatusFound)
 		}
 	})
 }
@@ -53,7 +53,7 @@ func (s *QuoteServer) requireQuizPassed(next http.Handler) http.Handler {
 		if u.QuizPassed {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, s.Config.routes.Quiz, http.StatusFound)
+			http.Redirect(w, r, s.config.paths.Quiz, http.StatusFound)
 		}
 	})
 }
@@ -65,7 +65,7 @@ func (s *QuoteServer) getIP(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var ip string
 
-		if s.Config.TrustProxy {
+		if s.config.TrustProxy {
 			ip = strings.Split(r.Header.Get("X-Forwarded-For"), ",")[0]
 		} else {
 			ip = r.RemoteAddr

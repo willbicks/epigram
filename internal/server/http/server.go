@@ -1,19 +1,19 @@
 package http
 
 import (
-	"html/template"
-	"io/fs"
 	"net/http"
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/spf13/viper"
 
 	"github.com/willbicks/epigram/internal/logger"
+	"github.com/willbicks/epigram/internal/server/http/frontend"
+	"github.com/willbicks/epigram/internal/server/http/paths"
 	"github.com/willbicks/epigram/internal/service"
 )
 
 type Config struct {
-	RootTD RootTD
+	RootTD frontend.RootTD
 	// BaseURL is the complete domain and path to access the root of this server, used for creating
 	// callback URLs.
 	BaseURL string
@@ -22,11 +22,11 @@ type Config struct {
 	TrustProxy bool
 	// routes is a struct which stores the url paths to each page,
 	// and should be used in place of magic strings to represent routes.
-	routes routeStruct
+	paths paths.Paths
 }
 type QuoteServer struct {
-	mux   *http.ServeMux
-	views map[string]*template.Template
+	mux  *http.ServeMux
+	tmpl frontend.TemplateEngine
 
 	Logger logger.Logger
 
@@ -35,12 +35,17 @@ type QuoteServer struct {
 	QuizService  service.EntryQuiz
 	gOIDC        service.OIDC
 
-	Config Config
+	config Config
 }
 
-// Init initalizes the quote server, including Google OIDC proivder, http ServerMux, creates a cache of html templates,
-// and initializes server routes.
-func (s *QuoteServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
+// Init initalizes the quote server, including Google OIDC proivder, http ServerMux, template engine,
+// and server routes.
+func (s *QuoteServer) Init(cfg Config) error {
+	// TODO: Fix duplication and sprawl of route configuration, this is wholy uninituitive
+	s.config = cfg
+	s.config.paths = paths.Default()
+	s.config.RootTD.Paths = s.config.paths
+
 	// Initialize service for Google OpenID COnnect
 	s.gOIDC = service.OIDC{
 		Name:         "google",
@@ -48,28 +53,26 @@ func (s *QuoteServer) Init(tmplFS fs.FS, pubFS fs.FS) error {
 		ClientID:     viper.GetString("googleOIDC.clientID"),
 		ClientSecret: viper.GetString("googleOIDC.clientSecret"),
 	}
-	if err := s.gOIDC.Init(viper.GetString("baseURL")); err != nil {
+	if err := s.gOIDC.Init(cfg.BaseURL); err != nil {
 		return err
 	}
 
 	// Create a http mux
 	s.mux = http.NewServeMux()
 
-	// Create a new template cache for page views
-	if err := s.initViewCache(tmplFS); err != nil {
+	// Initialize serve mux
+	pubFS, err := frontend.PublicFS()
+	if err != nil {
 		return err
 	}
-
-	// Initialize server routes
-	s.Config.routes = routeStruct{
-		Home:   "/",
-		Quotes: "/quotes",
-		Quiz:   "/quiz",
-		Login:  "/login",
-	}
-	s.Config.RootTD.Routes = s.Config.routes
 	s.routes(pubFS)
 
+	// Create a new template engine
+	tmpl, err := frontend.NewTemplateEngine(s.config.RootTD)
+	if err != nil {
+		return err
+	}
+	s.tmpl = tmpl
 	return nil
 }
 

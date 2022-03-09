@@ -9,7 +9,7 @@ func (s *QuoteServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 			s.notFoundError(w, r)
 			return
 		}
-		err := s.renderPage(w, "home.gohtml", nil)
+		err := s.tmpl.RenderPage(w, "home.gohtml", nil)
 		if err != nil {
 			s.serverError(w, r, err)
 			return

@@ -23,7 +23,7 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 			s.serverError(w, r, err)
 			return
 		}
-		err = s.renderPage(w, "quotes.gohtml", quotesTD{
+		err = s.tmpl.RenderPage(w, "quotes.gohtml", quotesTD{
 			Quotes: quotes,
 		})
 		if err != nil {
@@ -49,7 +49,7 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 				s.serverError(w, r, err)
 				return
 			}
-			err = s.renderPage(w, "quotes.gohtml", quotesTD{
+			err = s.tmpl.RenderPage(w, "quotes.gohtml", quotesTD{
 				Error:  createErr,
 				Quote:  q,
 				Quotes: quotes,
@@ -60,7 +60,7 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
-		http.Redirect(w, r, s.Config.routes.Quotes, http.StatusFound)
+		http.Redirect(w, r, s.config.paths.Quotes, http.StatusFound)
 	default:
 		s.methodNotAllowedError(w, r)
 		return

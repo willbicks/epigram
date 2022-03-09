@@ -1,11 +1,7 @@
-package http
+package frontend
 
 import (
-	"errors"
 	"html/template"
-	"io"
-	"io/fs"
-	"path/filepath"
 	"sort"
 
 	"github.com/willbicks/epigram/internal/model"
@@ -56,48 +52,4 @@ var templateFuncs template.FuncMap = template.FuncMap{
 		})
 		return years
 	},
-}
-
-// initViewCache initializes a cache of view templates from the provided filesystem in the form of a
-// map relating page view names to complete templates, with components and layouts included.
-func (s *QuoteServer) initViewCache(fileSys fs.FS) error {
-	s.views = make(map[string]*template.Template)
-
-	views, err := fs.Glob(fileSys, "views/*.gohtml")
-	if err != nil {
-		return err
-	}
-
-	for _, view := range views {
-		name := filepath.Base(view)
-		// Parse the view with functions
-		t, err := template.New(name).Funcs(templateFuncs).ParseFS(fileSys, view)
-		if err != nil {
-			return err
-		}
-
-		// Parse associated components and layouts
-		t, err = t.ParseFS(fileSys, "components/*.gohtml", "base.gohtml")
-		if err != nil {
-			return err
-		}
-
-		// Cache the template
-		s.views[name] = t
-
-		// Print templates captured for debug
-		s.Logger.Debugf("cached view %s%v", view, t.DefinedTemplates())
-	}
-
-	return nil
-}
-
-// renderPage renders the specified view with the provided data joined to the RootTD.
-func (s *QuoteServer) renderPage(w io.Writer, name string, data interface{}) error {
-	t, ok := s.views[name]
-	if !ok {
-		return errors.New("template not found in cache")
-	}
-
-	return t.ExecuteTemplate(w, name, s.Config.RootTD.joinPage(data))
 }

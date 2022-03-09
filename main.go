@@ -2,8 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"embed"
-	"io/fs"
 	"net/http"
 	"os"
 	"strconv"
@@ -11,6 +9,7 @@ import (
 
 	"github.com/willbicks/epigram/internal/logger"
 	quote_server "github.com/willbicks/epigram/internal/server/http"
+	"github.com/willbicks/epigram/internal/server/http/frontend"
 	"github.com/willbicks/epigram/internal/service"
 	"github.com/willbicks/epigram/internal/storage/inmemory"
 	"github.com/willbicks/epigram/internal/storage/sqlite"
@@ -18,12 +17,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/viper"
 )
-
-//go:embed frontend/public
-var publicEmbedFS embed.FS
-
-//go:embed frontend/templates
-var templateEmbedFS embed.FS
 
 func main() {
 	// Viper Configuration Management
@@ -46,17 +39,6 @@ func main() {
 
 	var entryQuestions []service.QuizQuestion
 	viper.UnmarshalKey("entryQuestions", &entryQuestions)
-
-	// embedded fs initialization
-	templateFS, err := fs.Sub(templateEmbedFS, "frontend/templates")
-	if err != nil {
-		log.Fatalf("creating templateFS: %v", err)
-	}
-
-	publicFS, err := fs.Sub(publicEmbedFS, "frontend/public")
-	if err != nil {
-		log.Fatalf("creating publicFS: %v", err)
-	}
 
 	var userRepo service.UserRepository
 	var userSessionRepo service.UserSessionRepository
@@ -97,17 +79,17 @@ func main() {
 		UserService:  service.NewUserService(userRepo, userSessionRepo),
 		QuizService:  service.NewEntryQuizService(entryQuestions),
 		Logger:       log,
-		// TODO: Can viper.Unmarshall be used here?
-		Config: quote_server.Config{
-			BaseURL: viper.GetString("baseURL"),
-			RootTD: quote_server.RootTD{
-				Title:       viper.GetString("title"),
-				Description: viper.GetString("description"),
-			},
+	}
+
+	cfg := quote_server.Config{
+		BaseURL: viper.GetString("baseURL"),
+		RootTD: frontend.RootTD{
+			Title:       viper.GetString("title"),
+			Description: viper.GetString("description"),
 		},
 	}
 
-	if err := cs.Init(templateFS, publicFS); err != nil {
+	if err := cs.Init(cfg); err != nil {
 		log.Fatalf("ciritical error while initializing server: %v", err)
 	}
 

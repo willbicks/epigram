@@ -91,6 +91,6 @@ func (s *QuoteServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
 			// Session expires on client one hour before server to account for sync differences.
 			Expires: sess.Expires.Add(-time.Hour),
 		})
-		http.Redirect(w, r, s.Config.routes.Quotes, http.StatusFound)
+		http.Redirect(w, r, s.config.paths.Quotes, http.StatusFound)
 	})
 }

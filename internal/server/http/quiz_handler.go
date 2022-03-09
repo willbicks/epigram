@@ -21,7 +21,7 @@ type quizTD struct {
 func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		err := s.renderPage(w, "quiz.gohtml", quizTD{
+		err := s.tmpl.RenderPage(w, "quiz.gohtml", quizTD{
 			NumQuestions: len(s.QuizService.Questions),
 			Questions:    s.QuizService.Questions,
 		})
@@ -57,10 +57,10 @@ func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if u.QuizPassed {
-			http.Redirect(w, r, s.Config.routes.Quotes, http.StatusFound)
+			http.Redirect(w, r, s.config.paths.Quotes, http.StatusFound)
 			return
 		} else {
-			err := s.renderPage(w, "quiz.gohtml", quizTD{
+			err := s.tmpl.RenderPage(w, "quiz.gohtml", quizTD{
 				NumQuestions: len(s.QuizService.Questions),
 				Questions:    s.QuizService.Questions,
 				Error:        errors.New(failReason),
