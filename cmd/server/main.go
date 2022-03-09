@@ -64,7 +64,7 @@ func main() {
 
 		quoteRepo, err = sqlite.NewQuoteRepository(db, mc)
 		if err != nil {
-			log.Fatalf("unable to create user repo: %v", err)
+			log.Fatalf("unable to create quote repo: %v", err)
 		}
 
 		userSessionRepo, err = sqlite.NewUserSessionRepository(db, mc)
