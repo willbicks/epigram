@@ -1,0 +1,19 @@
+# config files
+config.yml
+
+# database files
+*.db
+/*.json
+
+# compiled binaries
+*.exe
+
+# test coverage
+*.out
+
+# IDE files
+.idea
+.vscode
+
+# git
+.git
