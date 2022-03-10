@@ -1,10 +1,16 @@
 // Package config is responsible for processing global, application configuration specified at the time of execution.
 // Supports both reading from .yml files, and environment variables, the latter taking priority over the former.
+//
+// For more information on configuration and parsing, see https://github.com/willbicks/epigram/blob/main/docs/config.md
 package config
 
-import "strings"
+import (
+	"os"
+	"path"
+	"strings"
+)
 
-// Repository selects one of a few options for data persistance
+// Repository selects one of a few options for data persistence
 type Repository int8
 
 const (
@@ -43,7 +49,7 @@ type Application struct {
 	// Address is an IP address (or hostname) to bind the server to
 	Address string
 	// Port is the port to be bound to on the specified address
-	Port int
+	Port uint16
 	// BaseURL is the complete domain and path to access the root of the web server, used for creating callback URLs
 	BaseURL string `yaml:"baseURL"`
 	// Title is the name of the applicaiton used in the frontend
@@ -97,4 +103,33 @@ func (base Application) merge(layer Application) Application {
 		base.EntryQuestions = layer.EntryQuestions
 	}
 	return base
+}
+
+// Parse layers three config sources to return the final application configuration. First, the default configuration is
+// loaded (which varied based on system operating system). Then, provided yaml is parsed, or if blank, the default
+// config location (again, varies based on os, see default files for more) is searched for a config.yml. Finally, any
+// configuration parameters specified in environment variables are applied, and the resulting Application config is returned.
+func Parse(ymlBytes []byte) (Application, error) {
+	// Load default configuration
+	cfg := Default
+
+	// Merge YAML configuration
+	if len(ymlBytes) == 0 {
+		// load config from default directory
+		var err error
+		ymlBytes, err = os.ReadFile(path.Join(configDir, "config.yml"))
+		if err != nil {
+			return Application{}, err
+		}
+	}
+	layer, err := parseYAML(ymlBytes)
+	if err != nil {
+		return Application{}, err
+	}
+	cfg = cfg.merge(layer)
+
+	// Merge environment configuration
+	cfg = cfg.merge(fromEnvironment())
+
+	return cfg, nil
 }

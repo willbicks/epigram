@@ -2,7 +2,7 @@
 
 package config
 
-// configLoc is the default location to search for config files in
+// configDir is the default location to search for config files in
 const configLoc = "/etc/epigram"
 
 // Default is a default configuration, used as a base for additional configurations to be merged on top of.
