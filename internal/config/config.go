@@ -1,6 +1,8 @@
-// package config is responsible for processing global, application configuration specified at the time of execution.
+// Package config is responsible for processing global, application configuration specified at the time of execution.
 // Supports both reading from .yml files, and environment variables, the latter taking priority over the former.
 package config
+
+import "strings"
 
 // Repository selects one of a few options for data persistance
 type Repository int8
@@ -9,6 +11,18 @@ const (
 	Inmemory Repository = iota + 1
 	SQLite
 )
+
+// repoFromString converts the name of a repository to a variable with type Repository, matching regardless of
+// capitalization, and returning 0 if not valid.
+func repoFromString(str string) Repository {
+	switch strings.ToLower(str) {
+	case "inmemory":
+		return Inmemory
+	case "sqlite":
+		return SQLite
+	}
+	return 0
+}
 
 // OIDCProvider provides configuration to initialize a singular OIDC provider
 type OIDCProvider struct {

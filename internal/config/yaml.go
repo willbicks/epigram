@@ -2,33 +2,24 @@ package config
 
 import (
 	"fmt"
-	"strings"
-
 	"gopkg.in/yaml.v3"
 )
 
-// UnmarshallYAML chooses the apporopriate constant value for an entry of type Repository
+// UnmarshalYAML chooses the appropriate constant value for an entry of type Repository
 func (repo *Repository) UnmarshalYAML(n *yaml.Node) error {
-	var s string
+	var str string
 
-	if err := n.Decode(&s); err != nil {
+	if err := n.Decode(&str); err != nil {
 		return fmt.Errorf("decoding value for repository: %w", err)
 	}
 
-	switch strings.ToLower(s) {
-	case "inmemory":
-		*repo = Inmemory
-	case "sqlite":
-		*repo = SQLite
-	default:
-		return fmt.Errorf("unexpected repository value '%v'", s)
-	}
+	*repo = repoFromString(str)
 
 	return nil
 }
 
-// ParseYAML accepts an array of bytes, and parses it into an Applicaiton configuration
-func ParseYAML(in []byte) (Application, error) {
+// parseYAML accepts an array of bytes, and parses it into an Applicaiton configuration
+func parseYAML(in []byte) (Application, error) {
 	var cfg Application
 
 	if err := yaml.Unmarshal(in, &cfg); err != nil {

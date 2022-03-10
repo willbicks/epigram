@@ -56,7 +56,7 @@ OIDCProvider:
 			name:    "repo-error",
 			yaml:    `repo: invalid`,
 			want:    Application{},
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name: "repo-inmemory",
@@ -98,7 +98,7 @@ OIDCProvider:
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ParseYAML([]byte(tt.yaml))
+			got, err := parseYAML([]byte(tt.yaml))
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ParseYAML() config: \n\tgot  %+v, \n\twant %+v", got, tt.want)
 			}
