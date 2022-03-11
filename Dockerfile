@@ -34,7 +34,9 @@ WORKDIR /server
 
 COPY --from=go /build/epigram-server .
 
-EXPOSE 8080
+ENV EP_PORT=80
+ENV EP_ADDRESS=0.0.0.0
+EXPOSE 80
 
 USER nonroot:nonroot
 
