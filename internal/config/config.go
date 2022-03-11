@@ -106,22 +106,25 @@ func (base Application) merge(layer Application) Application {
 }
 
 // Parse layers three config sources to return the final application configuration. First, the default configuration is
-// loaded (which varied based on system operating system). Then, provided yaml is parsed, or if blank, the default
-// config location (again, varies based on os, see default files for more) is searched for a config.yml. Finally, any
-// configuration parameters specified in environment variables are applied, and the resulting Application config is returned.
-func Parse(ymlBytes []byte) (Application, error) {
+// loaded (which varied based on system operating system). Then, a .yml configuration file is loaded. If the EP_CONFIG
+// env var is set, the yml file is loaded from there, otherwise, it is loaded from the default config location (again,
+//varies based on os, see default files for more). Finally, any configuration parameters specified in environment
+// variables are applied, and the resulting Application config is returned.
+func Parse() (Application, error) {
 	// Load default configuration
 	cfg := Default
 
 	// Merge YAML configuration
-	if len(ymlBytes) == 0 {
-		// load config from default directory
-		var err error
-		ymlBytes, err = os.ReadFile(path.Join(configDir, "config.yml"))
-		if err != nil {
-			return Application{}, err
-		}
+	ymlPath := path.Join(configDir, "config.yml")
+	if p := getEnvVar("config"); p != "" {
+		ymlPath = p
 	}
+
+	ymlBytes, err := os.ReadFile(ymlPath)
+	if err != nil {
+		return Application{}, err
+	}
+
 	layer, err := parseYAML(ymlBytes)
 	if err != nil {
 		return Application{}, err

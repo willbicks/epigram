@@ -23,7 +23,7 @@ func main() {
 	log.Level = logger.LevelDebug
 
 	// Configuration parsing
-	cfg, err := config.Parse(nil)
+	cfg, err := config.Parse()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
