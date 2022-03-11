@@ -37,12 +37,12 @@ func main() {
 	log.Debugf("Opening datatabes with connection string: %s", connstr)
 	db, err := sql.Open("sqlite3", connstr)
 	if err != nil {
-		log.Fatalf("unable to open database: %w", err)
+		log.Fatalf("unable to open database: %v", err)
 	}
 	defer db.Close()
 	repo, u, err := initSqliteRepo(db)
 	if err != nil {
-		log.Fatalf("unable to initialize repository: %w", err)
+		log.Fatalf("unable to initialize repository: %v", err)
 	}
 
 	// process input file
@@ -71,12 +71,12 @@ func main() {
 	for k, v := range quotes {
 		total++
 		if err := migrateQuote(repo, u.ID, v); err != nil {
-			log.Warnf("unable to migrate quote %v: %w", k, err)
+			log.Warnf("unable to migrate quote %v: %v", k, err)
 		} else {
 			successful++
 		}
 	}
-	log.Infof("Sucessfully migrated %v out of %v legacy quotes.", successful, total)
+	log.Infof("Successfully migrated %v out of %v legacy quotes.", successful, total)
 }
 
 // initSqliteRepo accepts an sqlite db conncetion, creates a user and quote repository,
