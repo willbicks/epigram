@@ -6,7 +6,6 @@ import (
 	"github.com/willbicks/epigram/internal/config"
 	"net/http"
 	"os"
-	"path"
 	"time"
 
 	"github.com/willbicks/epigram/internal/logger"
@@ -40,8 +39,7 @@ func main() {
 		quoteRepo = inmemory.NewQuoteRepository()
 	case config.SQLite:
 		mc := &sqlite.MigrationController{}
-		dbPath := path.Join(cfg.DBLoc, "epigram.db")
-		db, err := sql.Open("sqlite3", fmt.Sprint("file:", dbPath, "?cache=shared&mode=rwc"))
+		db, err := sql.Open("sqlite3", fmt.Sprint("file:", cfg.DBLoc, "?cache=shared&mode=rwc"))
 		if err != nil {
 			log.Fatalf("unable to open database: %v", err)
 		}
