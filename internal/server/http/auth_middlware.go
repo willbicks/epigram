@@ -40,7 +40,7 @@ func (s *QuoteServer) requireLoggedIn(next http.Handler) http.Handler {
 		if u.ID != "" {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, s.config.paths.Login, http.StatusFound)
+			http.Redirect(w, r, s.paths.Login, http.StatusFound)
 		}
 	})
 }
@@ -53,19 +53,19 @@ func (s *QuoteServer) requireQuizPassed(next http.Handler) http.Handler {
 		if u.QuizPassed {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, s.config.paths.Quiz, http.StatusFound)
+			http.Redirect(w, r, s.paths.Quiz, http.StatusFound)
 		}
 	})
 }
 
 // getIp gets the IP of client making the request (using Config.TrustProxy to determine whether
-// to use the X-Forwarded-For header), and stores it in the context of the request passed to the,
+// to use the X-Forwarded-For header), and stores it in the context of the request passed to the
 // next handler.
 func (s *QuoteServer) getIP(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var ip string
 
-		if s.config.TrustProxy {
+		if s.Config.TrustProxy {
 			ip = strings.Split(r.Header.Get("X-Forwarded-For"), ",")[0]
 		} else {
 			ip = r.RemoteAddr

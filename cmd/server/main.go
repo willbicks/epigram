@@ -3,19 +3,19 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/willbicks/epigram/internal/config"
 	"net/http"
 	"os"
+	"path"
 	"time"
 
 	"github.com/willbicks/epigram/internal/logger"
-	quote_server "github.com/willbicks/epigram/internal/server/http"
-	"github.com/willbicks/epigram/internal/server/http/frontend"
+	quoteserver "github.com/willbicks/epigram/internal/server/http"
 	"github.com/willbicks/epigram/internal/service"
 	"github.com/willbicks/epigram/internal/storage/inmemory"
 	"github.com/willbicks/epigram/internal/storage/sqlite"
 
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/spf13/viper"
 )
 
 func main() {
@@ -23,42 +23,35 @@ func main() {
 	log := logger.New(os.Stdout, true)
 	log.Level = logger.LevelDebug
 
-	// Viper Configuration Management
-	viper.SetDefault("Port", 8080)
-	viper.SetDefault("Bind", "0.0.0.0")
-	viper.SetDefault("database", "inmemory")
-	viper.SetDefault("sqlite-db", "/var/epigram/database.db")
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("/etc/epigram")
-
-	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Fatal("required configuation file not found: config")
-		} else {
-			log.Fatalf("unable to read configuration file: %v", err)
-		}
+	// Configuration parsing
+	cfg, err := config.Parse(nil)
+	if err != nil {
+		log.Fatal(err.Error())
 	}
-
-	var entryQuestions []service.QuizQuestion
-	viper.UnmarshalKey("entryQuestions", &entryQuestions)
 
 	var userRepo service.UserRepository
 	var userSessionRepo service.UserSessionRepository
 	var quoteRepo service.QuoteRepository
 
-	switch viper.GetString("database") {
-	case "inmemory":
+	switch cfg.Repo {
+	case config.Inmemory:
 		userRepo = inmemory.NewUserRepository()
 		userSessionRepo = inmemory.NewUserSessionRepository()
 		quoteRepo = inmemory.NewQuoteRepository()
-	case "sqlite":
+	case config.SQLite:
 		mc := &sqlite.MigrationController{}
-		db, err := sql.Open("sqlite3", fmt.Sprint("file:", viper.GetString("sqlite-db"), "?cache=shared&mode=rwc"))
+		dbPath := path.Join(cfg.DBLoc, "epigram.db")
+		db, err := sql.Open("sqlite3", fmt.Sprint("file:", dbPath, "?cache=shared&mode=rwc"))
 		if err != nil {
 			log.Fatalf("unable to open database: %v", err)
 		}
-		defer db.Close()
+
+		defer func(db *sql.DB) {
+			err := db.Close()
+			if err != nil {
+				log.Fatalf("unable to close database: %v", err)
+			}
+		}(db)
 
 		userRepo, err = sqlite.NewUserRepository(db, mc)
 		if err != nil {
@@ -77,26 +70,19 @@ func main() {
 	}
 
 	// Quote Server Initialization
-	cs := quote_server.QuoteServer{
+	cs := quoteserver.QuoteServer{
 		QuoteService: service.NewQuoteService(quoteRepo),
 		UserService:  service.NewUserService(userRepo, userSessionRepo),
-		QuizService:  service.NewEntryQuizService(entryQuestions),
+		QuizService:  service.NewEntryQuizService(cfg.EntryQuestions),
 		Logger:       log,
+		Config:       cfg,
 	}
 
-	cfg := quote_server.Config{
-		BaseURL: viper.GetString("baseURL"),
-		RootTD: frontend.RootTD{
-			Title:       viper.GetString("title"),
-			Description: viper.GetString("description"),
-		},
+	if err := cs.Init(); err != nil {
+		log.Fatalf("critical error while initializing server: %v", err)
 	}
 
-	if err := cs.Init(cfg); err != nil {
-		log.Fatalf("ciritical error while initializing server: %v", err)
-	}
-
-	addr := fmt.Sprintf("%s:%d", viper.GetString("bind"), viper.GetInt("port"))
+	addr := fmt.Sprintf("%s:%d", cfg.Address, cfg.Port)
 	log.Infof("Running server at %s ...", addr)
 	s := http.Server{
 		Addr:              addr,
@@ -106,5 +92,8 @@ func main() {
 		ReadHeaderTimeout: 2 * time.Second,
 		Handler:           cs,
 	}
-	s.ListenAndServe()
+	err = s.ListenAndServe()
+	if err != nil {
+		log.Fatalf("unable to listen and serve: %v", err)
+	}
 }
