@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/willbicks/epigram/internal/config"
 	"testing"
 
 	"github.com/willbicks/epigram/internal/ctxval"
@@ -22,15 +23,15 @@ func TestNewEntryQuizService(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		entryQuestions []QuizQuestion
+		entryQuestions []config.EntryQuestion
 	}{
 		{
 			name:           "No questions",
-			entryQuestions: []QuizQuestion{},
+			entryQuestions: []config.EntryQuestion{},
 		},
 		{
 			name: "One question",
-			entryQuestions: []QuizQuestion{
+			entryQuestions: []config.EntryQuestion{
 				{
 					Question: "How many chickens can lay an egg?",
 					Answer:   "Three",
@@ -39,7 +40,7 @@ func TestNewEntryQuizService(t *testing.T) {
 		},
 		{
 			name: "Three questions",
-			entryQuestions: []QuizQuestion{
+			entryQuestions: []config.EntryQuestion{
 				{
 					Question: "the best place to find a fox",
 					Answer:   "wooods",
@@ -88,14 +89,14 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 	ctxNoUser := context.Background()
 	ctxSignedIn := ctxval.ContextWithUser(context.Background(), model.User{ID: "f00"})
 
-	service1 := NewEntryQuizService([]QuizQuestion{
+	service1 := NewEntryQuizService([]config.EntryQuestion{
 		{
 			Question: "the best place to find a fox",
 			Answer:   "panel",
 		},
 	})
 
-	service3 := NewEntryQuizService([]QuizQuestion{
+	service3 := NewEntryQuizService([]config.EntryQuestion{
 		{
 			Question: "the best place to find a fox",
 			Answer:   "woods",

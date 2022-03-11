@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/willbicks/epigram/internal/config"
 	"strings"
 )
 
@@ -16,21 +17,24 @@ type QuizQuestion struct {
 }
 
 // EntryQuiz contains a series of QuizQuestions new users must correctly answer before
-// gaining access to the applicaiton.
+// gaining access to the application.
 type EntryQuiz struct {
 	Questions []QuizQuestion
 }
 
-// NewEntryQuizService creates and initialzies an EntryQuizService.
-func NewEntryQuizService(entryQuestions []QuizQuestion) EntryQuiz {
+// NewEntryQuizService creates and initializes an EntryQuizService.
+func NewEntryQuizService(qs []config.EntryQuestion) EntryQuiz {
 	quiz := EntryQuiz{
-		Questions: entryQuestions,
+		Questions: make([]QuizQuestion, len(qs)),
 	}
 
-	for i := range quiz.Questions {
-		q := &quiz.Questions[i]
-		q.Id = i
-		q.Length = len(q.Answer)
+	for i, q := range qs {
+		quiz.Questions[i] = QuizQuestion{
+			Id:       i,
+			Length:   len(q.Answer),
+			Question: q.Question,
+			Answer:   q.Answer,
+		}
 	}
 
 	return quiz
