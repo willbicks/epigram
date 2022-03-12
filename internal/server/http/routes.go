@@ -18,6 +18,7 @@ func (s *QuoteServer) routes(pubFS fs.FS) {
 	s.mux.Handle(s.paths.Login, s.oidcLoginHandler(s.OIDCService))
 	s.mux.Handle(s.OIDCService.CallbackURL(), s.oidcCallbackHandler(s.OIDCService))
 
+	s.mux.Handle(s.paths.Privacy, http.HandlerFunc(s.privacyHandler))
 	s.mux.Handle("/static/", s.staticHandler(pubFS))
 }
 

@@ -623,6 +623,9 @@ select {
     max-width: 1536px;
   }
 }
+.paragraph-margins > p {
+  margin-bottom: 0.75rem;
+}
 .section {
   margin-left: auto;
   margin-right: auto;
@@ -659,6 +662,22 @@ select {
   margin-top: 0px;
   margin-bottom: 0.5rem;
   font-size: 3rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.h2 {
+  margin-top: 0px;
+  margin-bottom: 0.5rem;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.h3 {
+  margin-top: 0px;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
   font-weight: 500;
   line-height: 1.25;
 }
@@ -758,6 +777,9 @@ select {
 .grid {
   display: grid;
 }
+.contents {
+  display: contents;
+}
 .min-h-screen {
   min-height: 100vh;
 }
@@ -847,11 +869,11 @@ select {
 .font-medium {
   font-weight: 500;
 }
-.font-light {
-  font-weight: 300;
-}
 .font-semibold {
   font-weight: 600;
+}
+.font-light {
+  font-weight: 300;
 }
 .lowercase {
   text-transform: lowercase;
