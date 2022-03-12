@@ -41,6 +41,12 @@ func (s *QuoteServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
 
 	// http handler func to set coookies and redirect to provider
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// first, check if user is already signed in. If so, redirect to the quotes page.
+		if ctxval.UserFromContext(r.Context()).ID != "" {
+			http.Redirect(w, r, s.paths.Quotes, http.StatusFound)
+			return
+		}
+
 		state, err := randString(16)
 		if err != nil {
 			s.serverError(w, r, fmt.Errorf("unable to generate state key: %v", err))
