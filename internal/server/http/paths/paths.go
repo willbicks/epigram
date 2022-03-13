@@ -8,6 +8,7 @@ type Paths struct {
 	Quiz    string
 	Login   string
 	Privacy string
+	Admin   string
 }
 
 // Default returns the default paths assignments to be used in the application
@@ -18,5 +19,6 @@ func Default() Paths {
 		Quiz:    "/quiz",
 		Login:   "/login",
 		Privacy: "/privacy",
+		Admin:   "/admin",
 	}
 }

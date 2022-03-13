@@ -768,6 +768,9 @@ select {
 .mb-3 {
   margin-bottom: 0.75rem;
 }
+.mr-3 {
+  margin-right: 0.75rem;
+}
 .block {
   display: block;
 }
@@ -786,6 +789,12 @@ select {
 .w-full {
   width: 100%;
 }
+.w-40 {
+  width: 10rem;
+}
+.w-24 {
+  width: 6rem;
+}
 .max-w-md {
   max-width: 28rem;
 }
@@ -794,6 +803,9 @@ select {
 }
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.flex-row {
+  flex-direction: row;
 }
 .flex-col {
   flex-direction: column;
