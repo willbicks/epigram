@@ -35,7 +35,7 @@ func (o OIDC) CallbackURL() string {
 	return "/login/" + o.Name + "/callback"
 }
 
-// NewOIDC returns a new OIDC object with the specified issuer. Requires the baseURL of this server in order to build an oauth Redirect URL.
+// Init initializes the OIDC service. Requires the baseURL of this server in order to build an oauth redirect URL.
 func (o *OIDC) Init(baseURL string) error {
 	if baseURL == "" {
 		return errors.New("baseURL is required to generate oauth callback url")
