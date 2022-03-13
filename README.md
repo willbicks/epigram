@@ -8,9 +8,18 @@ Epigram is a simple web service for communities to immortalize the enlightening,
 
 [wikipedia]: https://en.wikipedia.org/wiki/Epigram
 
+## Features
+
+- [x] Users can submit and view quotes.
+- [x] Quotes are organized in chronological order, and in sections by year.
+- [x] Authorization is delegated to a configurable OpenID Connect provider.
+- [x] Access restricted to only those who correctly answer a few questions.
+- [ ] Dark mode support.
+- [ ] Expanded admin control functions.
+
 ## Project Status
 
-Epigram is still in early stages of development, and should be considered a work in progress.
+Epigram still under development, and should be considered a work in progress.
 
 ## Usage
 
@@ -22,17 +31,20 @@ Epigram can be compiled and installed directly from source as follows:
 go install github.com/willbicks/epigram@latest
 ```
 
-Alternatively, pre-compiled binaries can be downloaded from the [releases section.](#TODO)
+Alternatively, Docker container images are available at [ghcr.io/willbicks/epigram](ghcr.io/willbicks/epigram).
 
 ### Configuration
 
-Epigram expects a `config.yml` in the same directory as it is run, or in the location specified by the `--cfg` flag (coming soon).
+While most configuration parameters have a default value, 
 
-TODO: Explain config file contents.
+Epigram expects a `config.yml` in the same directory as it is run, or at the location specified by the `EP_CONFIG` environment variable.
+
+TODO: Explain config file contents. For more information, see [Configuration](docs/config.md).
 
 ## Documentation
 
 - [Project Structure / Architecture](docs/structure.md)
+- [Configuration](docs/config.md)
 
 ## Contributing
 
