@@ -1,8 +1,11 @@
 package frontend
 
 import (
+	"fmt"
 	"html/template"
+	"net/url"
 	"sort"
+	"strings"
 
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/service"
@@ -51,5 +54,26 @@ var templateFuncs template.FuncMap = template.FuncMap{
 			return years[i] > years[j]
 		})
 		return years
+	},
+	// sizeImage accepts a url of an image, and attempts to resize it by modifying the urlparams of the url,
+	// depending on the image hosting service. Currenty supports googleusercontent. Returns the url of the
+	// sizedImage, or returns a url to a not found image placeholder if not a valid URL.
+	"sizeImage": func(imgURL string, size int) string {
+		if imgURL == "" {
+			return "/static/img/notfound.png"
+		}
+
+		u, err := url.Parse(imgURL)
+		if err != nil {
+			return "/static/img/notfound.png"
+		}
+
+		switch u.Hostname() {
+		case "lh3.googleusercontent.com":
+			imgURL := imgURL[:strings.LastIndex(imgURL, "=")]
+			return fmt.Sprintf("%s=s%d-c", imgURL, size)
+		}
+
+		return imgURL
 	},
 }

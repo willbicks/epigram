@@ -7,8 +7,8 @@
     <div class="section my-12">
         <h2 class="h2">Users</h2>
         {{range .Page.Users}}
-            <div class="bg-gray-100 p-4 flex flex-row mb-3">
-                <img class="w-24 mr-3" src="{{.PictureURL}}" alt="Profile Picture" referrerpolicy="no-referrer">
+            <div class="bg-gray-100 p-4 flex flex-col mb-3 md:flex-row">
+                <img class="w-32 h-32 rounded-full mr-3 mb-3 md:mb-0" src="{{ sizeImage .PictureURL 128 }}" alt="Profile Picture" referrerpolicy="no-referrer">
                 <div>
                     <p class="text-xl font-bold">{{.Name}}</p>
                     <p><span class="font-bold">Email: </span>{{.Email}}</p>
