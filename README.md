@@ -31,7 +31,7 @@ Epigram can be compiled and installed directly from source as follows:
 go install github.com/willbicks/epigram@latest
 ```
 
-Alternatively, Docker container images are available at [ghcr.io/willbicks/epigram](ghcr.io/willbicks/epigram).
+Alternatively, Docker container images are available at [ghcr.io/willbicks/epigram](https://ghcr.io/willbicks/epigram).
 
 ### Configuration
 
