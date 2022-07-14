@@ -50,7 +50,6 @@ func (r *QuoteRepository) Update(ctx context.Context, q model.Quote) error {
 	result, err := r.db.ExecContext(ctx, "UPDATE quotes SET SubmitterID = ?, Quotee = ?, Context = ?, Quote = ?, Created = ? WHERE ID = ?;",
 		q.SubmitterID, q.Quotee, q.Context, q.Quote, q.Created, q.ID)
 
-	// TODO: Return ErrNotFound if quote does not exist
 	if i, _ := result.RowsAffected(); i == 0 {
 		return storage.ErrNotFound
 	} else if err != nil {
