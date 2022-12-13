@@ -8,10 +8,12 @@ import (
 	"github.com/willbicks/epigram/internal/storage"
 )
 
+// UserSessionRepository implements the service.UserSessionRepository interface and stores UserSessions in a SQLite database
 type UserSessionRepository struct {
 	db *sql.DB
 }
 
+// NewUserSessionRepository returns a new UserSessionRepository which stores UserSessions in the provided SQLite database
 func NewUserSessionRepository(db *sql.DB, c *MigrationController) (*UserSessionRepository, error) {
 	err := c.migrateRepository(db, "usersession", []migration{
 		{
@@ -35,6 +37,7 @@ func NewUserSessionRepository(db *sql.DB, c *MigrationController) (*UserSessionR
 	return &UserSessionRepository{db}, nil
 }
 
+// Create adds a new UserSession to the repository.
 func (r *UserSessionRepository) Create(ctx context.Context, us model.UserSession) error {
 	_, err := r.db.ExecContext(ctx, "INSERT INTO usersessions (ID, UserID, Created, Expires, IP) VALUES (?, ?, ?, ?, ?);",
 		us.ID, us.UserID, us.Created, us.Expires, us.IP)
@@ -45,6 +48,7 @@ func (r *UserSessionRepository) Create(ctx context.Context, us model.UserSession
 	return nil
 }
 
+// Update updates an existing UserSession in the repository.
 func (r *UserSessionRepository) Update(ctx context.Context, us model.UserSession) error {
 	result, err := r.db.ExecContext(ctx, "UPDATE usersessions SET UserID = ?, Created =?, Expires = ?, IP = ? WHERE ID = ?;",
 		us.UserID, us.Created, us.Expires, us.IP, us.ID)
@@ -58,6 +62,7 @@ func (r *UserSessionRepository) Update(ctx context.Context, us model.UserSession
 	return nil
 }
 
+// FindByID returns the UserSession with the provided ID
 func (r *UserSessionRepository) FindByID(ctx context.Context, id string) (model.UserSession, error) {
 	var us model.UserSession
 	err := r.db.QueryRowContext(ctx, "SELECT ID, UserID, Created, Expires, IP FROM usersessions WHERE ID = ?;", id).Scan(
@@ -72,6 +77,7 @@ func (r *UserSessionRepository) FindByID(ctx context.Context, id string) (model.
 	return us, nil
 }
 
+// FindAll returns all UserSessions in the repository
 func (r *UserSessionRepository) FindAll(ctx context.Context) ([]model.UserSession, error) {
 	rows, err := r.db.QueryContext(ctx, "SELECT ID, UserID, Created, Expires, IP FROM usersessions;")
 	if err != nil {

@@ -1,8 +1,9 @@
 package http
 
 import (
-	"github.com/willbicks/epigram/internal/config"
 	"net/http"
+
+	"github.com/willbicks/epigram/internal/config"
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/willbicks/epigram/internal/logger"
@@ -11,6 +12,7 @@ import (
 	"github.com/willbicks/epigram/internal/service"
 )
 
+// QuoteServer provides a web UI over HTTP for the application
 type QuoteServer struct {
 	mux  *http.ServeMux
 	tmpl frontend.TemplateEngine

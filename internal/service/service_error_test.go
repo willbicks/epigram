@@ -5,24 +5,24 @@ import "testing"
 func TestServiceError_Error(t *testing.T) {
 	tests := []struct {
 		name string
-		e    ServiceError
+		e    Error
 		want string
 	}{
 		{
 			name: "Empty",
-			e:    ServiceError{},
+			e:    Error{},
 			want: "",
 		},
 		{
 			name: "One Issue",
-			e: ServiceError{
+			e: Error{
 				Issues: []string{"ErrMsg Test"},
 			},
 			want: "ErrMsg Test",
 		},
 		{
 			name: "Issue with Status",
-			e: ServiceError{
+			e: Error{
 				StatusCode: 400,
 				Issues:     []string{"ErrMsg Test"},
 			},
@@ -30,7 +30,7 @@ func TestServiceError_Error(t *testing.T) {
 		},
 		{
 			name: "Multiple Issue with Status",
-			e: ServiceError{
+			e: Error{
 				StatusCode: 400,
 				Issues:     []string{"ErrMsg 1.", "ErrMsg 2."},
 			},
@@ -49,31 +49,31 @@ func TestServiceError_Error(t *testing.T) {
 func TestServiceError_HasIssues(t *testing.T) {
 	tests := []struct {
 		name string
-		e    ServiceError
+		e    Error
 		want bool
 	}{
 		{
 			name: "Empty",
-			e:    ServiceError{},
+			e:    Error{},
 			want: false,
 		},
 		{
 			name: "Status Code Only",
-			e: ServiceError{
+			e: Error{
 				StatusCode: 412,
 			},
 			want: false,
 		},
 		{
 			name: "One Issue",
-			e: ServiceError{
+			e: Error{
 				Issues: []string{"ErrMsg Test"},
 			},
 			want: true,
 		},
 		{
 			name: "Issue with Status",
-			e: ServiceError{
+			e: Error{
 				StatusCode: 400,
 				Issues:     []string{"ErrMsg Test"},
 			},
@@ -81,7 +81,7 @@ func TestServiceError_HasIssues(t *testing.T) {
 		},
 		{
 			name: "Multiple Issue with Status",
-			e: ServiceError{
+			e: Error{
 				StatusCode: 400,
 				Issues:     []string{"ErrMsg 1.", "ErrMsg 2."},
 			},
@@ -103,24 +103,24 @@ func TestServiceError_addIssue(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		e    *ServiceError
+		e    *Error
 		args args
 	}{
 		{
 			name: "Empty",
-			e:    &ServiceError{},
+			e:    &Error{},
 			args: args{iss: "test error 1"},
 		},
 		{
 			name: "One Issue",
-			e: &ServiceError{
+			e: &Error{
 				Issues: []string{"test error 1"},
 			},
 			args: args{iss: "test error 2"},
 		},
 		{
 			name: "Issue with Status",
-			e: &ServiceError{
+			e: &Error{
 				StatusCode: 400,
 				Issues:     []string{"ErrMsg Test"},
 			},
@@ -128,7 +128,7 @@ func TestServiceError_addIssue(t *testing.T) {
 		},
 		{
 			name: "Multiple Issue with Status",
-			e: &ServiceError{
+			e: &Error{
 				StatusCode: 400,
 				Issues:     []string{"ErrMsg 1.", "ErrMsg 2."},
 			},

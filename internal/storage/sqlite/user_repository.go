@@ -8,10 +8,12 @@ import (
 	"github.com/willbicks/epigram/internal/storage"
 )
 
+// UserRepository is an implementation of the service.UserRepository interface which stores Users in a SQLite database.
 type UserRepository struct {
 	db *sql.DB
 }
 
+// NewUserRepository returns a new UserRepository which stores Users in the provided SQLite database.
 func NewUserRepository(db *sql.DB, c *MigrationController) (*UserRepository, error) {
 	err := c.migrateRepository(db, "user", []migration{
 		{
@@ -39,6 +41,7 @@ func NewUserRepository(db *sql.DB, c *MigrationController) (*UserRepository, err
 	return &UserRepository{db}, nil
 }
 
+// Create adds a new User to the repository.
 func (r *UserRepository) Create(ctx context.Context, u model.User) error {
 	_, err := r.db.ExecContext(ctx, "INSERT INTO users (ID, Name, Email, PictureURL, Created, QuizAttempts, QuizPassed, Banned, Admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
 		u.ID, u.Name, u.Email, u.PictureURL, u.Created, u.QuizAttempts, u.QuizPassed, u.Banned, u.Admin)
@@ -49,6 +52,7 @@ func (r *UserRepository) Create(ctx context.Context, u model.User) error {
 	return nil
 }
 
+// Update updates an existing User in the repository.
 func (r *UserRepository) Update(ctx context.Context, u model.User) error {
 	result, err := r.db.ExecContext(ctx, "UPDATE users SET Name = ?, Email = ?, PictureURL = ?, Created = ?, QuizAttempts = ?, QuizPassed = ?, Banned = ?, Admin = ? WHERE ID = ?;",
 		u.Name, u.Email, u.PictureURL, u.Created, u.QuizAttempts, u.QuizPassed, u.Banned, u.Admin, u.ID)
@@ -61,6 +65,7 @@ func (r *UserRepository) Update(ctx context.Context, u model.User) error {
 	return nil
 }
 
+// FindByID returns the User with the provided ID.
 func (r *UserRepository) FindByID(ctx context.Context, id string) (model.User, error) {
 	var u model.User
 	err := r.db.QueryRowContext(ctx, "SELECT ID, Name, Email, PictureURL, Created, QuizAttempts, QuizPassed, Banned, Admin FROM users WHERE ID = ?;", id).Scan(
@@ -75,6 +80,7 @@ func (r *UserRepository) FindByID(ctx context.Context, id string) (model.User, e
 	return u, nil
 }
 
+// FindAll returns all Users in the repository.
 func (r *UserRepository) FindAll(ctx context.Context) ([]model.User, error) {
 	rows, err := r.db.QueryContext(ctx, "SELECT ID, Name, Email, PictureURL, Created, QuizAttempts, QuizPassed, Banned, Admin FROM users;")
 	if err != nil {

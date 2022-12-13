@@ -10,7 +10,8 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// OIDC is a struct containing the Oauth2 Config and OIDC IDTokenVerifier required to validate OIDC callbacks.
+// OIDC contains the Oauth2 Config and OIDC IDTokenVerifier required to validate OIDC callbacks and provides methods
+// for authenticated users via OIDC.
 type OIDC struct {
 	// Name is a unique identifier used by this OIDC service to build a callback url.
 	Name string
@@ -66,13 +67,13 @@ func (o *OIDC) Init(baseURL string) error {
 func (o OIDC) ValidateCallback(r http.Request) (oidc.IDToken, error) {
 	state, err := r.Cookie("state")
 	if err != nil {
-		return oidc.IDToken{}, ServiceError{
+		return oidc.IDToken{}, Error{
 			StatusCode: http.StatusBadRequest,
 			Issues:     []string{"State cookie not found."},
 		}
 	}
 	if r.URL.Query().Get("state") != state.Value {
-		return oidc.IDToken{}, ServiceError{
+		return oidc.IDToken{}, Error{
 			StatusCode: http.StatusBadRequest,
 			Issues:     []string{"State values do not match."},
 		}
@@ -80,14 +81,14 @@ func (o OIDC) ValidateCallback(r http.Request) (oidc.IDToken, error) {
 
 	oauth2Token, err := o.config.Exchange(r.Context(), r.URL.Query().Get("code"))
 	if err != nil {
-		return oidc.IDToken{}, ServiceError{
+		return oidc.IDToken{}, Error{
 			StatusCode: http.StatusInternalServerError,
 			Issues:     []string{"Failed to exchange token: " + err.Error()},
 		}
 	}
 	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
-		return oidc.IDToken{}, ServiceError{
+		return oidc.IDToken{}, Error{
 			StatusCode: http.StatusBadRequest,
 			Issues:     []string{"No id_token field in oauth2 token."},
 		}
@@ -96,7 +97,7 @@ func (o OIDC) ValidateCallback(r http.Request) (oidc.IDToken, error) {
 	v := o.provider.Verifier(&oidc.Config{ClientID: o.ClientID})
 	idToken, err := v.Verify(r.Context(), rawIDToken)
 	if err != nil {
-		return oidc.IDToken{}, ServiceError{
+		return oidc.IDToken{}, Error{
 			StatusCode: http.StatusInternalServerError,
 			Issues:     []string{"Failed to verify ID Token: " + err.Error()},
 		}
@@ -104,13 +105,13 @@ func (o OIDC) ValidateCallback(r http.Request) (oidc.IDToken, error) {
 
 	nonce, err := r.Cookie("nonce")
 	if err != nil {
-		return oidc.IDToken{}, ServiceError{
+		return oidc.IDToken{}, Error{
 			StatusCode: http.StatusBadRequest,
 			Issues:     []string{"Nonce cookie not found."},
 		}
 	}
 	if idToken.Nonce != nonce.Value {
-		return oidc.IDToken{}, ServiceError{
+		return oidc.IDToken{}, Error{
 			StatusCode: http.StatusBadRequest,
 			Issues:     []string{"Nonce values do not patch."},
 		}

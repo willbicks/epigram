@@ -106,6 +106,7 @@ func TestUserRepository_FindByID(t *testing.T) {
 
 	uFound, err = repo.FindByID(context.Background(), xid.New().String())
 	is.Equal(err, storage.ErrNotFound) // random should not be found
+	is.Equal(uFound, model.User{})
 }
 
 func TestUserRepository_Update(t *testing.T) {

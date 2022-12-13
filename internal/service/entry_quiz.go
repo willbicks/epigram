@@ -2,14 +2,15 @@ package service
 
 import (
 	"context"
-	"github.com/willbicks/epigram/internal/config"
 	"strings"
+
+	"github.com/willbicks/epigram/internal/config"
 )
 
 // QuizQuestion is a crossword style question presented to the user to verify them before
 // gaining access to the http.
 type QuizQuestion struct {
-	Id int
+	ID int
 	// Length contains the number of characters in the Answer
 	Length   int
 	Question string
@@ -30,7 +31,7 @@ func NewEntryQuizService(qs []config.EntryQuestion) EntryQuiz {
 
 	for i, q := range qs {
 		quiz.Questions[i] = QuizQuestion{
-			Id:       i,
+			ID:       i,
 			Length:   len(q.Answer),
 			Question: q.Question,
 			Answer:   q.Answer,
@@ -50,7 +51,7 @@ func (eq EntryQuiz) VerifyAnswers(ctx context.Context, answers map[int]string) (
 
 	var wrongAnswer bool
 	for _, q := range eq.Questions {
-		if !strings.EqualFold(q.Answer, answers[q.Id]) {
+		if !strings.EqualFold(q.Answer, answers[q.ID]) {
 			wrongAnswer = true
 		}
 	}

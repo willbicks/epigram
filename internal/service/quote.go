@@ -10,6 +10,7 @@ import (
 	"github.com/rs/xid"
 )
 
+// QuoteRepository provides methods for storing, manipulating, and retrieving Quotes
 type QuoteRepository interface {
 	Create(ctx context.Context, q model.Quote) error
 	Update(ctx context.Context, q model.Quote) error
@@ -17,23 +18,26 @@ type QuoteRepository interface {
 	FindAll(ctx context.Context) ([]model.Quote, error)
 }
 
+// Quote provides a service for interracting with Quotes
 type Quote struct {
 	repo QuoteRepository
 }
 
+// NewQuoteService returns a new QuoteService with the provided QuoteRepository
 func NewQuoteService(repo QuoteRepository) Quote {
 	return Quote{
 		repo,
 	}
 }
 
+// CreateQuote creates a new Quote, setting its ID, Created, and SubmitterID fields
 func (s *Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
 
 	if err := verifyUserPrivlege(ctx); err != nil {
 		return err
 	}
 
-	var err ServiceError
+	var err Error
 	if q.Quote == "" {
 		err.addIssue("Quote must not be blank.")
 	}
@@ -51,6 +55,7 @@ func (s *Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
 	return s.repo.Create(ctx, *q)
 }
 
+// GetAllQuotes returns all Quotes
 func (s *Quote) GetAllQuotes(ctx context.Context) ([]model.Quote, error) {
 	if err := verifyUserPrivlege(ctx); err != nil {
 		return nil, err

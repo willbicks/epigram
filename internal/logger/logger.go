@@ -1,4 +1,4 @@
-// logger provides a lightweight, multi-level logging system, and supports logging to any io.Writer.
+// Package logger provides a lightweight, multi-level logging system, and supports logging to any io.Writer.
 package logger
 
 import (
@@ -13,9 +13,13 @@ type Level int8
 
 // Log Levels
 const (
+	// LevelDebug is the lowest level of logging, and is intended for debugging purposes.
 	LevelDebug Level = -1
-	LevelInfo  Level = 0
-	LevelWarn  Level = 1
+	// LevelInfo is intended for general information including records of operations performed.
+	LevelInfo Level = 0
+	// LevelWarn is intended for messages that indicate some unexpected non-fatal error has ocured.
+	LevelWarn Level = 1
+	// LevelFatal is the highest level of logging, and is intended for messages that indicate a fatal error.
 	LevelFatal Level = 2
 )
 
@@ -32,6 +36,7 @@ const (
 	colorWhite  = "\033[37m"
 )
 
+// Logger provides methods to log messages by Level
 type Logger struct {
 	debugLog *log.Logger
 	infoLog  *log.Logger
@@ -40,6 +45,8 @@ type Logger struct {
 	Level    Level
 }
 
+// New returns a new Logger that writes to the provided io.Writer. If timestamp is true, the logger will prefix each
+// message with a timestamp.
 func New(out io.Writer, timestamp bool) Logger {
 	var flags int
 	if timestamp {
@@ -53,47 +60,55 @@ func New(out io.Writer, timestamp bool) Logger {
 	}
 }
 
+// Debug logs a message at the Debug level
 func (l Logger) Debug(msg string) {
 	if l.Level <= LevelDebug {
 		l.debugLog.Println(msg)
 	}
 }
 
+// Debugf logs a formatted message at the Debug level
 func (l Logger) Debugf(format string, v ...interface{}) {
 	if l.Level <= LevelDebug {
 		l.debugLog.Printf(format, v...)
 	}
 }
 
+// Info logs a message at the Info level
 func (l Logger) Info(msg string) {
 	if l.Level <= LevelInfo {
 		l.infoLog.Println(msg)
 	}
 }
 
+// Infof logs a formatted message at the Info level
 func (l Logger) Infof(format string, v ...interface{}) {
 	if l.Level <= LevelInfo {
 		l.infoLog.Printf(format, v...)
 	}
 }
 
+// Warn logs a message at the Warn level
 func (l Logger) Warn(msg string) {
 	if l.Level <= LevelWarn {
 		l.warnLog.Println(msg)
 	}
 }
 
+// Warnf logs a formatted message at the Warn level
 func (l Logger) Warnf(format string, v ...interface{}) {
 	if l.Level <= LevelWarn {
 		l.warnLog.Printf(format, v...)
 	}
 }
 
+// Fatal logs a message at the Fatal level and exits the program with status code 1
 func (l Logger) Fatal(msg string) {
 	l.fatalLog.Println(msg)
 	os.Exit(1)
 }
 
+// Fatalf logs a formatted message at the Fatal level and exits the program with status code 1
 func (l Logger) Fatalf(format string, v ...interface{}) {
 	l.fatalLog.Printf(format, v...)
 	os.Exit(1)

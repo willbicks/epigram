@@ -45,13 +45,14 @@ func findQuoteArray(log logger.Logger, jMsg json.RawMessage) map[string]legacyQu
 		quotes := make(map[string]legacyQuote)
 		json.Unmarshal(v, &quotes)
 		log.Debugf("k: %v, v: %s, struct: %v", k, v, quotes)
+
 		if isValidLegacyQuoteMap(quotes) {
 			return quotes
-		} else {
-			quotes = findQuoteArray(log, v)
-			if isValidLegacyQuoteMap(quotes) {
-				return quotes
-			}
+		} 
+		
+		quotes = findQuoteArray(log, v)
+		if isValidLegacyQuoteMap(quotes) {
+			return quotes
 		}
 	}
 	return nil
