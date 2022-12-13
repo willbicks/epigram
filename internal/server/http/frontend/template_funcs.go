@@ -19,12 +19,12 @@ var templateFuncs template.FuncMap = template.FuncMap{
 			return []string{}
 		}
 
-		serr, ok := err.(service.ServiceError)
-		if ok {
-			return serr.Issues
-		} else {
+		serr, ok := err.(service.Error)
+		if !ok {
 			return []string{err.Error()}
 		}
+
+		return serr.Issues
 	},
 	// quotesByYear takes a slice of quotes, and returns them as a map where the key is the year.
 	"quotesByYear": func(quotes []model.Quote) map[int][]model.Quote {

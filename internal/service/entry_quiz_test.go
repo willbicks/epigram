@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/willbicks/epigram/internal/config"
 	"testing"
+
+	"github.com/willbicks/epigram/internal/config"
 
 	"github.com/willbicks/epigram/internal/ctxval"
 	"github.com/willbicks/epigram/internal/model"
@@ -68,10 +69,10 @@ func TestNewEntryQuizService(t *testing.T) {
 			// Check that IDs are unique
 			ids := []int{}
 			for _, q := range got.Questions {
-				if intSliceContains(ids, q.Id) {
-					t.Errorf("Question id %v is non-unique", q.Id)
+				if intSliceContains(ids, q.ID) {
+					t.Errorf("Question id %v is non-unique", q.ID)
 				}
-				ids = append(ids, q.Id)
+				ids = append(ids, q.ID)
 			}
 
 			// Check that answer lenghts are correct

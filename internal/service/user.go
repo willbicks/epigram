@@ -12,6 +12,7 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 )
 
+// UserRepository provides methods for storing, manipulating, and retrieving Users.
 type UserRepository interface {
 	Create(ctx context.Context, u model.User) error
 	Update(ctx context.Context, u model.User) error
@@ -19,11 +20,13 @@ type UserRepository interface {
 	FindAll(ctx context.Context) ([]model.User, error)
 }
 
+// User provides a service for interracting with Users.
 type User struct {
 	ur   UserRepository
 	sess UserSession
 }
 
+// NewUserService returns a new UserService with the provided UserRepository.
 func NewUserService(ur UserRepository, sr UserSessionRepository) User {
 	return User{
 		ur:   ur,
@@ -79,8 +82,9 @@ func (s User) GetUserFromIDToken(ctx context.Context, token oidc.IDToken) (model
 	return u, nil
 }
 
+// CreateUser stores the provided User in the database, updating their Created time.
 func (s User) CreateUser(ctx context.Context, u *model.User) error {
-	err := ServiceError{
+	err := Error{
 		StatusCode: 400,
 	}
 
@@ -103,18 +107,22 @@ func (s User) CreateUser(ctx context.Context, u *model.User) error {
 	return s.ur.Create(ctx, *u)
 }
 
-func (s User) FindUserById(ctx context.Context, id string) (model.User, error) {
+// FindUserByID returns the user with the specified ID.
+func (s User) FindUserByID(ctx context.Context, id string) (model.User, error) {
 	return s.ur.FindByID(ctx, id)
 }
 
+// UpdateUser updates the user in the database.
 func (s User) UpdateUser(ctx context.Context, u model.User) error {
 	return s.ur.Update(ctx, u)
 }
 
+// CreateUserSession creates a new UserSession for the specified user, and returns it.
 func (s User) CreateUserSession(ctx context.Context, u model.User, IP string) (model.UserSession, error) {
 	return s.sess.CreateUserSession(ctx, u, IP)
 }
 
+// GetUserFromSessionID returns the user associated with the specified session ID.
 func (s User) GetUserFromSessionID(ctx context.Context, sessID string) (model.User, error) {
 	sess, err := s.sess.FindSessionByID(ctx, sessID)
 	if err != nil {
@@ -137,11 +145,11 @@ func (s *User) RecordQuizAttempt(ctx context.Context, u *model.User, passed bool
 		return "Too many failed quiz attempts, please contact an administrator.", nil
 	}
 
-	if passed {
-		return "", nil
-	} else {
+	if !passed {
 		return "Sorry, at least one answer was incorrect.", nil
 	}
+
+	return "", nil
 }
 
 // GetAllUsers returns a slice of all users, and can ony be accessed by admins.

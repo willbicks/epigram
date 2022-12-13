@@ -14,7 +14,9 @@ import (
 type Repository int8
 
 const (
+	// Inmemory is a repository that stores data in memory, and is not persistent across restarts
 	Inmemory Repository = iota + 1
+	// SQLite is a repository that stores data in a SQLite database
 	SQLite
 )
 

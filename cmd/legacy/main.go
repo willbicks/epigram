@@ -6,7 +6,6 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -46,7 +45,7 @@ func main() {
 	}
 
 	// process input file
-	b, err := ioutil.ReadFile(*inFile)
+	b, err := os.ReadFile(*inFile)
 	if err != nil {
 		log.Fatalf("opening input file: %v", err)
 	}

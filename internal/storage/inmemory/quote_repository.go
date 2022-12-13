@@ -9,17 +9,20 @@ import (
 	"github.com/willbicks/epigram/internal/storage"
 )
 
+// QuoteRepository is an in-memory implementation of the service.QuoteRepository interface.
 type QuoteRepository struct {
 	mu sync.RWMutex
 	m  map[string]model.Quote
 }
 
+// NewQuoteRepository returns a new QuoteRepository which stores Quotes in memory.
 func NewQuoteRepository() service.QuoteRepository {
 	return &QuoteRepository{
 		m: make(map[string]model.Quote, 0),
 	}
 }
 
+// Create adds a new Quote to the repository.
 func (r *QuoteRepository) Create(ctx context.Context, q model.Quote) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -27,6 +30,7 @@ func (r *QuoteRepository) Create(ctx context.Context, q model.Quote) error {
 	return nil
 }
 
+// Update updates an existing Quote in the repository.
 func (r *QuoteRepository) Update(ctx context.Context, q model.Quote) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -40,6 +44,7 @@ func (r *QuoteRepository) Update(ctx context.Context, q model.Quote) error {
 	return nil
 }
 
+// FindByID returns a Quote with the provided ID.
 func (r *QuoteRepository) FindByID(ctx context.Context, id string) (model.Quote, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -51,6 +56,7 @@ func (r *QuoteRepository) FindByID(ctx context.Context, id string) (model.Quote,
 	return q, nil
 }
 
+// FindAll returns all Quotes in the repository.
 func (r *QuoteRepository) FindAll(ctx context.Context) ([]model.Quote, error) {
 	v := make([]model.Quote, 0, len(r.m))
 

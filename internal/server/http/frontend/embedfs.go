@@ -21,7 +21,7 @@ func templateFS() (fs.FS, error) {
 	return filesys, nil
 }
 
-// embedFS returns the filesystem containing public files (css, js, etc), rooted inside the public subdirectory
+// PublicFS returns the filesystem containing public files (css, js, etc), rooted inside the public subdirectory
 func PublicFS() (fs.FS, error) {
 	filesys, err := fs.Sub(publicEmbedFS, "public")
 	if err != nil {

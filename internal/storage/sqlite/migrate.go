@@ -7,6 +7,7 @@ import (
 	"sync"
 )
 
+// MigrationController is responsible for for running migrations on the SQLite database.
 type MigrationController struct {
 	// createTable ensures that an attempt to create a migrations table
 	// is only made once per application start.

@@ -6,13 +6,15 @@ import (
 	"github.com/willbicks/epigram/internal/ctxval"
 )
 
-var ErrNotAuhtenticated = ServiceError{
+// ErrNotAuhtenticated is returned when a request which requires an authentication is attempted without it.
+var ErrNotAuhtenticated = Error{
 	Issues:     []string{"Request requires authentication."},
 	StatusCode: 401,
 }
 
-var ErrNotAuhthorized = ServiceError{
-	Issues:     []string{"Request requires authorixation."},
+// ErrNotAuhthorized is returned when a request which requires an Auhthorized is attempted without it.
+var ErrNotAuhthorized = Error{
+	Issues:     []string{"Request requires authorization."},
 	StatusCode: 401,
 }
 
@@ -32,7 +34,7 @@ func verifyUserPrivlege(ctx context.Context) error {
 	return nil
 }
 
-// noUserPrivlege returns ErrNotAuthroized if the user on the Context is not an admin
+// verifyAdminPrivlege returns ErrNotAuthroized if the user on the Context is not an admin
 func verifyAdminPrivlege(ctx context.Context) error {
 	if !ctxval.UserFromContext(ctx).IsAdmin() {
 		return ErrNotAuhthorized

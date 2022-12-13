@@ -59,16 +59,16 @@ func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		if u.QuizPassed {
 			http.Redirect(w, r, s.paths.Quotes, http.StatusFound)
 			return
-		} else {
-			err := s.tmpl.RenderPage(w, "quiz.gohtml", quizTD{
-				NumQuestions: len(s.QuizService.Questions),
-				Questions:    s.QuizService.Questions,
-				Error:        errors.New(failReason),
-			})
-			if err != nil {
-				s.serverError(w, r, err)
-				return
-			}
+		}
+
+		err = s.tmpl.RenderPage(w, "quiz.gohtml", quizTD{
+			NumQuestions: len(s.QuizService.Questions),
+			Questions:    s.QuizService.Questions,
+			Error:        errors.New(failReason),
+		})
+		if err != nil {
+			s.serverError(w, r, err)
+			return
 		}
 
 	default:
