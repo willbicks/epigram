@@ -61,7 +61,7 @@ type Application struct {
 	Repo Repository `yaml:"repo"`
 	// DBLoc is the location where the database can be found. In the case of an SQLite repository, this is the path to database file.
 	DBLoc string `yaml:"DBLoc"`
-	// TrustProxy dictates whether the `X-Forwarded-For`` header should be trusted to obtain the client IP, or if the requestor IP shoud be used instead.
+	// TrustProxy dictates whether the `X-Forwarded-For` header should be trusted to obtain the client IP, or if the requestor IP shoud be used instead.
 	TrustProxy bool `yaml:"trustProxy"`
 	// OIDCProvider is the OIDC provider used to authenticate users.
 	OIDCProvider OIDCProvider `yaml:"OIDCProvider"`
