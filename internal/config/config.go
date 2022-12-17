@@ -39,7 +39,7 @@ type OIDCProvider struct {
 	ClientSecret string `yaml:"clientSecret"`
 }
 
-// EntryQuestion is a question the user must answer before being granted entrance to the applicaiton
+// EntryQuestion is a question the user must answer before being granted entrance to the application
 type EntryQuestion struct {
 	Question string `yaml:"question"`
 	Answer   string `yaml:"answer"`
@@ -53,7 +53,7 @@ type Application struct {
 	Port uint16
 	// BaseURL is the complete domain and path to access the root of the web server, used for creating callback URLs.
 	BaseURL string `yaml:"baseURL"`
-	// Title is the name of the applicaiton to be shown in the frontend.
+	// Title is the name of the application to be shown in the frontend.
 	Title string `yaml:"title"`
 	// Description is a short description of the application to be shown in the frontend.
 	Description string `yaml:"description"`
@@ -61,7 +61,7 @@ type Application struct {
 	Repo Repository `yaml:"repo"`
 	// DBLoc is the location where the database can be found. In the case of an SQLite repository, this is the path to database file.
 	DBLoc string `yaml:"DBLoc"`
-	// TrustProxy dictates whether the `X-Forwarded-For` header should be trusted to obtain the client IP, or if the requestor IP shoud be used instead.
+	// TrustProxy dictates whether the `X-Forwarded-For` header should be trusted to obtain the client IP, or if the requestor IP should be used instead.
 	TrustProxy bool `yaml:"trustProxy"`
 	// OIDCProvider is the OIDC provider used to authenticate users.
 	OIDCProvider OIDCProvider `yaml:"OIDCProvider"`
