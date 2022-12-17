@@ -53,7 +53,7 @@ type Application struct {
 	Port uint16
 	// BaseURL is the complete domain and path to access the root of the web server, used for creating callback URLs.
 	BaseURL string `yaml:"baseURL"`
-	// Title  is the name of the applicaiton to be shown in the frontend.
+	// Title is the name of the applicaiton to be shown in the frontend.
 	Title string `yaml:"title"`
 	// Description is a short description of the application to be shown in the frontend.
 	Description string `yaml:"description"`
