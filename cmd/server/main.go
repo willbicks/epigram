@@ -3,10 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/willbicks/epigram/internal/config"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/willbicks/epigram/internal/config"
 
 	"github.com/willbicks/epigram/internal/logger"
 	quoteserver "github.com/willbicks/epigram/internal/server/http"
@@ -84,8 +85,8 @@ func main() {
 	log.Infof("Running server at %s ...", addr)
 	s := http.Server{
 		Addr:              addr,
-		ReadTimeout:       1 * time.Second,
-		WriteTimeout:      1 * time.Second,
+		ReadTimeout:       2 * time.Second,
+		WriteTimeout:      4 * time.Second,
 		IdleTimeout:       30 * time.Second,
 		ReadHeaderTimeout: 2 * time.Second,
 		Handler:           cs,
