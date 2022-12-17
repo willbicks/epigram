@@ -4,6 +4,14 @@ The Epigram server is primarily configured by a YAML file, while certain paramet
 
 On Windows, the default configuration file locaiton is `.\config.yml`, while on Linux, the default locaiton is `/etc/epigram/config.yml`. On both platforms, the config file location can be overwritten by the `EP_CONFIG` environment variable.
 
+## Configuration 'Merging'
+
+Many configuratio parameters can be set from multiple sources. The following list outlines the order in which configuration parameters are merged. If a parameter is specified by multiple sources, the value from the last source (highest number) will be used.
+
+1. Default values
+2. Configuration file
+3. Environment variables
+
 ## Configuration parameters
 
 The following table outlines parameters which can be configured, as well as their corresponding environment variables (if applicable), and their default values.

@@ -121,11 +121,11 @@ func Parse() (Application, error) {
 		return Application{}, err
 	}
 
-	layer, err := parseYAML(ymlBytes)
+	yamlConfig, err := parseYAML(ymlBytes)
 	if err != nil {
 		return Application{}, err
 	}
-	cfg = cfg.merge(layer)
+	cfg = cfg.merge(yamlConfig)
 
 	// Merge environment configuration
 	cfg = cfg.merge(fromEnvironment())
