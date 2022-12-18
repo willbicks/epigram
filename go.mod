@@ -3,8 +3,8 @@ module github.com/willbicks/epigram
 go 1.17
 
 require (
-	github.com/NYTimes/gziphandler v1.1.1
 	github.com/coreos/go-oidc/v3 v3.1.0
+	github.com/klauspost/compress v1.15.13
 	github.com/matryer/is v1.4.0
 	github.com/mattn/go-sqlite3 v1.14.11
 	github.com/rs/xid v1.3.0
