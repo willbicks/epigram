@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+
+	"github.com/willbicks/epigram/internal/model"
+	"github.com/willbicks/epigram/internal/service"
 )
 
 func Test_NewTemplateEngine(t *testing.T) {
@@ -16,9 +19,34 @@ func Test_TemplateEngine_RenderPage(t *testing.T) {
 	tests := []Page{
 		HomePage{},
 		PrivacyPage{},
-		QuotesPage{},
-		QuizPage{},
-		AdminMainPage{},
+		QuotesPage{
+			Quotes: []model.Quote{
+				{
+					Quotee:  "Test Quotee",
+					Quote:   "Test Quote",
+					Context: "Test Context",
+				},
+			},
+		},
+		QuizPage{
+			Questions: []service.QuizQuestion{
+				{
+					ID:       1,
+					Question: "Test Question",
+					Answer:   "Answer",
+					Length:   6,
+				},
+			},
+		},
+		AdminMainPage{
+			Users: []model.User{
+				{
+					ID:    "x123",
+					Name:  "Test User",
+					Email: "test@example.com",
+				},
+			},
+		},
 	}
 
 	te, err := NewTemplateEngine(RootTD{})
