@@ -1,13 +1,23 @@
 port: 8080
-bind: 0.0.0.0
+address: 127.0.0.1
+
 baseURL: http://localhost:8080
+
 title: Epigram Demo
 description: A place to record quotes.
-database: inmemory
+
+repo: inmemory
+
 trustProxy: false
-googleOIDC:
-  clientId: ""
-  clientSecret: ""
+
+OIDCProvider:
+  name: google
+  issuerURL: "https://accounts.google.com"
+  clientId: "1234567890.apps.googleusercontent.com"
+  clientSecret: "your-client-secret"
+
 entryQuestions:
-  - question: The best color
+  - question: What is the best color?
     answer: purple
+  - question: What is the best animal?
+    answer: dog

@@ -2,12 +2,22 @@ package config
 
 import (
 	"os"
+	"path"
 	"strconv"
 	"strings"
 )
 
 // EnvironmentPrefix is a string that is prefixed to environment variables seperated by an underscore.
 const EnvironmentPrefix string = "EP"
+
+// getConfigLoc returns the location of the config file. If the Config environment variable is set, it will be used.
+// Otherwise, the default location will be configDir/config.yml.
+func getConfigLoc() string {
+	if p := getEnvVar("Config"); p != "" {
+		return p
+	}
+	return path.Join(configDir, "config.yml")
+}
 
 // getEnvVar returns the environment variable labeled with the specified name (converted to uppercase), using the
 // specified EnvironmentPrefix.

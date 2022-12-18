@@ -1,10 +1,9 @@
-# 💬 Epigram 
+# 💬 Epigram
 
-> **[ep·i·gram][wikipedia]** *noun*
-: a pithy saying or remark expressing an idea in a clever and amusing way.
+> **[ep·i·gram][wikipedia]** _noun_
+> : a pithy saying or remark expressing an idea in a clever and amusing way.
 
 Epigram is a simple web service for communities to immortalize the enlightening, funny, or downright dumb quotes that they hear.
-
 
 [wikipedia]: https://en.wikipedia.org/wiki/Epigram
 
@@ -33,18 +32,10 @@ go install github.com/willbicks/epigram@latest
 
 Alternatively, Docker container images are available at [ghcr.io/willbicks/epigram](https://ghcr.io/willbicks/epigram).
 
-### Configuration
-
-While most configuration parameters have a default value, 
-
-Epigram expects a `config.yml` in the same directory as it is run, or at the location specified by the `EP_CONFIG` environment variable.
-
-TODO: Explain config file contents. For more information, see [Configuration](docs/config.md).
-
 ## Documentation
 
-- [Project Structure / Architecture](docs/structure.md)
 - [Configuration](docs/config.md)
+- [Project Structure / Architecture](docs/structure.md)
 
 ## Contributing
 

@@ -6,7 +6,6 @@ package config
 
 import (
 	"os"
-	"path"
 	"strings"
 )
 
@@ -40,7 +39,7 @@ type OIDCProvider struct {
 	ClientSecret string `yaml:"clientSecret"`
 }
 
-// EntryQuestion is a question the user must answer before being granted entrance to the applicaiton
+// EntryQuestion is a question the user must answer before being granted entrance to the application
 type EntryQuestion struct {
 	Question string `yaml:"question"`
 	Answer   string `yaml:"answer"`
@@ -48,25 +47,25 @@ type EntryQuestion struct {
 
 // Application represents the root configuration struct for the server.
 type Application struct {
-	// Address is an IP address (or hostname) to bind the server to
+	// Address is an IP address (or hostname) to bind the server to.
 	Address string
-	// Port is the port to be bound to on the specified address
+	// Port is the port to be bound to on the specified address.
 	Port uint16
-	// BaseURL is the complete domain and path to access the root of the web server, used for creating callback URLs
+	// BaseURL is the complete domain and path to access the root of the web server, used for creating callback URLs.
 	BaseURL string `yaml:"baseURL"`
-	// Title is the name of the applicaiton used in the frontend
+	// Title is the name of the application to be shown in the frontend.
 	Title string `yaml:"title"`
-	// Description is a subtutle shown in the frontend
+	// Description is a short description of the application to be shown in the frontend.
 	Description string `yaml:"description"`
-	// Repo dictates what type of storage the application should user for data persistence.
+	// Repo dictates what type of storage the application should use for data persistence.
 	Repo Repository `yaml:"repo"`
 	// DBLoc is the location where the database can be found. In the case of an SQLite repository, this is the path to database file.
 	DBLoc string `yaml:"DBLoc"`
-	// TrustProxy dictates whether X-Forwarded-For header should be trusted to obtain the client IP, or if the requestor IP shoud be used instead
+	// TrustProxy dictates whether the `X-Forwarded-For` header should be trusted to obtain the client IP, or if the requestor IP should be used instead.
 	TrustProxy bool `yaml:"trustProxy"`
-	// OIDCProvider is the OIDC provider used to authenticate users
+	// OIDCProvider is the OIDC provider used to authenticate users.
 	OIDCProvider OIDCProvider `yaml:"OIDCProvider"`
-	// EntryQuestions is an array of questions
+	// EntryQuestions is an array of questions.
 	EntryQuestions []EntryQuestion `yaml:"entryQuestions"`
 }
 
@@ -110,28 +109,23 @@ func (base Application) merge(layer Application) Application {
 // Parse layers three config sources to return the final application configuration. First, the default configuration is
 // loaded (which varied based on system operating system). Then, a .yml configuration file is loaded. If the EP_CONFIG
 // env var is set, the yml file is loaded from there, otherwise, it is loaded from the default config location (again,
-//varies based on os, see default files for more). Finally, any configuration parameters specified in environment
+// varies based on os, see default files for more). Finally, any configuration parameters specified in environment
 // variables are applied, and the resulting Application config is returned.
 func Parse() (Application, error) {
 	// Load default configuration
 	cfg := Default
 
 	// Merge YAML configuration
-	ymlPath := path.Join(configDir, "config.yml")
-	if p := getEnvVar("config"); p != "" {
-		ymlPath = p
-	}
-
-	ymlBytes, err := os.ReadFile(ymlPath)
+	ymlBytes, err := os.ReadFile(getConfigLoc())
 	if err != nil {
 		return Application{}, err
 	}
 
-	layer, err := parseYAML(ymlBytes)
+	yamlConfig, err := parseYAML(ymlBytes)
 	if err != nil {
 		return Application{}, err
 	}
-	cfg = cfg.merge(layer)
+	cfg = cfg.merge(yamlConfig)
 
 	// Merge environment configuration
 	cfg = cfg.merge(fromEnvironment())
