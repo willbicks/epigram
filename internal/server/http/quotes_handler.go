@@ -4,14 +4,8 @@ import (
 	"net/http"
 
 	"github.com/willbicks/epigram/internal/model"
+	"github.com/willbicks/epigram/internal/server/http/frontend"
 )
-
-// quotesTD represents the template data (TD) needed to render the quotes page
-type quotesTD struct {
-	Error  error
-	Quote  model.Quote
-	Quotes []model.Quote
-}
 
 // quotesHandler handles requests to the quotes page, either GET requests to render
 // quotes, or POST requests to submit a new quote
@@ -23,7 +17,7 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 			s.serverError(w, r, err)
 			return
 		}
-		err = s.tmpl.RenderPage(w, "quotes.gohtml", quotesTD{
+		err = s.tmpl.RenderPage(w, frontend.QuotesPage{
 			Quotes: quotes,
 		})
 		if err != nil {
@@ -49,7 +43,7 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 				s.serverError(w, r, err)
 				return
 			}
-			err = s.tmpl.RenderPage(w, "quotes.gohtml", quotesTD{
+			err = s.tmpl.RenderPage(w, frontend.QuotesPage{
 				Error:  createErr,
 				Quote:  q,
 				Quotes: quotes,

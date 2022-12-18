@@ -1,6 +1,10 @@
 package http
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/willbicks/epigram/internal/server/http/frontend"
+)
 
 func (s *QuoteServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -9,7 +13,7 @@ func (s *QuoteServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 			s.notFoundError(w, r)
 			return
 		}
-		err := s.tmpl.RenderPage(w, "home.gohtml", nil)
+		err := s.tmpl.RenderPage(w, frontend.HomePage{})
 		if err != nil {
 			s.serverError(w, r, err)
 			return

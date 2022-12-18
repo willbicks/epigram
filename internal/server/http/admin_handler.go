@@ -3,13 +3,8 @@ package http
 import (
 	"net/http"
 
-	"github.com/willbicks/epigram/internal/model"
+	"github.com/willbicks/epigram/internal/server/http/frontend"
 )
-
-// adminMainTD is the data needed to render the main admin template.
-type adminMainTD struct {
-	Users []model.User
-}
 
 // privacyHandler renders the privacy policy page in response to GET requests
 func (s *QuoteServer) adminMainHandler(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +16,7 @@ func (s *QuoteServer) adminMainHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = s.tmpl.RenderPage(w, "admin_main.gohtml", adminMainTD{
+		err = s.tmpl.RenderPage(w, frontend.AdminMainPage{
 			Users: users,
 		})
 		if err != nil {
