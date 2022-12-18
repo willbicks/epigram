@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
@@ -54,6 +55,18 @@ func (s *QuoteServer) requireQuizPassed(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		} else {
 			http.Redirect(w, r, s.paths.Quiz, http.StatusFound)
+		}
+	})
+}
+
+// requireAdmin requires that the user be an admin, otherwise a 401 error is returned.
+func (s *QuoteServer) requireAdmin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		u := ctxval.UserFromContext(r.Context())
+		if u.Admin {
+			next.ServeHTTP(w, r)
+		} else {
+			s.clientError(w, r, errors.New("you are not authorized to access this page"), http.StatusUnauthorized)
 		}
 	})
 }
