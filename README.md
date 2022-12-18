@@ -13,7 +13,7 @@ Epigram is a simple web service for communities to immortalize the enlightening,
 - [x] Quotes are organized in chronological order, and in sections by year.
 - [x] Authorization is delegated to a configurable OpenID Connect provider.
 - [x] Access restricted to only those who correctly answer a few questions.
-- [ ] Dark mode support.
+- [x] Dark mode support.
 - [ ] Expanded admin control functions.
 
 ## Project Status
