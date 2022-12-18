@@ -782,6 +782,10 @@ select {
 .link:hover {
   text-decoration-color: #60a5fa;
 }
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
 .my-12 {
   margin-top: 3rem;
   margin-bottom: 3rem;
@@ -966,6 +970,7 @@ select {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 @media (prefers-color-scheme: dark) {
 
   .dark\:bg-black {
@@ -1008,6 +1013,7 @@ select {
     color: rgb(107 114 128 / var(--tw-text-opacity));
   }
 }
+
 @media (min-width: 768px) {
 
   .md\:mb-0 {

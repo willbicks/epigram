@@ -8,8 +8,6 @@
 	<form action="{{.Paths.Quotes}}" method="post">
 		<h2 class="text-3xl font-semibold text-center">Submit a new quote:</h2>
 
-		{{ template "error" .Page.Error }}
-
 		<div class="mt-8">
 			<div class="grid grid-cols-1 gap-6">
 				<label class="block">
@@ -27,6 +25,9 @@
 					<input name="quotee" type="text" class="mt-1 block w-full dark:bg-gray-800"
 						placeholder="Jaustin Ross" value="{{.Page.Quote.Quotee}}" />
 				</label>
+
+				{{ template "error" .Page.Error }}
+
 				<input class="button" type="submit" value="Submit" />
 			</div>
 		</div>
