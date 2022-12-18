@@ -12,7 +12,8 @@ func (s *QuoteServer) routes(pubFS fs.FS) {
 	s.mux.Handle(s.paths.Home, http.HandlerFunc(s.homeHandler))
 	s.mux.Handle(s.paths.Quotes, s.requireQuizPassed(http.HandlerFunc(s.quotesHandler)))
 	s.mux.Handle(s.paths.Quiz, s.requireLoggedIn(http.HandlerFunc(s.quizHandler)))
-	s.mux.Handle(s.paths.Admin, s.requireLoggedIn(http.HandlerFunc(s.adminMainHandler)))
+
+	s.mux.Handle(s.paths.Admin, s.requireLoggedIn(s.requireAdmin(http.HandlerFunc(s.adminMainHandler))))
 
 	// TODO: factor out into registerOIDCService(service.OIDC) method to prepare
 	// for multiple OIDC providers
