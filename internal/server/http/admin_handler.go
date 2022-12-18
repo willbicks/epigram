@@ -16,7 +16,7 @@ func (s *QuoteServer) adminMainHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = s.tmpl.RenderPage(w, "admin_main.gohtml", frontend.AdminMainTD{
+		err = s.tmpl.RenderPage(w, frontend.AdminMainPage{
 			Users: users,
 		})
 		if err != nil {

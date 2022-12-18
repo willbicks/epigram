@@ -64,11 +64,11 @@ func (e *TemplateEngine) initViews(fileSys fs.FS) error {
 }
 
 // RenderPage renders the specified view with the provided data joined to the RootTD.
-func (e *TemplateEngine) RenderPage(w io.Writer, name string, data interface{}) error {
-	t, ok := e.views[name]
+func (e *TemplateEngine) RenderPage(w io.Writer, page Page) error {
+	t, ok := e.views[page.viewName()]
 	if !ok {
 		return errors.New("template not found in views")
 	}
 
-	return t.ExecuteTemplate(w, name, e.rootTD.joinPage(data))
+	return t.ExecuteTemplate(w, page.viewName(), e.rootTD.joinPage(page))
 }

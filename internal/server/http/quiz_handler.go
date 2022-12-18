@@ -14,7 +14,7 @@ import (
 func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		err := s.tmpl.RenderPage(w, "quiz.gohtml", frontend.QuizTD{
+		err := s.tmpl.RenderPage(w, frontend.QuizPage{
 			NumQuestions: len(s.QuizService.Questions),
 			Questions:    s.QuizService.Questions,
 		})
@@ -54,7 +54,7 @@ func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = s.tmpl.RenderPage(w, "quiz.gohtml", frontend.QuizTD{
+		err = s.tmpl.RenderPage(w, frontend.QuizPage{
 			NumQuestions: len(s.QuizService.Questions),
 			Questions:    s.QuizService.Questions,
 			Error:        errors.New(failReason),

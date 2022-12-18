@@ -17,7 +17,7 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 			s.serverError(w, r, err)
 			return
 		}
-		err = s.tmpl.RenderPage(w, "quotes.gohtml", frontend.QuotesTD{
+		err = s.tmpl.RenderPage(w, frontend.QuotesPage{
 			Quotes: quotes,
 		})
 		if err != nil {
@@ -43,7 +43,7 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 				s.serverError(w, r, err)
 				return
 			}
-			err = s.tmpl.RenderPage(w, "quotes.gohtml", frontend.QuotesTD{
+			err = s.tmpl.RenderPage(w, frontend.QuotesPage{
 				Error:  createErr,
 				Quote:  q,
 				Quotes: quotes,
