@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-// TemplateEngine is responsible for storing cached html templates, and renderning them ondemand with
+// TemplateEngine is responsible for storing cached html templates, and rendering them on-demand with
 // template data.
 type TemplateEngine struct {
 	views  map[string]*template.Template

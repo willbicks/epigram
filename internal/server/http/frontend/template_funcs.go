@@ -12,7 +12,7 @@ import (
 )
 
 var templateFuncs template.FuncMap = template.FuncMap{
-	// getIssues takes an error and returns a slice of issues. Derrived from issues slice if ServiceError,
+	// getIssues takes an error and returns a slice of issues. Derived from issues slice if ServiceError,
 	// otherwise a slice with a single entry of the error.Error()
 	"getIssues": func(err error) []string {
 		if err == nil {
@@ -42,7 +42,7 @@ var templateFuncs template.FuncMap = template.FuncMap{
 		return byYear
 	},
 	// orderedYearKeys takes a map of quotes, and returns a slice of years (keys of map) in
-	// reverse cronological order
+	// reverse chronological order
 	"orderedYearKeys": func(quotes map[int][]model.Quote) []int {
 		years := make([]int, len(quotes))
 		i := 0
@@ -56,7 +56,7 @@ var templateFuncs template.FuncMap = template.FuncMap{
 		return years
 	},
 	// sizeImage accepts a url of an image, and attempts to resize it by modifying the urlparams of the url,
-	// depending on the image hosting service. Currenty supports googleusercontent. Returns the url of the
+	// depending on the image hosting service. Currently supports googleusercontent. Returns the url of the
 	// sizedImage, or returns a url to a not found image placeholder if not a valid URL.
 	"sizeImage": func(imgURL string, size int) string {
 		if imgURL == "" {
