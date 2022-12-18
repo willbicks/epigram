@@ -3,9 +3,9 @@ package http
 import (
 	"net/http"
 
-	"github.com/willbicks/epigram/internal/config"
+	"github.com/klauspost/compress/gzhttp"
 
-	"github.com/NYTimes/gziphandler"
+	"github.com/willbicks/epigram/internal/config"
 	"github.com/willbicks/epigram/internal/logger"
 	"github.com/willbicks/epigram/internal/server/http/frontend"
 	"github.com/willbicks/epigram/internal/server/http/paths"
@@ -72,5 +72,5 @@ func (s *QuoteServer) Init() error {
 // ServeHTTP serves as the entrypoint for HTTP requests to the quote server. It applies the appropriate globalmiddleware,
 // and then serves request responses using the http ServeMux
 func (s QuoteServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	gziphandler.GzipHandler(s.interpretSession(s.getIP(s.mux))).ServeHTTP(w, r)
+	gzhttp.GzipHandler(s.interpretSession(s.getIP(s.mux))).ServeHTTP(w, r)
 }
