@@ -6,22 +6,15 @@ import (
 	"strconv"
 
 	"github.com/willbicks/epigram/internal/ctxval"
-	"github.com/willbicks/epigram/internal/service"
+	"github.com/willbicks/epigram/internal/server/http/frontend"
 )
-
-// quizTD represents the template data (TD) needed to render the quiz page
-type quizTD struct {
-	Error        error
-	NumQuestions int
-	Questions    []service.QuizQuestion
-}
 
 // quizHandler handles requests to the quizPage, either GET requests to render the page,
 // or POST requests to submit attempts.
 func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		err := s.tmpl.RenderPage(w, "quiz.gohtml", quizTD{
+		err := s.tmpl.RenderPage(w, "quiz.gohtml", frontend.QuizTD{
 			NumQuestions: len(s.QuizService.Questions),
 			Questions:    s.QuizService.Questions,
 		})
@@ -61,7 +54,7 @@ func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = s.tmpl.RenderPage(w, "quiz.gohtml", quizTD{
+		err = s.tmpl.RenderPage(w, "quiz.gohtml", frontend.QuizTD{
 			NumQuestions: len(s.QuizService.Questions),
 			Questions:    s.QuizService.Questions,
 			Error:        errors.New(failReason),
