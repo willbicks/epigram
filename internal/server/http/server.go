@@ -48,14 +48,6 @@ func (s *QuoteServer) Init() error {
 		return err
 	}
 
-	// Initialize http mux and routes
-	s.mux = http.NewServeMux()
-	pubFS, err := frontend.PublicFS()
-	if err != nil {
-		return err
-	}
-	s.routes(pubFS)
-
 	// Initialize template engine
 	tmpl, err := frontend.NewTemplateEngine(frontend.RootTD{
 		Title:       s.Config.Title,
@@ -65,7 +57,20 @@ func (s *QuoteServer) Init() error {
 	if err != nil {
 		return err
 	}
+	if s.Config.DevMode {
+		s.Logger.Warn("Running in development mode. Template engine performance reduced.")
+		tmpl.DevMode = true
+	}
 	s.tmpl = tmpl
+
+	// Initialize http mux and routes
+	s.mux = http.NewServeMux()
+	pubFS, err := tmpl.PublicFS()
+	if err != nil {
+		return err
+	}
+	s.routes(pubFS)
+
 	return nil
 }
 

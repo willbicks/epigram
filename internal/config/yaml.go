@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+
 	"gopkg.in/yaml.v3"
 )
 
@@ -18,7 +19,7 @@ func (repo *Repository) UnmarshalYAML(n *yaml.Node) error {
 	return nil
 }
 
-// parseYAML accepts an array of bytes, and parses it into an Applicaiton configuration
+// parseYAML accepts an array of bytes, and parses it into an Application configuration
 func parseYAML(in []byte) (Application, error) {
 	var cfg Application
 

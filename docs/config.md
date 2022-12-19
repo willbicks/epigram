@@ -6,7 +6,7 @@ On Windows, the default configuration file location is `.\config.yml`, while on 
 
 ## Configuration 'Merging'
 
-Many configuration parameters can be set from multiple sources. The following list outlines the order in which configuration parameters are merged. If a parameter is specified by multiple sources, the value from the last source (highest number) will be used.
+Many configuration parameters can be set from multiple sources. The following list outlines the order in which configuration parameters are merged. If a parameter is specified by multiple sources, the value from the last source (highest number) will be used. The exception is boolean parameters (such as DevMode and TrustProxy), which are merged by logical OR, and therefore a value of false will not overwrite a prior true.
 
 1. Default values
 2. Configuration file
@@ -26,6 +26,7 @@ The following table outlines parameters which can be configured, as well as thei
 | **Repo** dictates what type of storage the application should use for data persistence. (either 'inmemory' or 'sqlite')                                                         | `repo`        | `EP_REPO`            | inmemory                                                                                                                         |
 | **DBLoc** is the location where the database can be found. In the case of an SQLite repository, this is the path to database file. It has no effect on an in-memory repository. | `DBLoc`       | `EP_DBLOC`           | Unix: `/var/epigram/epigram.db`, Windows: `.\epigram.db`                                                                         |
 | **TrustProxy** dictates whether `X-Forwarded-For` header should be trusted to obtain the client IP, or if the requestor IP should be used instead.                              | `trustProxy`  | `EP_TRUSTPROXY`      | false                                                                                                                            |
+| **DevMode** dictates whether the application should run in development mode, which disables asset embedding and caching for easier frontend development.                        | `devMode`     | `EP_DEVMODE`         | false                                                                                                                            |
 
 ### OIDC Provider Configuration
 
@@ -62,6 +63,7 @@ repo: SQLite
 DBLoc: ./epigram.db
 
 trustProxy: false
+devMode: false
 
 OIDCProvider:
   name: google
