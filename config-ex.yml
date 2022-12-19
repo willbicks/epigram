@@ -9,6 +9,7 @@ description: A place to record quotes.
 repo: inmemory
 
 trustProxy: false
+devMode: false
 
 OIDCProvider:
   name: google

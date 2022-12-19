@@ -67,11 +67,14 @@ type Application struct {
 	OIDCProvider OIDCProvider `yaml:"OIDCProvider"`
 	// EntryQuestions is an array of questions.
 	EntryQuestions []EntryQuestion `yaml:"entryQuestions"`
+	// DevMode dictates whether the application should run in development mode, which disables asset embedding and caching for easier frontend development.
+	DevMode bool `yaml:"devMode"`
 }
 
 // merge applies all non-nil / non-default values from the provided layer to the base layer, and returns the result.
 //
-// Because TrustProxy is a bool, and it's default value is false, a false TrustProxy will not overwrite a base true.
+// Boolean values (like DevMode and TrustProxy) are merged by ORing the two values together, and as such, a false value
+// in the layer will not override a true value in the base.
 func (base Application) merge(layer Application) Application {
 	if layer.Address != "" {
 		base.Address = layer.Address
@@ -102,6 +105,9 @@ func (base Application) merge(layer Application) Application {
 	}
 	if len(layer.EntryQuestions) > 0 {
 		base.EntryQuestions = layer.EntryQuestions
+	}
+	if layer.DevMode {
+		base.DevMode = layer.DevMode
 	}
 	return base
 }
