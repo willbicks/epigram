@@ -6,38 +6,38 @@ import (
 	"github.com/willbicks/epigram/internal/ctxval"
 )
 
-// ErrNotAuhtenticated is returned when a request which requires an authentication is attempted without it.
-var ErrNotAuhtenticated = Error{
+// ErrNotAuthenticated is returned when a request which requires an authentication is attempted without it.
+var ErrNotAuthenticated = Error{
 	Issues:     []string{"Request requires authentication."},
 	StatusCode: 401,
 }
 
-// ErrNotAuhthorized is returned when a request which requires an Auhthorized is attempted without it.
-var ErrNotAuhthorized = Error{
+// ErrNotAuthorized is returned when a request which requires an authorized user is attempted without it.
+var ErrNotAuthorized = Error{
 	Issues:     []string{"Request requires authorization."},
 	StatusCode: 401,
 }
 
-// verifySignedIn returns ErrNotAuhtenticated if the context lacks an authenticated user
+// verifySignedIn returns ErrNotAuthenticated if the context lacks an authenticated user
 func verifySignedIn(ctx context.Context) error {
 	if u := ctxval.UserFromContext(ctx); u.ID == "" {
-		return ErrNotAuhtenticated
+		return ErrNotAuthenticated
 	}
 	return nil
 }
 
-// verifyUserPrivlege returns ErrNotAuthroized if the user on the Context is not authorized
-func verifyUserPrivlege(ctx context.Context) error {
+// verifyUserPrivilege returns ErrNotAuthorized if the user on the Context is not authorized
+func verifyUserPrivilege(ctx context.Context) error {
 	if !ctxval.UserFromContext(ctx).IsAuthorized() {
-		return ErrNotAuhthorized
+		return ErrNotAuthorized
 	}
 	return nil
 }
 
-// verifyAdminPrivlege returns ErrNotAuthroized if the user on the Context is not an admin
-func verifyAdminPrivlege(ctx context.Context) error {
+// verifyAdminPrivilege returns ErrNotAuthorized if the user on the Context is not an admin
+func verifyAdminPrivilege(ctx context.Context) error {
 	if !ctxval.UserFromContext(ctx).IsAdmin() {
-		return ErrNotAuhthorized
+		return ErrNotAuthorized
 	}
 	return nil
 }

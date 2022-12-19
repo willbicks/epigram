@@ -154,7 +154,7 @@ func (s *User) RecordQuizAttempt(ctx context.Context, u *model.User, passed bool
 
 // GetAllUsers returns a slice of all users, and can ony be accessed by admins.
 func (s *User) GetAllUsers(ctx context.Context) ([]model.User, error) {
-	if err := verifyAdminPrivlege(ctx); err != nil {
+	if err := verifyAdminPrivilege(ctx); err != nil {
 		return nil, err
 	}
 
