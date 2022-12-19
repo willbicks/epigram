@@ -28,9 +28,15 @@ func (PrivacyPage) viewName() string {
 
 // QuotesPage lists all quotes by year
 type QuotesPage struct {
+	// RenderAdmin is true if the page should render admin controls / info
+	RenderAdmin bool
+
 	Error  error
 	Quote  model.Quote
 	Quotes []model.Quote
+
+	// Users is a map of user ID to user, and should only be populated if RenderAdmin is true
+	Users map[string]model.User
 }
 
 func (QuotesPage) viewName() string {

@@ -28,6 +28,23 @@ func Test_TemplateEngine_RenderPage(t *testing.T) {
 				},
 			},
 		},
+		QuotesPage{
+			RenderAdmin: true,
+			Quotes: []model.Quote{
+				{
+					Quotee:      "Test Quotee",
+					Quote:       "Test Quote",
+					Context:     "Test Context",
+					SubmitterID: "x123",
+				},
+			},
+			Users: map[string]model.User{
+				"x123": {
+					ID:   "x123",
+					Name: "Test User",
+				},
+			},
+		},
 		QuizPage{
 			Questions: []service.QuizQuestion{
 				{
