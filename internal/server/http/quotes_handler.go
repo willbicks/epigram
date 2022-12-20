@@ -52,7 +52,7 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 		err = s.tmpl.RenderPage(w, page)
 		if err != nil {
 			s.serverError(w, r, err)
-			s.Logger.Warn(err.Error())
+			return
 		}
 	case "POST":
 		if err := r.ParseForm(); err != nil {
@@ -117,7 +117,7 @@ func (s *QuoteServer) quoteEditHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		if err != nil {
 			s.serverError(w, r, err)
-			s.Logger.Warn(err.Error())
+			return
 		}
 	case "POST":
 		if err := r.ParseForm(); err != nil {
