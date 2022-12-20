@@ -1,0 +1,36 @@
+{{ template "base" . }}
+
+{{ define "body" }}
+<div class="section text-center">
+	<h1 class="h1">💬 {{.Title}}</h1>
+</div>
+<div class="section my-8 max-w-md">
+	<form method="post">
+		<h2 class="text-3xl font-semibold text-center">Edit quote:</h2>
+
+		<div class="mt-8">
+			<div class="grid grid-cols-1 gap-6">
+				<label class="block">
+					<span class="text-gray-700 dark:text-gray-300">Quote</span>
+					<textarea name="quote" class="mt-1 block w-full dark:bg-gray-800"
+						rows="3">{{.Page.Quote.Quote}}</textarea>
+				</label>
+				<label class="block">
+					<span class="text-gray-700 dark:text-gray-300">Subtitle / context (optional)</span>
+					<input name="context" type="text" class="mt-1 block w-full dark:bg-gray-800"
+						placeholder="bullying Josh" value="{{.Page.Quote.Context}}" />
+				</label>
+				<label class="block">
+					<span class="text-gray-700 dark:text-gray-300">Said by</span>
+					<input name="quotee" type="text" class="mt-1 block w-full dark:bg-gray-800"
+						placeholder="Jaustin Ross" value="{{.Page.Quote.Quotee}}" />
+				</label>
+
+				{{ template "error" .Page.Error }}
+
+				<input class="button" type="submit" value="Submit" />
+			</div>
+		</div>
+	</form>
+</div>
+{{ end }}

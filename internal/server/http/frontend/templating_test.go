@@ -2,6 +2,7 @@ package frontend
 
 import (
 	"bytes"
+	"errors"
 	"strings"
 	"testing"
 
@@ -63,6 +64,14 @@ func Test_TemplateEngine_RenderPage(t *testing.T) {
 					Email: "test@example.com",
 				},
 			},
+		},
+		QuoteEditPage{
+			Quote: model.Quote{
+				Quotee:  "Test Quotee",
+				Quote:   "Test Quote",
+				Context: "Test Context",
+			},
+			Error: errors.New("Test Error"),
 		},
 	}
 

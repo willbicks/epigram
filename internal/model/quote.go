@@ -11,3 +11,9 @@ type Quote struct {
 	Quote       string
 	Created     time.Time
 }
+
+// Editable returns true if the quote can be edited by the specified user
+// Admin users can edit any quote, while non admins can only edit their own quotes within 1 hour of submission
+func (q *Quote) Editable(u User) bool {
+	return u.Admin || (u.ID == q.SubmitterID && time.Since(q.Created) < time.Hour)
+}

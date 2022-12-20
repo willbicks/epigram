@@ -43,6 +43,16 @@ func (QuotesPage) viewName() string {
 	return "quotes.gohtml"
 }
 
+// QuoteEditPage presents a form to edit a quote
+type QuoteEditPage struct {
+	Error error
+	Quote model.Quote
+}
+
+func (QuoteEditPage) viewName() string {
+	return "quote_edit.gohtml"
+}
+
 // QuizPage presents a quiz (list of questions)
 type QuizPage struct {
 	Error        error

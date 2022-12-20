@@ -2,11 +2,13 @@ package http
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/willbicks/epigram/internal/ctxval"
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/server/http/frontend"
+	"github.com/willbicks/epigram/internal/storage"
 )
 
 func (s *QuoteServer) getQuotesPage(ctx context.Context) (frontend.QuotesPage, error) {
@@ -81,6 +83,72 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
+		http.Redirect(w, r, s.paths.Quotes, http.StatusFound)
+	default:
+		s.methodNotAllowedError(w, r)
+		return
+	}
+}
+
+// quoteEditHandler handles requests to the edit a quote either GET requests to render
+// an edit form, or POST requests to submit a new quote
+func (s *QuoteServer) quoteEditHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		u := ctxval.UserFromContext(r.Context())
+		q, err := s.QuoteService.GetQuote(r.Context(), r.URL.Query().Get("id"))
+		if err == storage.ErrNotFound {
+			s.clientError(w, r, errors.New("Quote not found"), http.StatusNotFound)
+			return
+		} else if err != nil {
+			s.serverError(w, r, err)
+			return
+		}
+
+		if !q.Editable(u) {
+			s.clientError(w, r,
+				errors.New("You cannot edit this quote. Quotes can only be edited by their submitters within an hour of submission."),
+				http.StatusForbidden)
+			return
+		}
+
+		err = s.tmpl.RenderPage(w, frontend.QuoteEditPage{
+			Quote: q,
+		})
+		if err != nil {
+			s.serverError(w, r, err)
+			s.Logger.Warn(err.Error())
+		}
+	case "POST":
+		if err := r.ParseForm(); err != nil {
+			s.serverError(w, r, err)
+			return
+		}
+
+		q, err := s.QuoteService.GetQuote(r.Context(), r.URL.Query().Get("id"))
+		if err != nil {
+			s.serverError(w, r, err)
+			return
+		}
+
+		q.Quote = r.FormValue("quote")
+		q.Quotee = r.FormValue("quotee")
+		q.Context = r.FormValue("context")
+
+		updateErr := s.QuoteService.UpdateQuote(r.Context(), q)
+
+		if updateErr != nil {
+			err = s.tmpl.RenderPage(w, frontend.QuoteEditPage{
+				Quote: q,
+				Error: updateErr,
+			})
+			if err != nil {
+				s.serverError(w, r, err)
+				return
+			}
+			return
+		}
+
 		http.Redirect(w, r, s.paths.Quotes, http.StatusFound)
 	default:
 		s.methodNotAllowedError(w, r)
