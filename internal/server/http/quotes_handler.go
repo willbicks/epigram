@@ -17,13 +17,14 @@ func (s *QuoteServer) getQuotesPage(ctx context.Context) (frontend.QuotesPage, e
 		return frontend.QuotesPage{}, err
 	}
 
+	user := ctxval.UserFromContext(ctx)
+
 	page := frontend.QuotesPage{
+		User:   user,
 		Quotes: quotes,
 	}
 
-	if ctxval.UserFromContext(ctx).Admin {
-		page.RenderAdmin = true
-
+	if user.Admin {
 		users, err := s.UserService.GetAllUsers(ctx)
 		if err != nil {
 			return frontend.QuotesPage{}, err

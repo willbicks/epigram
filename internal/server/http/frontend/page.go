@@ -28,8 +28,9 @@ func (PrivacyPage) viewName() string {
 
 // QuotesPage lists all quotes by year
 type QuotesPage struct {
-	// RenderAdmin is true if the page should render admin controls / info
-	RenderAdmin bool
+	// User is the currently signed in user, used to determine which quotes are editable
+	// and whether admin info should be rendered.
+	User model.User
 
 	Error  error
 	Quote  model.Quote

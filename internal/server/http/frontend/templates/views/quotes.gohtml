@@ -34,7 +34,8 @@
 	</form>
 </div>
 <div class="wide-section my-12">
-	{{ $renderAdmin := .Page.RenderAdmin }}
+	{{ $paths := .Paths }}
+	{{ $user := .Page.User }}
 	{{ $users := .Page.Users }}
 	{{ $byYear := quotesByYear .Page.Quotes }}
 	{{ range $year := orderedYearKeys $byYear }}
@@ -47,8 +48,15 @@
 				{{ with .Context }}<p class="text-lg dark:text-white font-light lowercase mb-3">{{ . }}</p>{{end}}
 				<p class="text-xl text-gray-800 dark:text-gray-200 font-medium mb-3">{{ .Quote }}</p>
 				<p class="text-xl text-gray-600 dark:text-gray-300 font-medium text-right">- {{ .Quotee }}</p>
+
+				{{ if .Editable $user }}
+				<a href="{{ $paths.QuoteEdit }}?id={{ .ID }}" class="absolute bottom-0 left-0 p-4 text-gray-500"
+					title="Edit Quote">
+					<span class="link">Edit</span>
+				</a>
+				{{ end }}
 			</div>
-			{{ if $renderAdmin }}
+			{{ if $user.Admin }}
 			<p class="mt-2 text-gray-500 dark:text-gray-500">Submitted by {{ (index $users .SubmitterID).Name }} on {{
 				.Created.Format "2006-01-02 (Mon) at 15:04" }}</p>
 			{{ end }}

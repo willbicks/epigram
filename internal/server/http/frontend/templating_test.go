@@ -30,7 +30,9 @@ func Test_TemplateEngine_RenderPage(t *testing.T) {
 			},
 		},
 		QuotesPage{
-			RenderAdmin: true,
+			User: model.User{
+				Admin: true,
+			},
 			Quotes: []model.Quote{
 				{
 					Quotee:      "Test Quotee",
