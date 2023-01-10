@@ -28,7 +28,15 @@
 
 				{{ template "error" .Page.Error }}
 
-				<input class="button" type="submit" value="Submit" />
+				<script src="https://unpkg.com/htmx.org@1.8.4"
+					integrity="sha384-wg5Y/JwF7VxGk4zLsJEcAojRtlVp1FKKdGy1qN+OMtdq72WRvX/EdRdqg/LOhYeV"
+					crossorigin="anonymous"></script>
+
+				<div class="flex">
+					<button class="button-red flex-1 mr-3" hx-delete="">Delete</button>
+
+					<input class="button flex-1" type="submit" value="Update" />
+				</div>
 			</div>
 		</div>
 	</form>

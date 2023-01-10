@@ -151,6 +151,32 @@ func (s *QuoteServer) quoteEditHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		http.Redirect(w, r, s.paths.Quotes, http.StatusFound)
+
+	case "DELETE":
+		q, err := s.QuoteService.GetQuote(r.Context(), r.URL.Query().Get("id"))
+		if err != nil {
+			s.serverError(w, r, err)
+			return
+		}
+
+		updateErr := s.QuoteService.DeleteQuote(r.Context(), q.ID)
+
+		if updateErr != nil {
+			err := s.tmpl.RenderPage(w, frontend.QuoteEditPage{
+				Quote: q,
+				Error: updateErr,
+			})
+			if err != nil {
+				s.serverError(w, r, err)
+				return
+			}
+			return
+		}
+
+		w.Header().Set("HX-Redirect", s.paths.Quotes)
+		w.WriteHeader(http.StatusNoContent)
+		w.Write([]byte{})
+
 	default:
 		s.methodNotAllowedError(w, r)
 		return
