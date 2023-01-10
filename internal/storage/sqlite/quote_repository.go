@@ -103,3 +103,15 @@ func (r *QuoteRepository) FindAll(ctx context.Context) ([]model.Quote, error) {
 
 	return quotes, nil
 }
+
+// Delete removes a Quote with the provided ID from the repository.
+func (r *QuoteRepository) Delete(ctx context.Context, id string) error {
+	result, err := r.db.ExecContext(ctx, "DELETE FROM quotes WHERE ID = ?;", id)
+
+	if i, _ := result.RowsAffected(); i == 0 {
+		return storage.ErrNotFound
+	} else if err != nil {
+		return err
+	}
+	return nil
+}

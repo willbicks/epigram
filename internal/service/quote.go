@@ -18,6 +18,7 @@ type QuoteRepository interface {
 	Update(ctx context.Context, q model.Quote) error
 	FindByID(ctx context.Context, id string) (model.Quote, error)
 	FindAll(ctx context.Context) ([]model.Quote, error)
+	Delete(ctx context.Context, id string) error
 }
 
 // Quote provides a service for interacting with Quotes
@@ -80,7 +81,12 @@ func (s *Quote) UpdateQuote(ctx context.Context, q model.Quote) error {
 		return err
 	}
 
-	if !q.Editable(ctxval.UserFromContext(ctx)) {
+	dbq, err := s.repo.FindByID(ctx, q.ID)
+	if err != nil {
+		return err
+	}
+
+	if !dbq.Editable(ctxval.UserFromContext(ctx)) {
 		return Error{
 			StatusCode: http.StatusUnauthorized,
 			Issues:     []string{"You do not have permission to edit this quote. Quotes can only be edited by their submitter within an hour of submission."},
@@ -92,6 +98,31 @@ func (s *Quote) UpdateQuote(ctx context.Context, q model.Quote) error {
 	}
 
 	return s.repo.Update(ctx, q)
+}
+
+// DeleteQuote updates the specified Quote
+func (s *Quote) DeleteQuote(ctx context.Context, id string) error {
+	if err := verifyUserPrivilege(ctx); err != nil {
+		return err
+	}
+
+	q, err := s.repo.FindByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if !q.Editable(ctxval.UserFromContext(ctx)) {
+		return Error{
+			StatusCode: http.StatusUnauthorized,
+			Issues:     []string{"You do not have permission to edit this quote. Quotes can only be edited by their submitter within an hour of submission."},
+		}
+	}
+
+	if err := verifyQuote(q); err != nil {
+		return err
+	}
+
+	return s.repo.Delete(ctx, q.ID)
 }
 
 // GetAllQuotes returns all Quotes

@@ -68,3 +68,16 @@ func (r *QuoteRepository) FindAll(ctx context.Context) ([]model.Quote, error) {
 
 	return v, nil
 }
+
+// Delete removes a Quote with the provided ID from the repository.
+func (r *QuoteRepository) Delete(ctx context.Context, id string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	_, ok := r.m[id]
+	if !ok {
+		return storage.ErrNotFound
+	}
+
+	delete(r.m, id)
+	return nil
+}
