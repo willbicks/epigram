@@ -41,7 +41,7 @@ func (s *QuoteServer) requireLoggedIn(next http.Handler) http.Handler {
 		if u.ID != "" {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, s.paths.Login, http.StatusFound)
+			http.Redirect(w, r, s.paths.Login, http.StatusSeeOther)
 		}
 	})
 }
@@ -54,7 +54,7 @@ func (s *QuoteServer) requireQuizPassed(next http.Handler) http.Handler {
 		if u.QuizPassed {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, s.paths.Quiz, http.StatusFound)
+			http.Redirect(w, r, s.paths.Quiz, http.StatusSeeOther)
 		}
 	})
 }
