@@ -43,7 +43,7 @@ func (s *QuoteServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// first, check if user is already signed in. If so, redirect to the quotes page.
 		if ctxval.UserFromContext(r.Context()).ID != "" {
-			http.Redirect(w, r, s.paths.Quotes, http.StatusFound)
+			http.Redirect(w, r, s.paths.Quotes, http.StatusSeeOther)
 			return
 		}
 
@@ -60,7 +60,7 @@ func (s *QuoteServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
 		setCallbackCookie(w, r, "state", state)
 		setCallbackCookie(w, r, "nonce", nonce)
 
-		http.Redirect(w, r, oidc.RedirectURL(state, nonce), http.StatusFound)
+		http.Redirect(w, r, oidc.RedirectURL(state, nonce), http.StatusSeeOther)
 	})
 }
 
@@ -97,6 +97,6 @@ func (s *QuoteServer) oidcCallbackHandler(oidc service.OIDC) http.Handler {
 			// Session expires on client one hour before server to account for sync differences.
 			Expires: sess.Expires.Add(-time.Hour),
 		})
-		http.Redirect(w, r, s.paths.Quotes, http.StatusFound)
+		http.Redirect(w, r, s.paths.Quotes, http.StatusSeeOther)
 	})
 }
