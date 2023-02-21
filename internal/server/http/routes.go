@@ -23,10 +23,3 @@ func (s *QuoteServer) routes(pubFS fs.FS) {
 	s.mux.Handle(s.paths.Privacy, http.HandlerFunc(s.privacyHandler))
 	s.mux.Handle("/static/", s.staticHandler(pubFS))
 }
-
-// staticHandler accepts a file system containing files that should be publicly
-// available, and returns a handler which serves them less the `/static/` prefix.
-func (s *QuoteServer) staticHandler(fileSys fs.FS) http.Handler {
-	// TODO: modify to disable directory listing
-	return http.StripPrefix("/static/", http.FileServer(http.FS(fileSys)))
-}
