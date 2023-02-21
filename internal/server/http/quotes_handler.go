@@ -81,7 +81,7 @@ func (s *QuoteServer) quotesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
-		http.Redirect(w, r, s.paths.Quotes, http.StatusFound)
+		http.Redirect(w, r, s.paths.Quotes, http.StatusSeeOther)
 	default:
 		s.methodNotAllowedError(w, r)
 		return

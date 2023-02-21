@@ -50,7 +50,7 @@ func (s *QuoteServer) quizHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if u.QuizPassed {
-			http.Redirect(w, r, s.paths.Quotes, http.StatusFound)
+			http.Redirect(w, r, s.paths.Quotes, http.StatusSeeOther)
 			return
 		}
 
