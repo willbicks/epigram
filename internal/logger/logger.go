@@ -48,7 +48,9 @@ type Logger struct {
 // New returns a new Logger that writes to the provided io.Writer. If timestamp is true, the logger will prefix each
 // message with a timestamp.
 //
+// Debug and Info messages are written to out, while Warn and Fatal messages are written to outErr.
 // If the NO_COLOR environment variable is set, the logger will not use ANSI color escape codes.
+func New(out, outErr io.Writer, timestamp bool) Logger {
 	var flags int
 	if timestamp {
 		flags = log.Ldate | log.Ltime
@@ -58,8 +60,8 @@ type Logger struct {
 		return Logger{
 			debugLog: log.New(out, "DEBUG \t", flags),
 			infoLog:  log.New(out, "INFO \t", flags),
-			warnLog:  log.New(out, "WARN \t", flags),
-			fatalLog: log.New(out, "FATAL \t", flags),
+			warnLog:  log.New(outErr, "WARN \t", flags),
+			fatalLog: log.New(outErr, "FATAL \t", flags),
 		}
 
 	}
@@ -67,8 +69,8 @@ type Logger struct {
 	return Logger{
 		debugLog: log.New(out, colorCyan+"DEBUG \t"+colorReset, flags),
 		infoLog:  log.New(out, colorBlue+"INFO \t"+colorReset, flags),
-		warnLog:  log.New(out, colorYellow+"WARN \t"+colorReset, flags),
-		fatalLog: log.New(out, colorRed+"FATAL \t"+colorReset, flags),
+		warnLog:  log.New(outErr, colorYellow+"WARN \t"+colorReset, flags),
+		fatalLog: log.New(outErr, colorRed+"FATAL \t"+colorReset, flags),
 	}
 }
 
