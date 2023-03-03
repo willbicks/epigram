@@ -19,7 +19,7 @@ import (
 
 func main() {
 	// Initialize logger
-	log := logger.New(os.Stdout, false)
+	log := logger.New(os.Stdout, os.Stderr, false)
 	log.Level = logger.LevelDebug
 
 	// Declare and parse flags
