@@ -47,11 +47,23 @@ type Logger struct {
 
 // New returns a new Logger that writes to the provided io.Writer. If timestamp is true, the logger will prefix each
 // message with a timestamp.
-func New(out io.Writer, timestamp bool) Logger {
+//
+// If the NO_COLOR environment variable is set, the logger will not use ANSI color escape codes.
 	var flags int
 	if timestamp {
 		flags = log.Ldate | log.Ltime
 	}
+
+	if os.Getenv("NO_COLOR") != "" {
+		return Logger{
+			debugLog: log.New(out, "DEBUG \t", flags),
+			infoLog:  log.New(out, "INFO \t", flags),
+			warnLog:  log.New(out, "WARN \t", flags),
+			fatalLog: log.New(out, "FATAL \t", flags),
+		}
+
+	}
+
 	return Logger{
 		debugLog: log.New(out, colorCyan+"DEBUG \t"+colorReset, flags),
 		infoLog:  log.New(out, colorBlue+"INFO \t"+colorReset, flags),
