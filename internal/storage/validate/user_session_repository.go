@@ -13,7 +13,11 @@ import (
 )
 
 // UserSessionRepository tests a type implementing the UserSessionRepository interface
-func UserSessionRepository(t *testing.T, repo service.UserSessionRepository) {
+func UserSessionRepository(t *testing.T, repoFactory func() (repo service.UserSessionRepository, closer func())) {
+
+	repo, close := repoFactory()
+	defer close()
+
 	us1 := model.UserSession{
 		ID:      "sess_id",
 		UserID:  "user_id",
