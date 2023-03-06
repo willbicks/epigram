@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/coreos/go-oidc/v3 v3.5.0
+	github.com/google/go-cmp v0.5.9
 	github.com/klauspost/compress v1.15.15
 	github.com/matryer/is v1.4.0
 	github.com/mattn/go-sqlite3 v1.14.16
