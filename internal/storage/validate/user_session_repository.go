@@ -1,8 +1,7 @@
-package storagetest
+package validate
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
@@ -11,37 +10,10 @@ import (
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/service"
 	"github.com/willbicks/epigram/internal/storage"
-	"github.com/willbicks/epigram/internal/storage/inmemory"
-	"github.com/willbicks/epigram/internal/storage/sqlite"
 )
 
-func TestUserSessionRepositories(t *testing.T) {
-	t.Run("UserSessionRepository_inmemory", func(t *testing.T) {
-		testUserSessionRepository(t, inmemory.NewUserSessionRepository())
-	})
-
-	t.Run("UserSessionRepository_sqlite", func(t *testing.T) {
-		mc := &sqlite.MigrationController{}
-		db := makeSqliteTestDB(t)
-		defer func(db *sql.DB) {
-			err := db.Close()
-			if err != nil {
-				t.Fatalf("unable to close database: %v", err)
-			}
-		}(db)
-
-		repo, err := sqlite.NewUserSessionRepository(db, mc)
-		if err != nil {
-			t.Fatalf("unable to create user session repo: %v", err)
-		}
-
-		testUserSessionRepository(t, repo)
-	})
-
-}
-
-// TestUserSessionRepository tests a type implementing the UserSessionRepository interface
-func testUserSessionRepository(t *testing.T, repo service.UserSessionRepository) {
+// UserSessionRepository tests a type implementing the UserSessionRepository interface
+func UserSessionRepository(t *testing.T, repo service.UserSessionRepository) {
 	us1 := model.UserSession{
 		ID:      "sess_id",
 		UserID:  "user_id",

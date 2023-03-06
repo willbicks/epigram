@@ -1,4 +1,4 @@
-package storagetest
+package sqlite
 
 import (
 	"database/sql"
