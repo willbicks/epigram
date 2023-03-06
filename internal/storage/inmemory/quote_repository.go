@@ -26,6 +26,12 @@ func NewQuoteRepository() service.QuoteRepository {
 func (r *QuoteRepository) Create(ctx context.Context, q model.Quote) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
+	_, ok := r.m[q.ID]
+	if ok {
+		return storage.ErrAlreadyExists
+	}
+
 	r.m[q.ID] = q
 	return nil
 }
@@ -48,6 +54,7 @@ func (r *QuoteRepository) Update(ctx context.Context, q model.Quote) error {
 func (r *QuoteRepository) FindByID(ctx context.Context, id string) (model.Quote, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
+
 	q, ok := r.m[id]
 	if !ok {
 		return model.Quote{}, storage.ErrNotFound

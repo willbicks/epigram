@@ -3,7 +3,9 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"errors"
 
+	"github.com/mattn/go-sqlite3"
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/storage"
 )
@@ -43,10 +45,11 @@ func (r *QuoteRepository) Create(ctx context.Context, q model.Quote) error {
 	_, err := r.db.ExecContext(ctx, "INSERT INTO quotes (ID, SubmitterID, Quotee, Context, Quote, Created) VALUES (?, ?, ?, ?, ?, ?);",
 		q.ID, q.SubmitterID, q.Quotee, q.Context, q.Quote, q.Created)
 
-	if err != nil {
-		return err
+	var sqliteErr sqlite3.Error
+	if errors.As(err, &sqliteErr) && sqliteErr.ExtendedCode == sqlite3.ErrConstraintPrimaryKey {
+		return storage.ErrAlreadyExists
 	}
-	return nil
+	return err
 }
 
 // Update updates an existing Quote in the repository.
