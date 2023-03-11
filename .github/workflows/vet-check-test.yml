@@ -1,4 +1,4 @@
-name: Test, Vet, and Lint
+name: Vet, Check and Test
 
 on:
   push:
