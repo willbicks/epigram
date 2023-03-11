@@ -33,11 +33,7 @@ func NewQuoteRepository(db *sql.DB, c *MigrationController) (*QuoteRepository, e
 		},
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &QuoteRepository{db}, nil
+	return &QuoteRepository{db}, err
 }
 
 // Create adds a new Quote to the repository.
@@ -59,10 +55,8 @@ func (r *QuoteRepository) Update(ctx context.Context, q model.Quote) error {
 
 	if i, _ := result.RowsAffected(); i == 0 {
 		return storage.ErrNotFound
-	} else if err != nil {
-		return err
 	}
-	return nil
+	return err
 }
 
 // FindByID returns a Quote with the provided ID.
@@ -73,11 +67,9 @@ func (r *QuoteRepository) FindByID(ctx context.Context, id string) (model.Quote,
 
 	if err == sql.ErrNoRows {
 		return model.Quote{}, storage.ErrNotFound
-	} else if err != nil {
-		return model.Quote{}, err
 	}
 
-	return q, nil
+	return q, err
 }
 
 // FindAll returns all Quotes in the repository.
@@ -100,9 +92,5 @@ func (r *QuoteRepository) FindAll(ctx context.Context) ([]model.Quote, error) {
 		quotes = append(quotes, q)
 	}
 
-	if err := rows.Err(); err != nil {
-		return quotes, err
-	}
-
-	return quotes, nil
+	return quotes, err
 }

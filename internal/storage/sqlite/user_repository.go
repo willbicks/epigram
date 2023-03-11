@@ -36,11 +36,7 @@ func NewUserRepository(db *sql.DB, c *MigrationController) (*UserRepository, err
 		},
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &UserRepository{db}, nil
+	return &UserRepository{db}, err
 }
 
 // Create adds a new User to the repository.
@@ -62,10 +58,8 @@ func (r *UserRepository) Update(ctx context.Context, u model.User) error {
 
 	if i, _ := result.RowsAffected(); i == 0 {
 		return storage.ErrNotFound
-	} else if err != nil {
-		return err
 	}
-	return nil
+	return err
 }
 
 // FindByID returns the User with the provided ID.
@@ -76,11 +70,9 @@ func (r *UserRepository) FindByID(ctx context.Context, id string) (model.User, e
 
 	if err == sql.ErrNoRows {
 		return model.User{}, storage.ErrNotFound
-	} else if err != nil {
-		return model.User{}, err
 	}
 
-	return u, nil
+	return u, err
 }
 
 // FindAll returns all Users in the repository.
@@ -103,9 +95,5 @@ func (r *UserRepository) FindAll(ctx context.Context) ([]model.User, error) {
 		users = append(users, u)
 	}
 
-	if err := rows.Err(); err != nil {
-		return users, err
-	}
-
-	return users, nil
+	return users, rows.Err()
 }

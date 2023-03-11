@@ -32,11 +32,7 @@ func NewUserSessionRepository(db *sql.DB, c *MigrationController) (*UserSessionR
 		},
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &UserSessionRepository{db}, nil
+	return &UserSessionRepository{db}, err
 }
 
 // Create adds a new UserSession to the repository.
@@ -59,9 +55,6 @@ func (r *UserSessionRepository) FindByID(ctx context.Context, id string) (model.
 
 	if err == sql.ErrNoRows {
 		return model.UserSession{}, storage.ErrNotFound
-	} else if err != nil {
-		return model.UserSession{}, err
 	}
-
-	return us, nil
+	return us, err
 }
