@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/service"
 	"github.com/willbicks/epigram/internal/storage"
@@ -200,7 +201,9 @@ func quoteRepository_FindAll(t *testing.T, repo service.QuoteRepository) {
 		t.Errorf("finding all from repo with two quotes: %v", err)
 	}
 	want = []model.Quote{q1, q2}
-	if !cmp.Equal(got, want) {
+	if !cmp.Equal(got, want, cmpopts.SortSlices(func(x, y model.Quote) bool {
+		return x.ID < y.ID
+	})) {
 		t.Errorf("finding all from repo with two quotes, got %v, want %v", got, want)
 	}
 }
