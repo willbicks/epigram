@@ -3,7 +3,9 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"errors"
 
+	"github.com/mattn/go-sqlite3"
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/storage"
 )
@@ -30,11 +32,7 @@ func NewUserSessionRepository(db *sql.DB, c *MigrationController) (*UserSessionR
 		},
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &UserSessionRepository{db}, nil
+	return &UserSessionRepository{db}, err
 }
 
 // Create adds a new UserSession to the repository.
@@ -42,24 +40,11 @@ func (r *UserSessionRepository) Create(ctx context.Context, us model.UserSession
 	_, err := r.db.ExecContext(ctx, "INSERT INTO usersessions (ID, UserID, Created, Expires, IP) VALUES (?, ?, ?, ?, ?);",
 		us.ID, us.UserID, us.Created, us.Expires, us.IP)
 
-	if err != nil {
-		return err
+	var sqliteErr sqlite3.Error
+	if errors.As(err, &sqliteErr) && sqliteErr.ExtendedCode == sqlite3.ErrConstraintPrimaryKey {
+		return storage.ErrAlreadyExists
 	}
-	return nil
-}
-
-// Update updates an existing UserSession in the repository.
-func (r *UserSessionRepository) Update(ctx context.Context, us model.UserSession) error {
-	result, err := r.db.ExecContext(ctx, "UPDATE usersessions SET UserID = ?, Created =?, Expires = ?, IP = ? WHERE ID = ?;",
-		us.UserID, us.Created, us.Expires, us.IP, us.ID)
-
-	// TODO: Return ErrNotFound if quote does not exist
-	if i, _ := result.RowsAffected(); i == 0 {
-		return storage.ErrNotFound
-	} else if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // FindByID returns the UserSession with the provided ID
@@ -70,36 +55,6 @@ func (r *UserSessionRepository) FindByID(ctx context.Context, id string) (model.
 
 	if err == sql.ErrNoRows {
 		return model.UserSession{}, storage.ErrNotFound
-	} else if err != nil {
-		return model.UserSession{}, err
 	}
-
-	return us, nil
-}
-
-// FindAll returns all UserSessions in the repository
-func (r *UserSessionRepository) FindAll(ctx context.Context) ([]model.UserSession, error) {
-	rows, err := r.db.QueryContext(ctx, "SELECT ID, UserID, Created, Expires, IP FROM usersessions;")
-	if err != nil {
-		return []model.UserSession{}, err
-	}
-	defer rows.Close()
-
-	sessions := []model.UserSession{}
-	for rows.Next() {
-		var us model.UserSession
-
-		err := rows.Scan(&us.ID, &us.UserID, &us.Created, &us.Expires, &us.IP)
-		if err != nil {
-			return sessions, err
-		}
-
-		sessions = append(sessions, us)
-	}
-
-	if err := rows.Err(); err != nil {
-		return sessions, err
-	}
-
-	return sessions, nil
+	return us, err
 }

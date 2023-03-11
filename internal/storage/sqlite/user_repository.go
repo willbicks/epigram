@@ -3,7 +3,9 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"errors"
 
+	"github.com/mattn/go-sqlite3"
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/storage"
 )
@@ -34,11 +36,7 @@ func NewUserRepository(db *sql.DB, c *MigrationController) (*UserRepository, err
 		},
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &UserRepository{db}, nil
+	return &UserRepository{db}, err
 }
 
 // Create adds a new User to the repository.
@@ -46,10 +44,11 @@ func (r *UserRepository) Create(ctx context.Context, u model.User) error {
 	_, err := r.db.ExecContext(ctx, "INSERT INTO users (ID, Name, Email, PictureURL, Created, QuizAttempts, QuizPassed, Banned, Admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
 		u.ID, u.Name, u.Email, u.PictureURL, u.Created, u.QuizAttempts, u.QuizPassed, u.Banned, u.Admin)
 
-	if err != nil {
-		return err
+	var sqliteErr sqlite3.Error
+	if errors.As(err, &sqliteErr) && sqliteErr.ExtendedCode == sqlite3.ErrConstraintPrimaryKey {
+		return storage.ErrAlreadyExists
 	}
-	return nil
+	return err
 }
 
 // Update updates an existing User in the repository.
@@ -59,10 +58,8 @@ func (r *UserRepository) Update(ctx context.Context, u model.User) error {
 
 	if i, _ := result.RowsAffected(); i == 0 {
 		return storage.ErrNotFound
-	} else if err != nil {
-		return err
 	}
-	return nil
+	return err
 }
 
 // FindByID returns the User with the provided ID.
@@ -73,11 +70,9 @@ func (r *UserRepository) FindByID(ctx context.Context, id string) (model.User, e
 
 	if err == sql.ErrNoRows {
 		return model.User{}, storage.ErrNotFound
-	} else if err != nil {
-		return model.User{}, err
 	}
 
-	return u, nil
+	return u, err
 }
 
 // FindAll returns all Users in the repository.
@@ -100,9 +95,5 @@ func (r *UserRepository) FindAll(ctx context.Context) ([]model.User, error) {
 		users = append(users, u)
 	}
 
-	if err := rows.Err(); err != nil {
-		return users, err
-	}
-
-	return users, nil
+	return users, rows.Err()
 }

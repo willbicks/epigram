@@ -27,6 +27,10 @@ func (r *UserSessionRepository) Create(ctx context.Context, us model.UserSession
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
+	if _, ok := r.m[us.ID]; ok {
+		return storage.ErrAlreadyExists
+	}
+
 	r.m[us.ID] = us
 	return nil
 }
