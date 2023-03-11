@@ -37,7 +37,7 @@ jobs:
             ${{ steps.get-cache-dirs.outputs.GOPATH }}
             ${{ steps.get-cache-dirs.outputs.GOBIN }}
             ${{ steps.get-cache-dirs.outputs.GOMODCACHE }}
-          key: ${{ runner.os }}-${{ runner.arch }-${{ github.job }}-${{ hashFiles('go.sum') }}
+          key: ${{ runner.os }}-${{ runner.arch }}-${{ github.job }}-${{ hashFiles('go.sum') }}
           restore-keys: |
             ${{ runner.os }}-${{ runner.arch }}-${{ github.job }}-
 
@@ -80,7 +80,7 @@ jobs:
             ${{ steps.get-cache-dirs.outputs.GOPATH }}
             ${{ steps.get-cache-dirs.outputs.GOBIN }}
             ${{ steps.get-cache-dirs.outputs.GOMODCACHE }}
-          key: ${{ runner.os }}-${{ runner.arch }-${{ github.job }}-${{ hashFiles('go.sum') }}
+          key: ${{ runner.os }}-${{ runner.arch }}-${{ github.job }}-${{ hashFiles('go.sum') }}
           restore-keys: |
             ${{ runner.os }}-${{ runner.arch }}-${{ github.job }}-
 
