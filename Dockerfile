@@ -12,7 +12,7 @@ COPY ./internal/server/http/frontend ./
 RUN npm run build --production
 
 # Go - compile go project
-FROM golang:1.19-alpine AS go
+FROM golang:1.20-alpine AS go
 WORKDIR /build
 
 RUN apk add --no-cache build-base
