@@ -3,7 +3,9 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"errors"
 
+	"github.com/mattn/go-sqlite3"
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/storage"
 )
@@ -46,10 +48,11 @@ func (r *UserRepository) Create(ctx context.Context, u model.User) error {
 	_, err := r.db.ExecContext(ctx, "INSERT INTO users (ID, Name, Email, PictureURL, Created, QuizAttempts, QuizPassed, Banned, Admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
 		u.ID, u.Name, u.Email, u.PictureURL, u.Created, u.QuizAttempts, u.QuizPassed, u.Banned, u.Admin)
 
-	if err != nil {
-		return err
+	var sqliteErr sqlite3.Error
+	if errors.As(err, &sqliteErr) && sqliteErr.ExtendedCode == sqlite3.ErrConstraintPrimaryKey {
+		return storage.ErrAlreadyExists
 	}
-	return nil
+	return err
 }
 
 // Update updates an existing User in the repository.
