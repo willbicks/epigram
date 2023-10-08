@@ -19,7 +19,7 @@ type legacyQuote struct {
 }
 
 // isValidLegacyQuoteMap checks whether the provided map has elements, and if each one has a quote,
-// and retuns the validity as a bool.
+// and returns the validity as a bool.
 func isValidLegacyQuoteMap(qs map[string]legacyQuote) bool {
 	if len(qs) < 1 {
 		return false
@@ -32,7 +32,7 @@ func isValidLegacyQuoteMap(qs map[string]legacyQuote) bool {
 	return true
 }
 
-// findQuoteArray recursively itterates through a raw json message until it finds an array / map
+// findQuoteArray recursively iterates through a raw json message until it finds an array / map
 // of legacyQuote elements. Once it is found, it is unmarshalled and returned. If none found,
 // returns nil.
 func findQuoteArray(log logger.Logger, jMsg json.RawMessage) map[string]legacyQuote {
@@ -48,8 +48,8 @@ func findQuoteArray(log logger.Logger, jMsg json.RawMessage) map[string]legacyQu
 
 		if isValidLegacyQuoteMap(quotes) {
 			return quotes
-		} 
-		
+		}
+
 		quotes = findQuoteArray(log, v)
 		if isValidLegacyQuoteMap(quotes) {
 			return quotes
@@ -59,10 +59,10 @@ func findQuoteArray(log logger.Logger, jMsg json.RawMessage) map[string]legacyQu
 }
 
 // migrateQuote takes a legacy quote, normalizes the timestamp precision, and migrates it
-// to a epigram model.Quote. Returns error if cannot be stored by repository.
+// to an epigram model.Quote. Returns an error if the quote cannot be stored by repository.
 func migrateQuote(repo *sqlite.QuoteRepository, uid string, q legacyQuote) error {
-	// Normize unix timestamp precision. If number of digits is less than 12, it is likely
-	// in seconds format instead of milliscond, and should be multiplied by 1000 to convert.
+	// Normalize unix timestamp precision. If number of digits is less than 12, it is likely
+	// in seconds format instead of millisecond, and should be multiplied by 1000 to convert.
 	if q.Date < 1000000000000 {
 		q.Date = q.Date * 1000
 	}

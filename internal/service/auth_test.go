@@ -17,12 +17,12 @@ func Test_notSignedIn(t *testing.T) {
 		{
 			"Background context",
 			context.Background(),
-			ErrNotAuhtenticated,
+			ErrNotAuthenticated,
 		},
 		{
 			"Context with empty user",
 			ctxval.ContextWithUser(context.Background(), model.User{}),
-			ErrNotAuhtenticated,
+			ErrNotAuthenticated,
 		},
 		{
 			"Context with valid user",
@@ -45,7 +45,7 @@ func Test_notSignedIn(t *testing.T) {
 	}
 }
 
-func Test_noUserPrivlege(t *testing.T) {
+func Test_noUserPrivilege(t *testing.T) {
 	tests := []struct {
 		name    string
 		ctx     context.Context
@@ -54,19 +54,19 @@ func Test_noUserPrivlege(t *testing.T) {
 		{
 			"Background context",
 			context.Background(),
-			ErrNotAuhthorized,
+			ErrNotAuthorized,
 		},
 		{
 			"Context with empty user",
 			ctxval.ContextWithUser(context.Background(), model.User{}),
-			ErrNotAuhthorized,
+			ErrNotAuthorized,
 		},
 		{
-			"Context with valid non-privledged user",
+			"Context with valid non-privileged user",
 			ctxval.ContextWithUser(context.Background(), model.User{
 				ID: "f000",
 			}),
-			ErrNotAuhthorized,
+			ErrNotAuthorized,
 		},
 		{
 			"Context with quiz passed user",
@@ -87,18 +87,18 @@ func Test_noUserPrivlege(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := verifyUserPrivlege(tt.ctx)
+			err := verifyUserPrivilege(tt.ctx)
 			if (tt.wantErr == nil) != (err == nil) {
-				t.Errorf("verifyUserPrivlege() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("verifyUserPrivilege() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			if tt.wantErr != nil && tt.wantErr.Error() != err.Error() {
-				t.Errorf("verifyUserPrivlege() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("verifyUserPrivilege() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func Test_noAdminPrivlege(t *testing.T) {
+func Test_noAdminPrivilege(t *testing.T) {
 	tests := []struct {
 		name    string
 		ctx     context.Context
@@ -107,19 +107,19 @@ func Test_noAdminPrivlege(t *testing.T) {
 		{
 			"Background context",
 			context.Background(),
-			ErrNotAuhthorized,
+			ErrNotAuthorized,
 		},
 		{
 			"Context with empty user",
 			ctxval.ContextWithUser(context.Background(), model.User{}),
-			ErrNotAuhthorized,
+			ErrNotAuthorized,
 		},
 		{
-			"Context with valid non-privledged user",
+			"Context with valid non-privileged user",
 			ctxval.ContextWithUser(context.Background(), model.User{
 				ID: "f000",
 			}),
-			ErrNotAuhthorized,
+			ErrNotAuthorized,
 		},
 		{
 			"Context with quiz passed user",
@@ -127,7 +127,7 @@ func Test_noAdminPrivlege(t *testing.T) {
 				ID:         "f000",
 				QuizPassed: true,
 			}),
-			ErrNotAuhthorized,
+			ErrNotAuthorized,
 		},
 		{
 			"Context with admin user",
@@ -140,12 +140,12 @@ func Test_noAdminPrivlege(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := verifyAdminPrivlege(tt.ctx)
+			err := verifyAdminPrivilege(tt.ctx)
 			if (tt.wantErr == nil) != (err == nil) {
-				t.Errorf("verifyAdminPrivlege() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("verifyAdminPrivilege() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			if tt.wantErr != nil && tt.wantErr.Error() != err.Error() {
-				t.Errorf("verifyAdminPrivlege() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("verifyAdminPrivilege() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

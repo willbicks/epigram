@@ -30,7 +30,7 @@ func TestUserSession_CreateUserSession(t *testing.T) {
 	IP := "129.36.111.20"
 	sess, err := service.CreateUserSession(context.Background(), user, IP)
 	is.NoErr(err)                                        // creating user session should not fail
-	is.Equal(sess.UserID, user.ID)                       // user sesision UserID should match user's ID
+	is.Equal(sess.UserID, user.ID)                       // user session UserID should match user's ID
 	is.Equal(sess.IP, IP)                                // session IP should match provided
 	is.True(len(sess.ID) > 8)                            // session ID should be at least 8 characters
 	is.True(time.Since(sess.Created) < time.Second)      // session should be created within the last second
@@ -53,7 +53,7 @@ func TestUserSession_FindSessionByID_Valid(t *testing.T) {
 
 	found, err := service.FindSessionByID(context.Background(), validSess.ID)
 	is.NoErr(err)                   // lookup of valid session id should not fail
-	is.Equal(found.UserID, user.ID) // found session's UserID should match users's ID
+	is.Equal(found.UserID, user.ID) // found session's UserID should match user's ID
 }
 
 func TestUserSession_FindSessionByID_Invalid(t *testing.T) {

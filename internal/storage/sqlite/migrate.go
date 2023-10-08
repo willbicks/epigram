@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-// MigrationController is responsible for for running migrations on the SQLite database.
+// MigrationController is responsible for running migrations on the SQLite database.
 type MigrationController struct {
 	// createTable ensures that an attempt to create a migrations table
 	// is only made once per application start.
@@ -48,7 +48,7 @@ func (c *MigrationController) migrateRepository(db *sql.DB, repoName string, mig
 				return fmt.Errorf("starting migration tx: %w", err)
 			}
 
-			// execute all of the statements in this migration
+			// execute all the statements in this migration
 			for i, stmt := range m.stmts {
 				_, err := tx.Exec(stmt)
 				if err != nil {

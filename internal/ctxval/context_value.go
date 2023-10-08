@@ -1,5 +1,5 @@
 // Package ctxval is used by the server and service tiers to store request-scoped
-// informtaion that is ancillary to the request being made (eg: authenticated user,
+// information that is ancillary to the request being made (eg: authenticated user,
 // request IP)
 package ctxval
 

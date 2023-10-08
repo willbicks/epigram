@@ -62,7 +62,7 @@ OIDCProvider:
 			name: "repo-inmemory",
 			yaml: `repo: inmemory`,
 			want: Application{
-				Repo: Inmemory,
+				Repo: InMemory,
 			},
 			wantErr: false,
 		},

@@ -47,12 +47,12 @@ func quoteRepository_Create_FindByID(t *testing.T, repo service.QuoteRepository)
 		t.Errorf("create quote q1: %v", err)
 	}
 
-	gotq1, err := repo.FindByID(context.Background(), q1.ID)
+	gotQ1, err := repo.FindByID(context.Background(), q1.ID)
 	if err != nil {
 		t.Errorf("find q1: %v", err)
 	}
-	if !cmp.Equal(gotq1, q1) {
-		t.Errorf("got quote %v, want %v", gotq1, q1)
+	if !cmp.Equal(gotQ1, q1) {
+		t.Errorf("got quote %v, want %v", gotQ1, q1)
 	}
 
 	q2 := model.Quote{
@@ -62,12 +62,12 @@ func quoteRepository_Create_FindByID(t *testing.T, repo service.QuoteRepository)
 		Quote:       "I'm also a quote",
 	}
 
-	gotq2, err := repo.FindByID(context.Background(), q2.ID)
+	gotQ2, err := repo.FindByID(context.Background(), q2.ID)
 	if err != storage.ErrNotFound {
 		t.Errorf("non-existent quote should return ErrNotFound, got %v", err)
 	}
-	if gotq2 != (model.Quote{}) {
-		t.Errorf("non-existent quote should return empty Quote, got %v", gotq2)
+	if gotQ2 != (model.Quote{}) {
+		t.Errorf("non-existent quote should return empty Quote, got %v", gotQ2)
 	}
 
 	err = repo.Create(context.Background(), q2)
@@ -75,13 +75,13 @@ func quoteRepository_Create_FindByID(t *testing.T, repo service.QuoteRepository)
 		t.Errorf("create quote q2: %v", err)
 	}
 
-	gotq2, err = repo.FindByID(context.Background(), q2.ID)
+	gotQ2, err = repo.FindByID(context.Background(), q2.ID)
 	if err != nil {
 		t.Errorf("find q2: %v", err)
 	}
 
-	if !cmp.Equal(gotq2, q2) {
-		t.Errorf("got quote %v, want %v", gotq2, q2)
+	if !cmp.Equal(gotQ2, q2) {
+		t.Errorf("got quote %v, want %v", gotQ2, q2)
 	}
 
 	err = repo.Create(context.Background(), q2)
@@ -118,12 +118,12 @@ func quoteRepository_Update(t *testing.T, repo service.QuoteRepository) {
 		t.Errorf("update quote q1: %v", err)
 	}
 
-	gotq1, err := repo.FindByID(context.Background(), q1.ID)
+	gotQ1, err := repo.FindByID(context.Background(), q1.ID)
 	if err != nil {
 		t.Errorf("find q1: %v", err)
 	}
-	if !cmp.Equal(gotq1, q1) {
-		t.Errorf("got quote after first update %v, want %v", gotq1, q1)
+	if !cmp.Equal(gotQ1, q1) {
+		t.Errorf("got quote after first update %v, want %v", gotQ1, q1)
 	}
 
 	q1.Quotee = "J-Man"
@@ -133,12 +133,12 @@ func quoteRepository_Update(t *testing.T, repo service.QuoteRepository) {
 		t.Errorf("update quote q1: %v", err)
 	}
 
-	gotq1, err = repo.FindByID(context.Background(), q1.ID)
+	gotQ1, err = repo.FindByID(context.Background(), q1.ID)
 	if err != nil {
 		t.Errorf("find q1: %v", err)
 	}
-	if !cmp.Equal(gotq1, q1) {
-		t.Errorf("got quote after second update %v, want %v", gotq1, q1)
+	if !cmp.Equal(gotQ1, q1) {
+		t.Errorf("got quote after second update %v, want %v", gotQ1, q1)
 	}
 
 	err = repo.Update(context.Background(), model.Quote{ID: "non-existent"})
@@ -146,12 +146,12 @@ func quoteRepository_Update(t *testing.T, repo service.QuoteRepository) {
 		t.Errorf("update non-existent quote should return ErrNotFound, got %v", err)
 	}
 
-	gotunchanged, err := repo.FindByID(context.Background(), unchanged.ID)
+	gotUnchanged, err := repo.FindByID(context.Background(), unchanged.ID)
 	if err != nil {
 		t.Errorf("find unchanged: %v", err)
 	}
-	if !cmp.Equal(gotunchanged, unchanged) {
-		t.Errorf("quote was unexpectedly changed, got %v, want %v", gotunchanged, unchanged)
+	if !cmp.Equal(gotUnchanged, unchanged) {
+		t.Errorf("quote was unexpectedly changed, got %v, want %v", gotUnchanged, unchanged)
 	}
 }
 

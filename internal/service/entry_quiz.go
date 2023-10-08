@@ -42,7 +42,7 @@ func NewEntryQuizService(qs []config.EntryQuestion) EntryQuiz {
 }
 
 // VerifyAnswers accepts a map of question IDs and string responses, and checks them
-// against the correct answers, and returns whether or not they match the expectation.
+// against the correct answers, and returns whether they match the expectation.
 func (eq EntryQuiz) VerifyAnswers(ctx context.Context, answers map[int]string) (passed bool, err error) {
 
 	if err := verifySignedIn(ctx); err != nil {

@@ -30,7 +30,7 @@ func (e TemplateEngine) templateFS() (fs.FS, error) {
 	return fsys, nil
 }
 
-// PublicFS returns the filesystem containing public files (css, js, etc), rooted inside the public subdirectory
+// PublicFS returns the filesystem containing public files (css, js, etc.), rooted inside the public subdirectory
 func (e TemplateEngine) PublicFS() (fs.FS, error) {
 	var fsys fs.FS
 	var err error
