@@ -18,7 +18,7 @@ type TemplateEngine struct {
 	DevMode bool
 }
 
-// NewTemplateEngine creates a new template engine, and initializes it's views so that it is ready
+// NewTemplateEngine creates a new template engine, and initializes its views so that it is ready
 // to render responses.
 func NewTemplateEngine(rootTD RootTD) (TemplateEngine, error) {
 	e := TemplateEngine{

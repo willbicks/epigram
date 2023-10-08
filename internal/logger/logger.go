@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-// Level represents a level of logging severity / detail. When an desired log level is selected, all messages at or
+// Level represents a level of logging severity / detail. When a desired log level is selected, all messages at or
 // above that level are printed, while all levels below are suppressed.
 type Level int8
 
@@ -17,7 +17,7 @@ const (
 	LevelDebug Level = -1
 	// LevelInfo is intended for general information including records of operations performed.
 	LevelInfo Level = 0
-	// LevelWarn is intended for messages that indicate some unexpected non-fatal error has ocured.
+	// LevelWarn is intended for messages that indicate some unexpected non-fatal error has occurred.
 	LevelWarn Level = 1
 	// LevelFatal is the highest level of logging, and is intended for messages that indicate a fatal error.
 	LevelFatal Level = 2

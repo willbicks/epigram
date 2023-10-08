@@ -74,7 +74,7 @@ func (s *QuoteServer) Init() error {
 	return nil
 }
 
-// ServeHTTP serves as the entrypoint for HTTP requests to the quote server. It applies the appropriate globalmiddleware,
+// ServeHTTP serves as the entrypoint for HTTP requests to the quote server. It applies the appropriate global middleware,
 // and then serves request responses using the http ServeMux
 func (s QuoteServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	gzhttp.GzipHandler(s.interpretSession(s.getIP(s.mux))).ServeHTTP(w, r)

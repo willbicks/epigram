@@ -13,16 +13,16 @@ import (
 
 const (
 	// _idRandBytes represents the number of cryptographically secure random bytes that should be
-	// generated for each UserSession's ID, and serves as it's unique token for user authenticaiton.
+	// generated for each UserSession's ID, and serves as it's unique token for user authentication.
 	// Multiples of 3 are preferred to make optimal usage of the base64 encoding scheme, but not
 	// required.
 	_idRandBytes = 18
 
-	// DefaultExpirty represents the default ammount of time after which a UserSession will expire.
+	// DefaultExpiry represents the default amount of time after which a UserSession will expire.
 	_defaultExpiry = time.Hour * 24 * 14
 )
 
-// UserSessionRepository provides methods for storing and retriving UserSessions.
+// UserSessionRepository provides methods for storing and retrieving UserSessions.
 type UserSessionRepository interface {
 	Create(ctx context.Context, us model.UserSession) error
 	FindByID(ctx context.Context, id string) (model.UserSession, error)

@@ -32,9 +32,9 @@ func main() {
 	}
 
 	// Initialize repositories
-	connstr := fmt.Sprint("file:./", *dbFile, "?cache=shared&mode=rw")
-	log.Debugf("Opening datatabes with connection string: %s", connstr)
-	db, err := sql.Open("sqlite3", connstr)
+	connStr := fmt.Sprint("file:./", *dbFile, "?cache=shared&mode=rw")
+	log.Debugf("Opening database with connection string: %s", connStr)
+	db, err := sql.Open("sqlite3", connStr)
 	if err != nil {
 		log.Fatalf("unable to open database: %v", err)
 	}
@@ -78,7 +78,7 @@ func main() {
 	log.Infof("Successfully migrated %v out of %v legacy quotes.", successful, total)
 }
 
-// initSqliteRepo accepts an sqlite db conncetion, creates a user and quote repository,
+// initSqliteRepo accepts an sqlite db connection, creates a user and quote repository,
 // creates a user to own migrated quotes, and returns the user and quote repo.
 func initSqliteRepo(db *sql.DB) (*sqlite.QuoteRepository, *model.User, error) {
 	mc := &sqlite.MigrationController{}
@@ -87,10 +87,10 @@ func initSqliteRepo(db *sql.DB) (*sqlite.QuoteRepository, *model.User, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	// Creater legacy charisms user
+	// Create user to own imported quotes
 	u := model.User{
 		ID:   xid.New().String(),
-		Name: "Legacy Charisms User",
+		Name: "Legacy User",
 	}
 	if err := userRepo.Create(context.Background(), u); err != nil {
 		return nil, nil, err

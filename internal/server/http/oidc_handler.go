@@ -27,7 +27,7 @@ func (s *QuoteServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
 		return base64.RawURLEncoding.EncodeToString(b), nil
 	}
 
-	// setCallbackCookie is a helper function used to create secure cookes containing state and nonce information.
+	// setCallbackCookie is a helper function used to create secure cookies containing state and nonce information.
 	setCallbackCookie := func(w http.ResponseWriter, r *http.Request, name, value string) {
 		c := &http.Cookie{
 			Name:     name,
@@ -39,7 +39,7 @@ func (s *QuoteServer) oidcLoginHandler(oidc service.OIDC) http.Handler {
 		http.SetCookie(w, c)
 	}
 
-	// http handler func to set coookies and redirect to provider
+	// http handler func to set cookies and redirect to provider
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// first, check if user is already signed in. If so, redirect to the quotes page.
 		if ctxval.UserFromContext(r.Context()).ID != "" {

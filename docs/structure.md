@@ -1,6 +1,6 @@
 # Project Structure
 
-Epigram is based on a hexagonal architecture (also known as ports and adapters), which permits swapping both the database / storage infrastructure as well as the front end presentation layer with minimal changes to the codebase and preservation of the core application logic. 
+Epigram is based on a hexagonal architecture (also known as ports and adapters), which permits swapping both the database / storage infrastructure and the front end presentation layer with minimal changes to the codebase and preservation of the core application logic. 
 
 To accomplish this, the application is broken down into three primary tiers:
 
@@ -20,7 +20,7 @@ To accomplish this, the application is broken down into three primary tiers:
         - `inmemory` - stores all data in maps in memory, useful for testing.
         - `sqlite` - uses statically-linked sqlite3 library to store data in local database file.
 
-In addition, each layer depends on the `model` package, which holds all of the structure definitions for objects used throughout the above three tiers. 
+In addition, each layer depends on the `model` package, which holds all the structure definitions for objects used throughout the above three tiers. 
 
 The below diagram shows how a `server` implementation utilizes the top level `service` entities, and how each service interacts with others and their repositories in the `storage` package.
 

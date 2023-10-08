@@ -75,7 +75,7 @@ func TestNewEntryQuizService(t *testing.T) {
 				ids = append(ids, q.ID)
 			}
 
-			// Check that answer lenghts are correct
+			// Check that answer lengths are correct
 			for i, q := range got.Questions {
 				if len(tt.entryQuestions[i].Answer) != q.Length {
 					t.Errorf("Unexpected answer length, got %v, want %v", q.Length, len(tt.entryQuestions[i].Answer))
@@ -121,7 +121,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 		wantErr    bool
 	}{
 		{
-			name:       "1 Quesion - no answers",
+			name:       "1 Question - no answers",
 			ctx:        ctxSignedIn,
 			eq:         service1,
 			answers:    map[int]string{},
@@ -129,7 +129,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name: "1 Quesion - wrong",
+			name: "1 Question - wrong",
 			ctx:  ctxSignedIn,
 			eq:   service1,
 			answers: map[int]string{
@@ -139,7 +139,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name: "1 Quesion - too many answers",
+			name: "1 Question - too many answers",
 			ctx:  ctxSignedIn,
 			eq:   service1,
 			answers: map[int]string{
@@ -150,7 +150,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name: "1 Quesion - right answer",
+			name: "1 Question - right answer",
 			ctx:  ctxSignedIn,
 			eq:   service1,
 			answers: map[int]string{
@@ -160,7 +160,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name:       "3 Quesion - no answer",
+			name:       "3 Question - no answer",
 			ctx:        ctxSignedIn,
 			eq:         service3,
 			answers:    map[int]string{},
@@ -168,7 +168,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name: "3 Quesion - not enough answers",
+			name: "3 Question - not enough answers",
 			ctx:  ctxSignedIn,
 			eq:   service3,
 			answers: map[int]string{
@@ -179,7 +179,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name: "3 Quesion - wrong 1",
+			name: "3 Question - wrong 1",
 			ctx:  ctxSignedIn,
 			eq:   service3,
 			answers: map[int]string{
@@ -191,7 +191,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name: "3 Quesion - too many answers",
+			name: "3 Question - too many answers",
 			ctx:  ctxSignedIn,
 			eq:   service3,
 			answers: map[int]string{
@@ -204,7 +204,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name: "3 Quesion - right",
+			name: "3 Question - right",
 			ctx:  ctxSignedIn,
 			eq:   service3,
 			answers: map[int]string{
@@ -216,7 +216,7 @@ func TestEntryQuiz_VerifyAnswers(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name: "3 Quesion - right, not signed in",
+			name: "3 Question - right, not signed in",
 			ctx:  ctxNoUser,
 			eq:   service3,
 			answers: map[int]string{

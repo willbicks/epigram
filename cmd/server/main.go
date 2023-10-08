@@ -34,7 +34,7 @@ func main() {
 	var quoteRepo service.QuoteRepository
 
 	switch cfg.Repo {
-	case config.Inmemory:
+	case config.InMemory:
 		userRepo = inmemory.NewUserRepository()
 		userSessionRepo = inmemory.NewUserSessionRepository()
 		quoteRepo = inmemory.NewQuoteRepository()

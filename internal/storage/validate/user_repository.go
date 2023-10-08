@@ -76,31 +76,31 @@ func userRepository_Create_FindByID(t *testing.T, repo service.UserRepository) {
 	if err := repo.Create(context.Background(), u1); err != nil {
 		t.Errorf("create user u1: %v", err)
 	}
-	gotu1, err := repo.FindByID(context.Background(), u1.ID)
+	gotU1, err := repo.FindByID(context.Background(), u1.ID)
 	if err != nil {
 		t.Errorf("find u1: %v", err)
 	}
-	if !cmp.Equal(gotu1, u1) {
-		t.Errorf("got user %v, want %v", gotu1, u1)
+	if !cmp.Equal(gotU1, u1) {
+		t.Errorf("got user %v, want %v", gotU1, u1)
 	}
 
-	gotu2, err := repo.FindByID(context.Background(), u2.ID)
+	gotU2, err := repo.FindByID(context.Background(), u2.ID)
 	if err != storage.ErrNotFound {
 		t.Errorf("find u2 before created: got error %v, want %v", err, storage.ErrNotFound)
 	}
-	if gotu2 != (model.User{}) {
-		t.Errorf("find u2 before created: got user %v, want %v", gotu2, model.User{})
+	if gotU2 != (model.User{}) {
+		t.Errorf("find u2 before created: got user %v, want %v", gotU2, model.User{})
 	}
 
 	if err := repo.Create(context.Background(), u2); err != nil {
 		t.Errorf("create user u2: %v", err)
 	}
-	gotu2, err = repo.FindByID(context.Background(), u2.ID)
+	gotU2, err = repo.FindByID(context.Background(), u2.ID)
 	if err != nil {
 		t.Errorf("find u2: %v", err)
 	}
-	if !cmp.Equal(gotu2, u2) {
-		t.Errorf("got user %v, want %v", gotu2, u2)
+	if !cmp.Equal(gotU2, u2) {
+		t.Errorf("got user %v, want %v", gotU2, u2)
 	}
 
 	if err := repo.Create(context.Background(), u1); err != storage.ErrAlreadyExists {
@@ -118,12 +118,12 @@ func userRepository_Update(t *testing.T, repo service.UserRepository) {
 	if err := repo.Create(context.Background(), uEdit); err != nil {
 		t.Errorf("create user uEdit: %v", err)
 	}
-	gotuEdit, err := repo.FindByID(context.Background(), uEdit.ID)
+	gotUEdit, err := repo.FindByID(context.Background(), uEdit.ID)
 	if err != nil {
 		t.Errorf("find uEdit: %v", err)
 	}
-	if !cmp.Equal(gotuEdit, uEdit) {
-		t.Errorf("got user %v, want %v", gotuEdit, uEdit)
+	if !cmp.Equal(gotUEdit, uEdit) {
+		t.Errorf("got user %v, want %v", gotUEdit, uEdit)
 	}
 
 	uEdit.Name = "Ficky Neldo II"
@@ -137,24 +137,24 @@ func userRepository_Update(t *testing.T, repo service.UserRepository) {
 	if err := repo.Update(context.Background(), uEdit); err != nil {
 		t.Errorf("update user uEdit: %v", err)
 	}
-	gotuEdit, err = repo.FindByID(context.Background(), uEdit.ID)
+	gotUEdit, err = repo.FindByID(context.Background(), uEdit.ID)
 	if err != nil {
 		t.Errorf("find uEdit: %v", err)
 	}
-	if !cmp.Equal(gotuEdit, uEdit) {
-		t.Errorf("got user %v, want %v", gotuEdit, uEdit)
+	if !cmp.Equal(gotUEdit, uEdit) {
+		t.Errorf("got user %v, want %v", gotUEdit, uEdit)
 	}
 
 	if err := repo.Update(context.Background(), u2); err != storage.ErrNotFound {
 		t.Errorf("update user u2: got error %v, want %v", err, storage.ErrNotFound)
 	}
 
-	gotu3, err := repo.FindByID(context.Background(), u3.ID)
+	gotU3, err := repo.FindByID(context.Background(), u3.ID)
 	if err != nil {
 		t.Errorf("find u3: %v", err)
 	}
-	if !cmp.Equal(gotu3, u3) {
-		t.Errorf("u3 should be unchanged, got user %v, want %v", gotu3, u3)
+	if !cmp.Equal(gotU3, u3) {
+		t.Errorf("u3 should be unchanged, got user %v, want %v", gotU3, u3)
 	}
 }
 

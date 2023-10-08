@@ -18,7 +18,7 @@ type QuoteRepository interface {
 	FindAll(ctx context.Context) ([]model.Quote, error)
 }
 
-// Quote provides a service for interracting with Quotes
+// Quote provides a service for interacting with Quotes
 type Quote struct {
 	repo QuoteRepository
 }
@@ -33,7 +33,7 @@ func NewQuoteService(repo QuoteRepository) Quote {
 // CreateQuote creates a new Quote, setting its ID, Created, and SubmitterID fields
 func (s *Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
 
-	if err := verifyUserPrivlege(ctx); err != nil {
+	if err := verifyUserPrivilege(ctx); err != nil {
 		return err
 	}
 
@@ -57,7 +57,7 @@ func (s *Quote) CreateQuote(ctx context.Context, q *model.Quote) error {
 
 // GetAllQuotes returns all Quotes
 func (s *Quote) GetAllQuotes(ctx context.Context) ([]model.Quote, error) {
-	if err := verifyUserPrivlege(ctx); err != nil {
+	if err := verifyUserPrivilege(ctx); err != nil {
 		return nil, err
 	}
 

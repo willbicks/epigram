@@ -20,7 +20,7 @@ type UserRepository interface {
 	FindAll(ctx context.Context) ([]model.User, error)
 }
 
-// User provides a service for interracting with Users.
+// User provides a service for interacting with Users.
 type User struct {
 	ur   UserRepository
 	sess UserSession
@@ -34,8 +34,8 @@ func NewUserService(ur UserRepository, sr UserSessionRepository) User {
 	}
 }
 
-// GetUserFromIDToken returns a user from the specified OIDC token (assumed to be allready verified).
-// If a user allready exists with the specified ID (derrived from the issuer URL and sub claim),
+// GetUserFromIDToken returns a user from the specified OIDC token (assumed to be already verified).
+// If a user already exists with the specified ID (derived from the issuer URL and subclass),
 // that user is returned. If no such user exists, a new user is created based on the token
 // details and returned.
 func (s User) GetUserFromIDToken(ctx context.Context, token oidc.IDToken) (model.User, error) {
@@ -154,7 +154,7 @@ func (s *User) RecordQuizAttempt(ctx context.Context, u *model.User, passed bool
 
 // GetAllUsers returns a slice of all users, and can ony be accessed by admins.
 func (s *User) GetAllUsers(ctx context.Context) ([]model.User, error) {
-	if err := verifyAdminPrivlege(ctx); err != nil {
+	if err := verifyAdminPrivilege(ctx); err != nil {
 		return nil, err
 	}
 

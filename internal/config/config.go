@@ -13,8 +13,8 @@ import (
 type Repository int8
 
 const (
-	// Inmemory is a repository that stores data in memory, and is not persistent across restarts
-	Inmemory Repository = iota + 1
+	// InMemory is a repository that stores data in memory, and is not persistent across restarts
+	InMemory Repository = iota + 1
 	// SQLite is a repository that stores data in a SQLite database
 	SQLite
 )
@@ -24,7 +24,7 @@ const (
 func repoFromString(str string) Repository {
 	switch strings.ToLower(str) {
 	case "inmemory":
-		return Inmemory
+		return InMemory
 	case "sqlite":
 		return SQLite
 	}
@@ -61,7 +61,7 @@ type Application struct {
 	Repo Repository `yaml:"repo"`
 	// DBLoc is the location where the database can be found. In the case of an SQLite repository, this is the path to database file.
 	DBLoc string `yaml:"DBLoc"`
-	// TrustProxy dictates whether the `X-Forwarded-For` header should be trusted to obtain the client IP, or if the requestor IP should be used instead.
+	// TrustProxy dictates whether the `X-Forwarded-For` header should be trusted to obtain the client IP, or if the requester IP should be used instead.
 	TrustProxy bool `yaml:"trustProxy"`
 	// OIDCProvider is the OIDC provider used to authenticate users.
 	OIDCProvider OIDCProvider `yaml:"OIDCProvider"`

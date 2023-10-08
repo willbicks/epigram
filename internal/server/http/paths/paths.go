@@ -1,6 +1,6 @@
 package paths
 
-// Paths stores url paths to each page to prevent hardcoding paths in
+// Paths stores url paths to each page to prevent hard coding paths in
 // multiple places.
 type Paths struct {
 	Home    string

@@ -29,12 +29,12 @@ func UserSessionRepository(t *testing.T, repoFactory func() (repo service.UserSe
 		t.Errorf("create user session us2: %v", err)
 	}
 
-	gotus1, err := repo.FindByID(context.Background(), us1.ID)
+	gotUS1, err := repo.FindByID(context.Background(), us1.ID)
 	if err != nil {
 		t.Errorf("find us1: %v", err)
 	}
-	if !cmp.Equal(gotus1, us1) {
-		t.Errorf("got user session %v, want %v", gotus1, us1)
+	if !cmp.Equal(gotUS1, us1) {
+		t.Errorf("got user session %v, want %v", gotUS1, us1)
 	}
 
 	us2 := model.UserSession{
@@ -44,12 +44,12 @@ func UserSessionRepository(t *testing.T, repoFactory func() (repo service.UserSe
 		Expires: time.Now().Add(time.Hour),
 		IP:      "24.197.123.1",
 	}
-	gotus2, err := repo.FindByID(context.Background(), us2.ID)
+	gotUS2, err := repo.FindByID(context.Background(), us2.ID)
 	if err != storage.ErrNotFound {
 		t.Errorf("non-existent user session should return ErrNotFound, got %v", err)
 	}
-	if gotus2 != (model.UserSession{}) {
-		t.Errorf("non-existent user session should return empty UserSession, got %v", gotus2)
+	if gotUS2 != (model.UserSession{}) {
+		t.Errorf("non-existent user session should return empty UserSession, got %v", gotUS2)
 	}
 
 	err = repo.Create(context.Background(), us2)
@@ -57,12 +57,12 @@ func UserSessionRepository(t *testing.T, repoFactory func() (repo service.UserSe
 		t.Errorf("create user session us2: %v", err)
 	}
 
-	gotus2, err = repo.FindByID(context.Background(), us2.ID)
+	gotUS2, err = repo.FindByID(context.Background(), us2.ID)
 	if err != nil {
 		t.Errorf("find us2: %v", err)
 	}
-	if !cmp.Equal(gotus2, us2) {
-		t.Errorf("got user session %v, want %v", gotus2, us2)
+	if !cmp.Equal(gotUS2, us2) {
+		t.Errorf("got user session %v, want %v", gotUS2, us2)
 	}
 
 	err = repo.Create(context.Background(), us2)
