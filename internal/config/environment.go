@@ -35,6 +35,7 @@ func fromEnvironment() Application {
 	port := uint16(p64)
 
 	trustProxy, _ := strconv.ParseBool(getEnvVar("TrustProxy"))
+	logJSON, _ := strconv.ParseBool(getEnvVar("LogJSON"))
 	devMode, _ := strconv.ParseBool(getEnvVar("DevMode"))
 
 	return Application{
@@ -46,6 +47,7 @@ func fromEnvironment() Application {
 		Repo:        repoFromString(getEnvVar("Repo")),
 		DBLoc:       getEnvVar("DBLoc"),
 		TrustProxy:  trustProxy,
+		LogJSON:     logJSON,
 		DevMode:     devMode,
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/willbicks/epigram/internal/ctxval"
+	"github.com/willbicks/epigram/internal/logutils"
 )
 
 // interpretSession wraps the request's context with the authenticated user, if they are known.
@@ -15,7 +16,7 @@ func (s *QuoteServer) interpretSession(next http.Handler) http.Handler {
 		c, err := r.Cookie(sessionCookieName)
 		if err != nil {
 			// unable to read cookie (probably not set / no session)
-			s.Logger.Debug("session cookie not found")
+			s.Logger.DebugContext(r.Context(), "session cookie not found")
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -23,7 +24,7 @@ func (s *QuoteServer) interpretSession(next http.Handler) http.Handler {
 		u, err := s.UserService.GetUserFromSessionID(r.Context(), c.Value)
 		if err != nil {
 			// session token is invalid
-			s.Logger.Warnf("unable to get user from session ID: %v", err)
+			s.Logger.WarnContext(r.Context(), "unable to get user from session", logutils.Error(err))
 			next.ServeHTTP(w, r)
 			return
 		}

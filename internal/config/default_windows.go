@@ -12,6 +12,7 @@ var Default = Application{
 	Title:       "Epigram",
 	Description: "Epigram is a simple web service for communities to immortalize the enlightening, funny, or downright dumb quotes that they hear.",
 	TrustProxy:  false,
+	LogJSON:     false,
 	Repo:        SQLite,
 	DBLoc:       "./epigram.db",
 }

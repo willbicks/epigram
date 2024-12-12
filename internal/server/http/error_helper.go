@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+
+	"github.com/willbicks/epigram/internal/logutils"
 )
 
 // serverError writes an error message and stack trace to the errorLog,
 // then sends a generic 500 Internal Server Error response to the user.
-// Logs error to logger.Warn.
+// Logs error to logger.Error.
 func (s *QuoteServer) serverError(w http.ResponseWriter, r *http.Request, err error) {
-	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
-	s.Logger.Warn(trace)
+	s.Logger.ErrorContext(r.Context(), "internal server error", logutils.Error(err), "trace", debug.Stack())
 
 	status := http.StatusInternalServerError
 	http.Error(w, fmt.Sprintf("Error %v: %s", status, http.StatusText(status)), status)
@@ -29,7 +30,7 @@ func (s *QuoteServer) clientError(w http.ResponseWriter, r *http.Request, err er
 		status = fmt.Sprintf("Error %v: %v", code, http.StatusText(code))
 	}
 
-	s.Logger.Debug(status)
+	s.Logger.DebugContext(r.Context(), status)
 	http.Error(w, status, code)
 }
 

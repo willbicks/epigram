@@ -63,6 +63,8 @@ type Application struct {
 	DBLoc string `yaml:"DBLoc"`
 	// TrustProxy dictates whether the `X-Forwarded-For` header should be trusted to obtain the client IP, or if the requester IP should be used instead.
 	TrustProxy bool `yaml:"trustProxy"`
+	// LogJSON enables JSON logging, otherwise logs are printed in a human-readable format (which is slower).
+	LogJSON bool `yaml:"logJSON"`
 	// OIDCProvider is the OIDC provider used to authenticate users.
 	OIDCProvider OIDCProvider `yaml:"OIDCProvider"`
 	// EntryQuestions is an array of questions.
@@ -108,6 +110,9 @@ func (base Application) merge(layer Application) Application {
 	}
 	if layer.DevMode {
 		base.DevMode = layer.DevMode
+	}
+	if layer.LogJSON {
+		base.LogJSON = layer.LogJSON
 	}
 	return base
 }

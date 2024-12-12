@@ -1,12 +1,12 @@
 package http
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/klauspost/compress/gzhttp"
 
 	"github.com/willbicks/epigram/internal/config"
-	"github.com/willbicks/epigram/internal/logger"
 	"github.com/willbicks/epigram/internal/server/http/frontend"
 	"github.com/willbicks/epigram/internal/server/http/paths"
 	"github.com/willbicks/epigram/internal/service"
@@ -17,7 +17,7 @@ type QuoteServer struct {
 	mux  *http.ServeMux
 	tmpl frontend.TemplateEngine
 
-	Logger logger.Logger
+	Logger *slog.Logger
 
 	QuoteService service.Quote
 	UserService  service.User

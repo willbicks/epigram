@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/rs/xid"
-	"github.com/willbicks/epigram/internal/logger"
+
 	"github.com/willbicks/epigram/internal/model"
 	"github.com/willbicks/epigram/internal/storage/sqlite"
 )
@@ -35,22 +35,21 @@ func isValidLegacyQuoteMap(qs map[string]legacyQuote) bool {
 // findQuoteArray recursively iterates through a raw json message until it finds an array / map
 // of legacyQuote elements. Once it is found, it is unmarshalled and returned. If none found,
 // returns nil.
-func findQuoteArray(log logger.Logger, jMsg json.RawMessage) map[string]legacyQuote {
+func findQuoteArray(jMsg json.RawMessage) map[string]legacyQuote {
 	var root map[string]json.RawMessage
 
 	if err := json.Unmarshal(jMsg, &root); err != nil {
 		return nil
 	}
-	for k, v := range root {
+	for _, v := range root {
 		quotes := make(map[string]legacyQuote)
 		json.Unmarshal(v, &quotes)
-		log.Debugf("k: %v, v: %s, struct: %v", k, v, quotes)
 
 		if isValidLegacyQuoteMap(quotes) {
 			return quotes
 		}
 
-		quotes = findQuoteArray(log, v)
+		quotes = findQuoteArray(v)
 		if isValidLegacyQuoteMap(quotes) {
 			return quotes
 		}

@@ -25,12 +25,14 @@ func TestParseYAML(t *testing.T) {
 baseURL: http://test:12
 title: Epigram
 description: Where communities quote
-trustProxy: true`,
+trustProxy: true
+logJSON: true`,
 			want: Application{
 				BaseURL:     "http://test:12",
 				Title:       "Epigram",
 				Description: "Where communities quote",
 				TrustProxy:  true,
+				LogJSON:     true,
 			},
 			wantErr: false,
 		},
