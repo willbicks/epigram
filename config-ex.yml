@@ -14,7 +14,7 @@ devMode: false
 OIDCProvider:
   name: google
   issuerURL: "https://accounts.google.com"
-  clientId: "1234567890.apps.googleusercontent.com"
+  clientID: "1234567890.apps.googleusercontent.com"
   clientSecret: "your-client-secret"
 
 entryQuestions:
